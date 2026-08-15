@@ -30,6 +30,20 @@ FALLBACK_HID_DESCRIPTOR = bytes([
 ])
 
 
+# The MediaTek MT8110 controller on the Kindle PW5 rejects HCI_Switch_Role, so
+# whenever the peer pages first the host stays peripheral. Two consequences:
+#
+#   1. Requesting authentication from the peripheral side goes unanswered by
+#      some peers, so the 5 s cap was burning time on a command that never got
+#      a reply. Encryption alone restores a bonded link via the stored key.
+#   2. In HID over BR/EDR the Device normally opens both L2CAP channels toward
+#      the Host. Paging outward from the peripheral side races with that, and
+#      raising immediately after our own attempts fail tears the link down
+#      before the peer gets a chance.
+CLASSIC_AUTH_TIMEOUT = 20.0
+CLASSIC_PEER_CHANNEL_WAIT = 15.0
+
+
 class ClassicHIDChannels:
     """HID L2CAP channel pair (control 0x11, interrupt 0x13) for one connection."""
 
@@ -183,24 +197,46 @@ class ClassicMixin:
         if old is not None:
             await self._teardown_session(old)
 
-        if connection.role != Role.CENTRAL:
+        is_peripheral = connection.role != Role.CENTRAL
+
+        if is_peripheral:
             log.info("[Classic] Requesting role switch to central...")
             try:
                 await asyncio.wait_for(connection.switch_role(Role.CENTRAL), timeout=5.0)
                 log.success("[Classic] Role switch complete, now central")
+                is_peripheral = False
             except Exception as e:
                 log.warning(f"[Classic] Role switch failed: {e!r}")
 
         if not connection.is_encrypted:
             log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
             try:
-                await asyncio.wait_for(connection.authenticate(), timeout=5.0)
-                await asyncio.wait_for(connection.encrypt(enable=True), timeout=5.0)
+                # As peripheral the central drives authentication; asking for
+                # it ourselves is what times out. Go straight to encryption,
+                # which the peer answers using the stored link key.
+                if not is_peripheral:
+                    await asyncio.wait_for(
+                        connection.authenticate(), timeout=CLASSIC_AUTH_TIMEOUT)
+                await asyncio.wait_for(
+                    connection.encrypt(enable=True), timeout=CLASSIC_AUTH_TIMEOUT)
                 log.success("[Classic] Bonding restored")
             except Exception as e:
                 log.warning(f"[Classic] Bonding restore failed: {e!r}")
 
         channels = session.channels
+
+        # The peer paged us, so it is the HID Device and will normally open
+        # both channels itself. Give it that window before paging outward.
+        if is_peripheral and not channels.intr_channel:
+            log.info("[Classic] Peripheral role: waiting for peer to open HID channels...")
+            loop = asyncio.get_event_loop()
+            deadline = loop.time() + CLASSIC_PEER_CHANNEL_WAIT
+            while loop.time() < deadline and not channels.intr_channel:
+                await asyncio.sleep(0.25)
+            if channels.intr_channel:
+                log.success("[Classic] Peer opened HID channels")
+            else:
+                log.info("[Classic] Peer did not open channels, paging outward")
 
         if not channels.ctrl_channel:
             log.info("[Classic] Connecting to HID control channel...")
