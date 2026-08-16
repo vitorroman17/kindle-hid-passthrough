@@ -134,8 +134,6 @@ class BLEMixin:
 
         await self._ble_restore_or_pair(session)
 
-        await self._ble_apply_connection_parameters(session)
-
         if match_kind == 'name' and matched_dev is not None:
             self._save_rotated_address(matched_dev, session.address)
             self._parse_devices()
@@ -143,33 +141,6 @@ class BLEMixin:
         self._load_cached_descriptor(session)
         await self._setup_ble_hid(session)
         log.success(f"[BLE] {self._format_device(session.address)} receiving HID reports")
-
-    async def _ble_apply_connection_parameters(self, session):
-        """Impose HID-friendly connection parameters from the central side.
-
-        Some peripherals request preferred parameters and, when the central
-        never acts on them, stay on defaults whose supervision timeout is too
-        short to survive. Observed on a HREBOS BLE mouse: the link came up
-        fully, delivered reports, and then dropped with reason=8 at a constant
-        3.1 s, every cycle. A constant interval points at a timer expiring
-        rather than radio trouble.
-
-        Units are per the HCI spec: intervals in 1.25 ms, timeout in 10 ms.
-        """
-        try:
-            await asyncio.wait_for(
-                self.device.update_connection_parameters(
-                    session.connection,
-                    connection_interval_min=12,   # 15 ms
-                    connection_interval_max=24,   # 30 ms
-                    max_latency=4,
-                    supervision_timeout=500,      # 5000 ms
-                ),
-                timeout=5.0,
-            )
-            log.success("[BLE] Connection parameters updated")
-        except Exception as e:
-            log.warning(f"[BLE] Connection parameter update failed: {e!r}")
 
     async def _ble_initiate(self, window: float, peer: Address = None):
         """Legacy create-connection to `peer`, or to the accept list when
@@ -210,7 +181,14 @@ class BLEMixin:
                     connection_interval_min=12,
                     connection_interval_max=24,
                     max_latency=0,
-                    supervision_timeout=72,
+                    # 72 (720 ms) tolera apenas ~32 eventos de conexao
+                    # perdidos a 22,5 ms de intervalo. Medido seis vezes
+                    # do lado do periferico, com dois dispositivos e dois
+                    # radios distintos. 500 (5000 ms) da ~220 eventos de
+                    # folga. Vai no proprio Create_Connection, entao nao
+                    # ha comando em tempo de execucao para o controlador
+                    # rejeitar com CONTROLLER_BUSY_ERROR.
+                    supervision_timeout=500,
                     min_ce_length=0,
                     max_ce_length=0,
                 ), check_result=True)
