@@ -180,8 +180,8 @@ class BLEMixin:
                     own_address_type=OwnAddressType.PUBLIC,
                     connection_interval_min=12,
                     connection_interval_max=24,
-                    max_latency=0,
-                    supervision_timeout=72,
+                    max_latency=4,
+                    supervision_timeout=500,
                     min_ce_length=0,
                     max_ce_length=0,
                 ), check_result=True)
