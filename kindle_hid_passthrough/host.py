@@ -45,6 +45,8 @@ class DeviceSession:
         self.uhid_device = None
         self.is_pointer = False
         self.last_report = None
+        self.forwarded_report = False
+        self.dropped_report = False
         self.setup_task = None
         self.closed = False
         self.teardown_done = asyncio.Event()
@@ -492,11 +494,20 @@ class HIDHost(ClassicMixin, BLEMixin):
         if data != session.last_report:
             log.debug(f"Report: {data.hex()}")
             session.last_report = data
+        proto = session.protocol.value.upper()
         if session.uhid_device:
+            if not session.forwarded_report:
+                session.forwarded_report = True
+                log.info(f"[{proto}] first report forwarded to UHID from "
+                         f"{session.address}: {data.hex()}")
             try:
                 session.uhid_device.send_input(data)
             except Exception as e:
                 log.warning(f"UHID send failed: {e}")
+        elif not session.dropped_report:
+            session.dropped_report = True
+            log.warning(f"[{proto}] {session.address} sent a report before its UHID node "
+                        f"existed; that input is dropped")
 
     def _load_cached_descriptor(self, session: DeviceSession) -> bool:
         """Load report descriptor and device name from cache. Returns True if found."""
