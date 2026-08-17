@@ -72,7 +72,7 @@ class ClassicHIDChannels:
 
     def set_report_protocol(self):
         """Send HIDP SET_PROTOCOL(Report) on the control channel."""
-        self.ctrl_channel.write(
+        self.ctrl_channel.send_pdu(
             bytes(SetProtocolMessage(protocol_mode=Message.ProtocolMode.REPORT_PROTOCOL)))
 
     async def disconnect(self):
