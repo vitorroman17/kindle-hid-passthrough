@@ -1,0 +1,21 @@
+{
+  "manifest_version": 1,
+  "id": "kindle-hid-passthrough",
+  "name": "Kindle HID Passthrough",
+  "description": "Releases of Kindle HID Passthrough, a userspace Bluetooth HID host for Kindle.",
+  "packages": {
+    "kindle-hid-passthrough": {
+      "name": "Kindle HID Passthrough",
+      "author": "Lucas Zampieri",
+      "description": "Userspace Bluetooth HID host. Pairs gamepads, keyboards and remotes and passes their input straight to Linux via UHID, with a touchscreen manager app and a KOReader plugin.",
+      "artifacts": [
+        {
+          "url": "https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest/download/kindle-hid-passthrough.kpkg",
+          "version": [3, 14, 0],
+          "dependencies": [],
+          "supported_platforms": ["kindlehf", "kindlepw2"]
+        }
+      ]
+    }
+  }
+}

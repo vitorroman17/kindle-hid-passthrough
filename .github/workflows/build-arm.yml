@@ -176,6 +176,12 @@ jobs:
           fi
           echo "All required files present."
 
+      - name: Create KPM package
+        run: |
+          cp kpm/manifest.json kpm/install.sh kpm/uninstall.sh output/
+          tar -czf "kindle-hid-passthrough.kpkg" -C output .
+          ls -lh kindle-hid-passthrough.kpkg
+
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
@@ -186,7 +192,9 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v3
         with:
-          files: kindle-hid-passthrough-armv7.tar.gz
+          files: |
+            kindle-hid-passthrough-armv7.tar.gz
+            kindle-hid-passthrough.kpkg
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -197,7 +205,9 @@ jobs:
         with:
           tag_name: dev-${{ steps.stamp.outputs.sha }}
           name: Dev build ${{ steps.stamp.outputs.sha }}
-          files: kindle-hid-passthrough-armv7.tar.gz
+          files: |
+            kindle-hid-passthrough-armv7.tar.gz
+            kindle-hid-passthrough.kpkg
           prerelease: true
           make_latest: "false"
           generate_release_notes: true

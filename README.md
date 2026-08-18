@@ -58,6 +58,17 @@ Community walkthrough by [@jencaps89](https://www.tiktok.com/@jencaps89) showing
 
 Install directly from [KindleForge](https://github.com/KindleTweaks/KindleForge) — search for "Kindle HID Passthrough" in the on-device app store.
 
+### KPM
+
+If you have [KPM](https://kindlemodding.org/kindle-dev/kpm/) installed, add this repository once and install:
+
+```bash
+kpm add-repo https://raw.githubusercontent.com/zampierilucas/kindle-hid-passthrough/main/kpm/repo.json
+kpm install kindle-hid-passthrough
+```
+
+`kpm upgrade` picks up later releases and keeps your `config.ini`, paired devices and pairing keys. `kpm uninstall kindle-hid-passthrough` removes everything, including the udev rules, the upstart job, BTManager and Button Mapper.
+
 ### Manual install
 
 1. Download the latest release from [GitHub Releases](https://github.com/zampierilucas/kindle-hid-passthrough/releases) and unpack it somewhere other than the install directory:
