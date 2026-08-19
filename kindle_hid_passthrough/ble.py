@@ -180,7 +180,17 @@ class BLEMixin:
                     own_address_type=OwnAddressType.PUBLIC,
                     connection_interval_min=12,
                     connection_interval_max=24,
-                    max_latency=4,
+                    max_latency=0,
+                    # supervision_timeout=72 (720 ms) tolerates only ~32 missed
+                    # connection events at the 22.5 ms interval. Measured from
+                    # the peripheral side (Bumble virtual mouse, separate radio)
+                    # six times: always interval=22.5 latency=0 timeout=720.0,
+                    # dropping at a constant 3.06-3.12 s. 500 (5000 ms) gives
+                    # ~220 events of slack. Set here in the connection request
+                    # to avoid HCI_LE_Connection_Update, which the MT8110
+                    # rejects with CONTROLLER_BUSY_ERROR when issued shortly
+                    # after link-up. max_latency left at 0: raising it causes
+                    # visible cursor stutter on pointer devices. Refs #179.
                     supervision_timeout=500,
                     min_ce_length=0,
                     max_ce_length=0,
