@@ -179,6 +179,7 @@ installUdevRules()
 installUpstart()
 {
   echo " -> Installing upstart service"
+  rm -f "$INSTALL_DIR/boot_attempts"
   /usr/sbin/mntroot rw
   cp "$SRC_DIR/assets/hid-passthrough.upstart" /etc/upstart/hid-passthrough.conf
   /usr/sbin/mntroot ro

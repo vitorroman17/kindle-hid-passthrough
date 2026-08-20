@@ -17,6 +17,7 @@ import argparse
 import asyncio
 import os
 import sys
+import threading
 
 # Add current directory to path for imports
 sys.path.insert(0, '/mnt/us/kindle_hid_passthrough')
@@ -158,6 +159,13 @@ def _close_inherited_sockets():
             pass
 
 
+def _clear_boot_attempts():
+    try:
+        os.unlink(os.path.join(config.base_path, 'boot_attempts'))
+    except OSError:
+        pass
+
+
 def main():
     _close_inherited_sockets()
 
@@ -178,6 +186,11 @@ def main():
                         help='Print a read-only diagnostics dump for bug reports')
 
     args = parser.parse_args()
+
+    if args.daemon:
+        timer = threading.Timer(120, _clear_boot_attempts)
+        timer.daemon = True
+        timer.start()
 
     if args.diagnostics:
         from diagnostics import run_diagnostics
