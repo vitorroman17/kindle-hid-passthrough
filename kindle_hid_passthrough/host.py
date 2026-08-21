@@ -203,45 +203,42 @@ class HIDHost(ClassicMixin, BLEMixin):
             )
             log.info(f"Classic enabled: CoD 0x{class_of_device:06X}")
 
-            try:
-                from bumble.a2dp import (
-                    A2DP_SBC_CODEC_TYPE,
-                    SbcMediaCodecInformation,
-                    make_audio_source_service_sdp_records,
-                )
-                from bumble.avdtp import (
-                    AVDTP_AUDIO_MEDIA_TYPE,
-                    Listener,
-                    MediaCodecCapabilities,
-                )
+            from bumble.a2dp import (
+                A2DP_SBC_CODEC_TYPE,
+                SbcMediaCodecInformation,
+                make_audio_source_service_sdp_records,
+            )
+            from bumble.avdtp import (
+                AVDTP_AUDIO_MEDIA_TYPE,
+                Listener,
+                MediaCodecCapabilities,
+            )
 
-                # A2DP Source setup
-                self.a2dp_listener = Listener.for_device(device=self.device)
-                
-                # Setup SBC capabilities
-                codec_caps = MediaCodecCapabilities(
-                    media_type=AVDTP_AUDIO_MEDIA_TYPE,
-                    media_codec_type=A2DP_SBC_CODEC_TYPE,
-                    media_codec_information=SbcMediaCodecInformation(
-                        sampling_frequency=SbcMediaCodecInformation.SamplingFrequency.SF_44100,
-                        channel_mode=SbcMediaCodecInformation.ChannelMode.JOINT_STEREO,
-                        block_length=SbcMediaCodecInformation.BlockLength.BL_16,
-                        subbands=SbcMediaCodecInformation.Subbands.S_8,
-                        allocation_method=SbcMediaCodecInformation.AllocationMethod.LOUDNESS,
-                        minimum_bitpool_value=2,
-                        maximum_bitpool_value=53,
-                    ),
-                )
-                
-                # We will just add the capabilities to the listener later, 
-                # or when a connection arrives. For now, just register SDP.
-                handle = 0x00010002
-                self.device.sdp_service_records.update({
-                    handle: make_audio_source_service_sdp_records(service_record_handle=handle)
-                })
-                log.info("A2DP Source SDP records configured. AVDTP Listener active.")
-            except Exception as e:
-                log.warning(f"Failed to setup A2DP Source: {e}")
+            # A2DP Source setup
+            self.a2dp_listener = Listener.for_device(device=self.device)
+            
+            # Setup SBC capabilities
+            codec_caps = MediaCodecCapabilities(
+                media_type=AVDTP_AUDIO_MEDIA_TYPE,
+                media_codec_type=A2DP_SBC_CODEC_TYPE,
+                media_codec_information=SbcMediaCodecInformation(
+                    sampling_frequency=SbcMediaCodecInformation.SamplingFrequency.SF_44100,
+                    channel_mode=SbcMediaCodecInformation.ChannelMode.JOINT_STEREO,
+                    block_length=SbcMediaCodecInformation.BlockLength.BL_16,
+                    subbands=SbcMediaCodecInformation.Subbands.S_8,
+                    allocation_method=SbcMediaCodecInformation.AllocationMethod.LOUDNESS,
+                    minimum_bitpool_value=2,
+                    maximum_bitpool_value=53,
+                ),
+            )
+            
+            # We will just add the capabilities to the listener later, 
+            # or when a connection arrives. For now, just register SDP.
+            handle = 0x00010002
+            self.device.sdp_service_records.update({
+                handle: make_audio_source_service_sdp_records(service_record_handle=handle)
+            })
+            log.info("A2DP Source SDP records configured. AVDTP Listener active.")
 
             local_name_bytes = config.device_name.encode('utf-8') + b'\x00'
             await self.device.host.send_command(
