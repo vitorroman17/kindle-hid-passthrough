@@ -1,0 +1,42 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "http",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/enum.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "enum",
+      "reason": "import",
+      "source_ref_line": 1
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.05418708499999525,
+      null,
+      null,
+      4,
+      {
+        "1": 62,
+        "3": 8,
+        "4": 10,
+        "5": 2,
+        "14": 1,
+        "66": 1
+      }
+    ]
+  ]
+}

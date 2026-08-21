@@ -1,0 +1,325 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "http.server",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/copy.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "copy",
+      "reason": "import",
+      "source_ref_line": 90
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/datetime.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "datetime",
+      "reason": "import",
+      "source_ref_line": 91
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 92
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/utils.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.utils",
+      "reason": "import",
+      "source_ref_line": 92
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/html",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "html",
+      "reason": "import",
+      "source_ref_line": 93
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/http",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "http",
+      "reason": "import path parent",
+      "source_ref_line": 94
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/http/client.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "http.client",
+      "reason": "import",
+      "source_ref_line": 94
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 95
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 96
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/mimetypes.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "mimetypes",
+      "reason": "import",
+      "source_ref_line": 97
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 98
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 99
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/select.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "select",
+      "reason": "import",
+      "source_ref_line": 100
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/shutil.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "shutil",
+      "reason": "import",
+      "source_ref_line": 101
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 102
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socketserver.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socketserver",
+      "reason": "import",
+      "source_ref_line": 103
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 104
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 105
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib",
+      "reason": "import path parent",
+      "source_ref_line": 106
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib/parse.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib.parse",
+      "reason": "import",
+      "source_ref_line": 106
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/http",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "http",
+      "reason": "import",
+      "source_ref_line": 108
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 1,
+      "module_kind": null,
+      "module_name": "http.HTTPStatus",
+      "reason": "import fromlist",
+      "source_ref_line": 108
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 718
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 813
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 819
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 828
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 862
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "pwd",
+      "reason": "import",
+      "source_ref_line": 967
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 1054
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/base64.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "base64",
+      "reason": "import",
+      "source_ref_line": 1123
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/binascii.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "binascii",
+      "reason": "import",
+      "source_ref_line": 1123
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/subprocess.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "subprocess",
+      "reason": "import",
+      "source_ref_line": 1202
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.5199393679999957,
+      null,
+      null,
+      5,
+      {
+        "1": 758,
+        "2": 521,
+        "3": 210,
+        "4": 50,
+        "5": 36,
+        "6": 35,
+        "7": 1,
+        "8": 21,
+        "9": 6,
+        "10": 16,
+        "11": 8,
+        "12": 6,
+        "13": 5,
+        "14": 14,
+        "15": 10,
+        "20": 5,
+        "36": 5,
+        "94": 1,
+        "102": 4
+      }
+    ]
+  ]
+}

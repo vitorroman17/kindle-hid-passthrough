@@ -18,6 +18,10 @@ return {
     [83]  = "KPDot",
     [86]  = "102nd",
 
+    -- Volume Buttons (Used by Selfie Remotes)
+    [114] = "VolumeDown",
+    [115] = "VolumeUp",
+
     -- Editing / application keys
     [113] = "Mute",
     [128] = "Stop",

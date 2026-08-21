@@ -1,0 +1,116 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "re._compiler",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_sre",
+      "reason": "import",
+      "source_ref_line": 13
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re/_parser.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "re._parser",
+      "reason": "import fromlist",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import path parent",
+      "source_ref_line": 15
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re/_constants.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re._constants",
+      "reason": "import",
+      "source_ref_line": 15
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import path parent",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re/_casefix.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re._casefix",
+      "reason": "import",
+      "source_ref_line": 16
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 592
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      2.0107335430000006,
+      null,
+      null,
+      6,
+      {
+        "1": 557,
+        "2": 705,
+        "3": 196,
+        "4": 94,
+        "5": 79,
+        "6": 13,
+        "7": 12,
+        "8": 5,
+        "9": 22,
+        "10": 5,
+        "12": 1,
+        "13": 1,
+        "14": 5,
+        "15": 5,
+        "16": 6,
+        "18": 1,
+        "20": 10,
+        "25": 2,
+        "27": 5,
+        "28": 5,
+        "34": 5,
+        "35": 1,
+        "54": 1,
+        "99": 1,
+        "111": 5,
+        "131": 5
+      }
+    ]
+  ]
+}

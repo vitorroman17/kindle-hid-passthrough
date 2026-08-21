@@ -1,0 +1,127 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "email.feedparser",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 24
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import",
+      "source_ref_line": 26
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/errors.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "email.errors",
+      "reason": "import fromlist",
+      "source_ref_line": 26
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 27
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/_policybase.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email._policybase",
+      "reason": "import",
+      "source_ref_line": 27
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 28
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 1,
+      "module_kind": null,
+      "module_name": "collections.deque",
+      "reason": "import fromlist",
+      "source_ref_line": 28
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 29
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 149
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/message.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.message",
+      "reason": "import",
+      "source_ref_line": 149
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.5045167779999815,
+      null,
+      null,
+      5,
+      {
+        "1": 297,
+        "2": 204,
+        "3": 14,
+        "4": 38,
+        "5": 27,
+        "6": 12,
+        "7": 5,
+        "8": 1,
+        "9": 8,
+        "10": 5,
+        "11": 1,
+        "12": 1,
+        "15": 5,
+        "22": 1,
+        "25": 3,
+        "27": 1,
+        "103": 3,
+        "106": 1,
+        "118": 1
+      }
+    ]
+  ]
+}

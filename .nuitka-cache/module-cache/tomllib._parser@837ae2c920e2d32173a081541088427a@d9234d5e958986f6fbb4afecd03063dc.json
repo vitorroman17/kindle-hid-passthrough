@@ -1,0 +1,141 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "tomllib._parser",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/__future__.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "__future__",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import path parent",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/collections/abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections.abc",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/string.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "string",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "types",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/typing.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "typing",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tomllib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tomllib",
+      "reason": "import path parent",
+      "source_ref_line": 13
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tomllib/_re.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tomllib._re",
+      "reason": "import",
+      "source_ref_line": 13
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tomllib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tomllib",
+      "reason": "import path parent",
+      "source_ref_line": 21
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tomllib/_types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tomllib._types",
+      "reason": "import",
+      "source_ref_line": 21
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.8446601050000027,
+      null,
+      null,
+      5,
+      {
+        "1": 569,
+        "2": 256,
+        "3": 203,
+        "4": 67,
+        "5": 26,
+        "6": 23,
+        "7": 15,
+        "8": 15,
+        "9": 5,
+        "10": 9,
+        "11": 14,
+        "12": 2,
+        "13": 11,
+        "15": 5,
+        "16": 4,
+        "17": 7,
+        "18": 1,
+        "19": 1,
+        "21": 4,
+        "24": 1,
+        "26": 4,
+        "27": 1,
+        "28": 4,
+        "32": 4
+      }
+    ]
+  ]
+}

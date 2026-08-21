@@ -1,0 +1,45 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "codeop",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/__future__.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "__future__",
+      "reason": "import",
+      "source_ref_line": 35
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 36
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.11185805699994944,
+      null,
+      null,
+      4,
+      {
+        "1": 145,
+        "2": 69,
+        "3": 23,
+        "4": 6,
+        "5": 9,
+        "6": 3,
+        "7": 6,
+        "8": 1,
+        "10": 1
+      }
+    ]
+  ]
+}

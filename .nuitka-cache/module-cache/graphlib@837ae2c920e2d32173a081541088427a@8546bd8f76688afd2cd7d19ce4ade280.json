@@ -1,0 +1,39 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "graphlib",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "types",
+      "reason": "import",
+      "source_ref_line": 1
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.2523333860000321,
+      null,
+      null,
+      5,
+      {
+        "1": 273,
+        "2": 91,
+        "3": 28,
+        "4": 9,
+        "5": 26,
+        "6": 9,
+        "7": 5,
+        "8": 5,
+        "9": 5,
+        "10": 5,
+        "14": 1,
+        "15": 4
+      }
+    ]
+  ]
+}

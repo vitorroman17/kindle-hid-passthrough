@@ -1,0 +1,31 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "opcode",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_opcode.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_opcode",
+      "reason": "import",
+      "source_ref_line": 19
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.10846938999999622,
+      null,
+      null,
+      5,
+      {
+        "1": 103,
+        "2": 15,
+        "3": 17,
+        "4": 11
+      }
+    ]
+  ]
+}

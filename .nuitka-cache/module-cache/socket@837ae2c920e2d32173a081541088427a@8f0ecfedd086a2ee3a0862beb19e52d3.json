@@ -1,0 +1,125 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "socket",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_socket.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_socket",
+      "reason": "import",
+      "source_ref_line": 51
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_socket.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_socket",
+      "reason": "import",
+      "source_ref_line": 52
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 54
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 54
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 54
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/selectors.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "selectors",
+      "reason": "import",
+      "source_ref_line": 54
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/enum.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "enum",
+      "reason": "import",
+      "source_ref_line": 55
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "errno",
+      "reason": "import",
+      "source_ref_line": 58
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/array.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "array",
+      "reason": "import",
+      "source_ref_line": 550
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/array.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "array",
+      "reason": "import",
+      "source_ref_line": 562
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.6556473529999778,
+      null,
+      null,
+      4,
+      {
+        "1": 453,
+        "2": 338,
+        "3": 83,
+        "4": 53,
+        "5": 26,
+        "6": 35,
+        "7": 9,
+        "8": 4,
+        "9": 3,
+        "10": 12,
+        "11": 4,
+        "12": 4,
+        "14": 4,
+        "15": 4,
+        "19": 1,
+        "21": 3,
+        "27": 4
+      }
+    ]
+  ]
+}

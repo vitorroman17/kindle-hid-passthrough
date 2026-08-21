@@ -1,0 +1,114 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "datetime",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/math.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "math",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 13
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/operator.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "operator",
+      "reason": "import",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/_strptime.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_strptime",
+      "reason": "import",
+      "source_ref_line": 2058
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_datetime.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_datetime",
+      "reason": "import",
+      "source_ref_line": 2615
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_datetime.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_datetime",
+      "reason": "import",
+      "source_ref_line": 2635
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      3.203738947000005,
+      null,
+      null,
+      6,
+      {
+        "1": 1353,
+        "2": 1257,
+        "3": 642,
+        "4": 144,
+        "5": 71,
+        "6": 75,
+        "7": 64,
+        "8": 34,
+        "9": 48,
+        "10": 37,
+        "11": 25,
+        "12": 16,
+        "13": 23,
+        "14": 23,
+        "15": 5,
+        "16": 7,
+        "17": 5,
+        "18": 6,
+        "20": 8,
+        "21": 11,
+        "23": 5,
+        "24": 4,
+        "25": 1,
+        "28": 1,
+        "32": 1,
+        "33": 1,
+        "34": 4,
+        "35": 1,
+        "37": 1,
+        "38": 1,
+        "52": 6,
+        "55": 1,
+        "66": 5
+      }
+    ]
+  ]
+}

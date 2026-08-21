@@ -1,0 +1,122 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "traceback",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import path parent",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/collections/abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections.abc",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/linecache.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "linecache",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/textwrap.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "textwrap",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/contextlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "contextlib",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ast.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ast",
+      "reason": "import",
+      "source_ref_line": 585
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/unicodedata.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "unicodedata",
+      "reason": "import",
+      "source_ref_line": 642
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      2.2830791230000003,
+      null,
+      null,
+      5,
+      {
+        "1": 834,
+        "2": 512,
+        "3": 121,
+        "4": 67,
+        "5": 59,
+        "6": 13,
+        "7": 3,
+        "8": 6,
+        "9": 8,
+        "10": 8,
+        "11": 1,
+        "12": 10,
+        "13": 7,
+        "14": 5,
+        "15": 2,
+        "16": 9,
+        "17": 5,
+        "19": 1,
+        "25": 1,
+        "28": 6,
+        "29": 5,
+        "30": 2,
+        "31": 2
+      }
+    ]
+  ]
+}

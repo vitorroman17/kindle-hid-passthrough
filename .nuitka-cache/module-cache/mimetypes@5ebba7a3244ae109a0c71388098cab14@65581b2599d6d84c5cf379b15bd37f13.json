@@ -1,0 +1,105 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "mimetypes",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 26
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 27
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 28
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib",
+      "reason": "import path parent",
+      "source_ref_line": 29
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib/parse.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib.parse",
+      "reason": "import",
+      "source_ref_line": 29
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "_winapi",
+      "reason": "import",
+      "source_ref_line": 32
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "winreg",
+      "reason": "import",
+      "source_ref_line": 37
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 129
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.4145437680000441,
+      null,
+      null,
+      5,
+      {
+        "1": 333,
+        "2": 193,
+        "3": 82,
+        "4": 23,
+        "5": 16,
+        "6": 26,
+        "7": 13,
+        "8": 4,
+        "11": 5,
+        "12": 1,
+        "14": 1,
+        "15": 1,
+        "16": 3,
+        "25": 4,
+        "27": 1
+      }
+    ]
+  ]
+}

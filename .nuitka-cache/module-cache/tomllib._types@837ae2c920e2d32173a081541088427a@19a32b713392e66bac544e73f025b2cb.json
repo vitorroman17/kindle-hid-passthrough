@@ -1,0 +1,28 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "tomllib._types",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/typing.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "typing",
+      "reason": "import",
+      "source_ref_line": 5
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.006457673999989311,
+      null,
+      null,
+      3,
+      {
+        "3": 3
+      }
+    ]
+  ]
+}

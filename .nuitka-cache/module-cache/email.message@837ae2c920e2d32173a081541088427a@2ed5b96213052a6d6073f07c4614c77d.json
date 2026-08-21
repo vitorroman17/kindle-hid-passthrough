@@ -1,0 +1,238 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "email.message",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/binascii.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "binascii",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/quopri.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "quopri",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import",
+      "source_ref_line": 15
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/utils.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "email.utils",
+      "reason": "import fromlist",
+      "source_ref_line": 15
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/errors.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "email.errors",
+      "reason": "import fromlist",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 17
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/_policybase.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email._policybase",
+      "reason": "import",
+      "source_ref_line": 17
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/charset.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "email.charset",
+      "reason": "import fromlist",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 19
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/_encoded_words.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email._encoded_words",
+      "reason": "import",
+      "source_ref_line": 19
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 187
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/generator.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.generator",
+      "reason": "import",
+      "source_ref_line": 187
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 210
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/generator.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.generator",
+      "reason": "import",
+      "source_ref_line": 210
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 976
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/iterators.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.iterators",
+      "reason": "import",
+      "source_ref_line": 976
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 983
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/policy.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.policy",
+      "reason": "import",
+      "source_ref_line": 983
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      2.21116736099998,
+      null,
+      null,
+      5,
+      {
+        "1": 916,
+        "2": 674,
+        "3": 246,
+        "4": 105,
+        "5": 61,
+        "6": 85,
+        "7": 21,
+        "8": 16,
+        "9": 10,
+        "10": 9,
+        "11": 6,
+        "12": 9,
+        "13": 9,
+        "14": 4,
+        "15": 2,
+        "17": 4,
+        "18": 4,
+        "21": 1,
+        "22": 1,
+        "23": 3,
+        "25": 5,
+        "49": 1
+      }
+    ]
+  ]
+}

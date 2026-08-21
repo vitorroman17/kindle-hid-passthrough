@@ -1,0 +1,120 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "enum",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "builtins",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "types",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/operator.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "operator",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 377
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 735
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 1175
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      3.385332992000002,
+      null,
+      null,
+      6,
+      {
+        "1": 2490,
+        "2": 1412,
+        "3": 350,
+        "4": 193,
+        "5": 144,
+        "6": 74,
+        "7": 48,
+        "8": 78,
+        "9": 62,
+        "10": 26,
+        "11": 12,
+        "12": 2,
+        "13": 1,
+        "15": 12,
+        "16": 8,
+        "17": 7,
+        "18": 2,
+        "21": 1,
+        "23": 7,
+        "24": 6,
+        "25": 6,
+        "26": 2,
+        "27": 11,
+        "28": 1,
+        "36": 2,
+        "37": 5,
+        "38": 5,
+        "46": 4,
+        "47": 1,
+        "52": 1
+      }
+    ]
+  ]
+}

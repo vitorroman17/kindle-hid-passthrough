@@ -1,0 +1,51 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "encodings.quopri_codec",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/codecs.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "codecs",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/quopri.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "quopri",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 8
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.07842177199995604,
+      null,
+      null,
+      3,
+      {
+        "1": 109,
+        "2": 36,
+        "3": 2,
+        "5": 16,
+        "6": 5,
+        "8": 15
+      }
+    ]
+  ]
+}

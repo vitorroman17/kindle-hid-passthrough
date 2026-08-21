@@ -1,0 +1,154 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "ntpath",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 20
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 21
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/stat.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "stat",
+      "reason": "import",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/genericpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "genericpath",
+      "reason": "import",
+      "source_ref_line": 23
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/genericpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "genericpath",
+      "reason": "import",
+      "source_ref_line": 24
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "_winapi",
+      "reason": "import",
+      "source_ref_line": 47
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "nt",
+      "reason": "import",
+      "source_ref_line": 288
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 395
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 407
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "nt",
+      "reason": "import",
+      "source_ref_line": 450
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "nt",
+      "reason": "import",
+      "source_ref_line": 521
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "nt",
+      "reason": "import",
+      "source_ref_line": 535
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "nt",
+      "reason": "import",
+      "source_ref_line": 821
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.0790376220000013,
+      null,
+      null,
+      6,
+      {
+        "1": 601,
+        "2": 640,
+        "3": 247,
+        "4": 68,
+        "5": 42,
+        "6": 19,
+        "7": 15,
+        "8": 24,
+        "10": 10,
+        "11": 6,
+        "12": 6,
+        "13": 2,
+        "14": 6,
+        "15": 6,
+        "17": 6,
+        "20": 11,
+        "22": 1,
+        "24": 5,
+        "25": 5
+      }
+    ]
+  ]
+}

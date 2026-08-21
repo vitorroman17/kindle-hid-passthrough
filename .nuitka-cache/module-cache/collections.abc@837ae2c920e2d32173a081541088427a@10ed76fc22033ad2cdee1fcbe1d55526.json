@@ -1,0 +1,44 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "collections.abc",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/_collections_abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_collections_abc",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/_collections_abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_collections_abc",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/_collections_abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_collections_abc",
+      "reason": "import",
+      "source_ref_line": 3
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.0033803979999902367,
+      null,
+      null,
+      2,
+      {}
+    ]
+  ]
+}

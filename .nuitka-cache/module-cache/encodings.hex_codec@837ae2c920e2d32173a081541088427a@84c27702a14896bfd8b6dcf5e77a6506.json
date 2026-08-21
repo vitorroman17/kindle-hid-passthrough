@@ -1,0 +1,41 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "encodings.hex_codec",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/codecs.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "codecs",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/binascii.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "binascii",
+      "reason": "import",
+      "source_ref_line": 9
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.07305352199989557,
+      null,
+      null,
+      3,
+      {
+        "1": 109,
+        "2": 40,
+        "5": 12,
+        "6": 3,
+        "8": 15
+      }
+    ]
+  ]
+}

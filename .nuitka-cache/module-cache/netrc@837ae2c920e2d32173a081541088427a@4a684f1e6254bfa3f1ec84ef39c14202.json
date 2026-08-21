@@ -1,0 +1,76 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "netrc",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/shlex.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "shlex",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/stat.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "stat",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 70
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "pwd",
+      "reason": "import",
+      "source_ref_line": 148
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.2938951520000046,
+      null,
+      null,
+      5,
+      {
+        "1": 322,
+        "2": 132,
+        "3": 25,
+        "4": 2,
+        "5": 26,
+        "6": 5,
+        "7": 18,
+        "8": 2,
+        "9": 4,
+        "10": 3,
+        "11": 4,
+        "21": 1,
+        "37": 4
+      }
+    ]
+  ]
+}

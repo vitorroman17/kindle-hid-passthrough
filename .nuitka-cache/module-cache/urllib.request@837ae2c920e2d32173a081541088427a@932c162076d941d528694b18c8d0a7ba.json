@@ -1,0 +1,471 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "urllib.request",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/base64.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "base64",
+      "reason": "import",
+      "source_ref_line": 84
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/bisect.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "bisect",
+      "reason": "import",
+      "source_ref_line": 85
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import",
+      "source_ref_line": 86
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/hashlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "hashlib",
+      "reason": "import",
+      "source_ref_line": 87
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/http",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "http",
+      "reason": "import path parent",
+      "source_ref_line": 88
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/http/client.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "http.client",
+      "reason": "import",
+      "source_ref_line": 88
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 89
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 90
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 91
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 92
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 93
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/string.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "string",
+      "reason": "import",
+      "source_ref_line": 94
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 95
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 96
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tempfile.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tempfile",
+      "reason": "import",
+      "source_ref_line": 97
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/contextlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "contextlib",
+      "reason": "import",
+      "source_ref_line": 98
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 99
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib",
+      "reason": "import path parent",
+      "source_ref_line": 102
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib/error.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib.error",
+      "reason": "import",
+      "source_ref_line": 102
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib",
+      "reason": "import path parent",
+      "source_ref_line": 103
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib/parse.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib.parse",
+      "reason": "import",
+      "source_ref_line": 103
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib",
+      "reason": "import path parent",
+      "source_ref_line": 108
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/urllib/response.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "urllib.response",
+      "reason": "import",
+      "source_ref_line": 108
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ssl.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ssl",
+      "reason": "import",
+      "source_ref_line": 112
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 192
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/http",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "http",
+      "reason": "import path parent",
+      "source_ref_line": 1400
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/http/cookiejar.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "http.cookiejar",
+      "reason": "import",
+      "source_ref_line": 1400
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 1499
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/utils.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.utils",
+      "reason": "import",
+      "source_ref_line": 1499
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/mimetypes.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "mimetypes",
+      "reason": "import",
+      "source_ref_line": 1500
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ftplib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ftplib",
+      "reason": "import",
+      "source_ref_line": 1533
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/mimetypes.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "mimetypes",
+      "reason": "import",
+      "source_ref_line": 1534
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 1674
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 1836
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 2014
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/utils.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.utils",
+      "reason": "import",
+      "source_ref_line": 2014
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/mimetypes.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "mimetypes",
+      "reason": "import",
+      "source_ref_line": 2015
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/mimetypes.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "mimetypes",
+      "reason": "import",
+      "source_ref_line": 2048
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ftplib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ftplib",
+      "reason": "import",
+      "source_ref_line": 2060
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 2139
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/getpass.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "getpass",
+      "reason": "import",
+      "source_ref_line": 2352
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ftplib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ftplib",
+      "reason": "import",
+      "source_ref_line": 2389
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ftplib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ftplib",
+      "reason": "import",
+      "source_ref_line": 2424
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ftplib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ftplib",
+      "reason": "import",
+      "source_ref_line": 2433
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/fnmatch.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "fnmatch",
+      "reason": "import",
+      "source_ref_line": 2584
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ipaddress.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ipaddress",
+      "reason": "import",
+      "source_ref_line": 2585
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/fnmatch.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "fnmatch",
+      "reason": "import",
+      "source_ref_line": 2645
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      8.234217981999961,
+      null,
+      null,
+      6,
+      {
+        "1": 2635,
+        "2": 1924,
+        "3": 1095,
+        "4": 184,
+        "5": 192,
+        "6": 112,
+        "7": 81,
+        "8": 149,
+        "9": 52,
+        "10": 63,
+        "11": 19,
+        "12": 25,
+        "13": 21,
+        "14": 24,
+        "15": 28,
+        "16": 6,
+        "17": 15,
+        "18": 6,
+        "19": 6,
+        "20": 3,
+        "21": 14,
+        "22": 14,
+        "24": 2,
+        "26": 5,
+        "28": 4,
+        "29": 1,
+        "30": 1,
+        "31": 1,
+        "33": 6,
+        "42": 5
+      }
+    ]
+  ]
+}

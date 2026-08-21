@@ -1,0 +1,93 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "rlcompleter",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "atexit",
+      "reason": "import",
+      "source_ref_line": 32
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "builtins",
+      "reason": "import",
+      "source_ref_line": 33
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/inspect.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "inspect",
+      "reason": "import",
+      "source_ref_line": 34
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/keyword.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "keyword",
+      "reason": "import",
+      "source_ref_line": 35
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 36
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "__main__",
+      "reason": "import",
+      "source_ref_line": 37
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/readline.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "readline",
+      "reason": "import",
+      "source_ref_line": 210
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.24087486600001284,
+      null,
+      null,
+      6,
+      {
+        "1": 227,
+        "2": 145,
+        "3": 19,
+        "4": 20,
+        "5": 7,
+        "6": 11,
+        "7": 3,
+        "8": 1,
+        "9": 5,
+        "15": 5,
+        "16": 1,
+        "18": 5
+      }
+    ]
+  ]
+}

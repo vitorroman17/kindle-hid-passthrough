@@ -1,0 +1,101 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "getpass",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/contextlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "contextlib",
+      "reason": "import",
+      "source_ref_line": 17
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 19
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 20
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 21
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "pwd",
+      "reason": "import",
+      "source_ref_line": 168
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/termios.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "termios",
+      "reason": "import",
+      "source_ref_line": 173
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "msvcrt",
+      "reason": "import",
+      "source_ref_line": 179
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.18426366100004543,
+      null,
+      null,
+      5,
+      {
+        "1": 142,
+        "2": 136,
+        "3": 24,
+        "4": 18,
+        "5": 25,
+        "6": 2,
+        "7": 10,
+        "8": 4,
+        "9": 4,
+        "10": 6,
+        "12": 1
+      }
+    ]
+  ]
+}

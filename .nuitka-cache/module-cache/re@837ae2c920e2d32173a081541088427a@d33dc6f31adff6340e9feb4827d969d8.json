@@ -1,0 +1,129 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "re",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/enum.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "enum",
+      "reason": "import",
+      "source_ref_line": 124
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 125
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re/_compiler.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "re._compiler",
+      "reason": "import fromlist",
+      "source_ref_line": 125
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re/_parser.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "re._parser",
+      "reason": "import fromlist",
+      "source_ref_line": 125
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 126
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 236
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 288
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/copyreg.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "copyreg",
+      "reason": "import",
+      "source_ref_line": 327
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import path parent",
+      "source_ref_line": 339
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re/_constants.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re._constants",
+      "reason": "import",
+      "source_ref_line": 339
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.172140233999997,
+      null,
+      null,
+      4,
+      {
+        "1": 159,
+        "2": 75,
+        "3": 33,
+        "4": 16,
+        "5": 5,
+        "6": 1,
+        "8": 1,
+        "9": 6,
+        "10": 2,
+        "12": 5,
+        "13": 4,
+        "15": 1
+      }
+    ]
+  ]
+}

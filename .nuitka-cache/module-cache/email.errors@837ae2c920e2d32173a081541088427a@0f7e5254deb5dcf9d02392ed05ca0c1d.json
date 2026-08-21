@@ -1,0 +1,26 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "email.errors",
+  "modules_used": [],
+  "timing_infos": [
+    [
+      1,
+      0.6564763360000256,
+      null,
+      null,
+      5,
+      {
+        "1": 838,
+        "2": 287,
+        "3": 3,
+        "5": 120,
+        "6": 10,
+        "7": 8,
+        "8": 122,
+        "9": 3,
+        "10": 7
+      }
+    ]
+  ]
+}

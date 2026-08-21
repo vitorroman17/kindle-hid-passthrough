@@ -1,0 +1,90 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "tomllib._re",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/__future__.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "__future__",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/datetime.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "datetime",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/typing.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "typing",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tomllib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tomllib",
+      "reason": "import path parent",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tomllib/_types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tomllib._types",
+      "reason": "import",
+      "source_ref_line": 12
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.07264331199996832,
+      null,
+      null,
+      3,
+      {
+        "1": 13,
+        "2": 24,
+        "3": 3,
+        "4": 10,
+        "5": 4,
+        "6": 3,
+        "8": 1,
+        "11": 1,
+        "12": 5
+      }
+    ]
+  ]
+}

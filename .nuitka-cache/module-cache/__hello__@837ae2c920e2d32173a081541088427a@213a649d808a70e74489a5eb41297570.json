@@ -1,0 +1,20 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "__hello__",
+  "modules_used": [],
+  "timing_infos": [
+    [
+      1,
+      0.02602954199994656,
+      null,
+      null,
+      4,
+      {
+        "1": 84,
+        "3": 5,
+        "4": 1
+      }
+    ]
+  ]
+}
