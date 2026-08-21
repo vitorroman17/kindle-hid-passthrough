@@ -211,6 +211,11 @@ class ClassicMixin:
 
         channels = session.channels
 
+        if session.protocol == Protocol.CLASSIC_AUDIO:
+            log.info("[Classic] Audio device connected. Letting AVDTP listener take over.")
+            log.success(f"[Classic] {self._format_device(session.address)} connected (Audio)")
+            return
+
         if is_peripheral and not channels.intr_channel:
             log.info("[Classic] Waiting for the peer to open the HID channels...")
             loop = asyncio.get_running_loop()

@@ -79,6 +79,7 @@ class Protocol(Enum):
     """Supported Bluetooth protocols."""
     BLE = "ble"
     CLASSIC = "classic"
+    CLASSIC_AUDIO = "classic_audio"
 
 
 class Config:
