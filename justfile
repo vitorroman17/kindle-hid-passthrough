@@ -312,3 +312,10 @@ uninstall:
     @echo "Remounting read-only..."
     -ssh {{host}} "/usr/sbin/mntroot ro"
     @echo "Uninstall complete. Code left at {{remote_dir}}/"
+
+# --- Local ARM build ---
+
+# Build the ARMv7 binary locally, in the same image CI uses
+# (--out extracts main.dist, --full builds the complete CI artifact)
+build *args:
+    bash {{src_dir}}/scripts/build-local.sh {{args}}

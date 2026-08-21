@@ -7,7 +7,7 @@
 # completely bypassing the Kindle's ancient glibc 2.20 / dynamic linker.
 # No staticx needed — just a directory with everything.
 
-FROM arm32v7/python:3.11-slim-bookworm
+FROM arm32v7/python:3.11-slim-bookworm AS builder-env
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -73,16 +73,29 @@ RUN printf '%s\n' \
     gcc -shared -fPIC -o /build/libsyscall_wrapper.so /build/syscall_wrapper.c && \
     strip /build/libsyscall_wrapper.so
 
+# --- Build stage -------------------------------------------------------------
+# Tudo acima e o ambiente de build reutilizavel (deps, bumble corrigido, flags
+# de compilador, shim de syscall). `docker build --target builder-env` para
+# nesse ponto: e o que scripts/build-local.sh usa para iterar contra a arvore
+# de fontes montada por bind, sem rebuild de imagem. O CI constroi o estagio
+# final (padrao) abaixo, sem mudanca de comportamento.
+FROM builder-env AS build
+
+# Sem --include-package=kindle_hid_passthrough: main.py importa os irmaos de
+# forma plana via injecao de sys.path (ver kindle_hid_passthrough/__init__.py),
+# entao o Nuitka ja os compila como modulos top-level. Incluir o pacote fazia
+# os 25 modulos serem compilados uma segunda vez sob o nome pontilhado --
+# tempo de build e bytes no binario que nada importa em runtime.
 # Build with Nuitka in standalone mode (creates directory with all deps)
 RUN --mount=type=cache,target=/nuitka-cache \
     --mount=type=cache,target=/ccache \
     python3 -m nuitka \
     --mode=standalone \
     --jobs=$(nproc) \
+    --assume-yes-for-downloads \
     --lto=yes \
     --show-progress \
     --output-dir=/build/nuitka-out \
-    --include-package=kindle_hid_passthrough \
     --include-data-file=kindle_hid_passthrough/config.ini=kindle_hid_passthrough/config.ini \
     --include-data-file=kindle_hid_passthrough/BUILD_SHA=kindle_hid_passthrough/BUILD_SHA \
     --include-data-dir=kindle_hid_passthrough/modules=kindle_hid_passthrough/modules \
