@@ -149,6 +149,23 @@ class Config:
         protocol_str = self._get('protocol', 'type', 'ble').lower()
         self.protocol = self._parse_protocol(protocol_str)
 
+        # Classic BR/EDR role handling on an inbound connection.
+        # See ClassicMixin._setup_classic_session for the measurements.
+        self.classic_role_policy = self._parse_role_policy(
+            self._get('classic', 'role_policy', 'keep'))
+
+    CLASSIC_ROLE_POLICIES = ('keep', 'switch', 'switch_no_auth')
+
+    def _parse_role_policy(self, value: str) -> str:
+        """Validate the Classic role policy, falling back to the safe default."""
+        policy = (value or '').strip().lower()
+        if policy in self.CLASSIC_ROLE_POLICIES:
+            return policy
+        logging.getLogger(__name__).warning(
+            "Unknown classic role_policy %r, using 'keep' (valid: %s)",
+            value, ', '.join(self.CLASSIC_ROLE_POLICIES))
+        return 'keep'
+
     def _detect_transport(self) -> str:
         """Auto-detect HCI transport from Kindle hardware.
 

@@ -14,7 +14,7 @@ from bumble.l2cap import ClassicChannelSpec
 from bumble.sdp import Client as SDPClient
 
 from config import Protocol, config, normalize_addr, clean_device_name
-from logging_utils import log
+from logging_utils import errstr, log
 
 FALLBACK_HID_DESCRIPTOR = bytes([
     0x05, 0x01, 0x09, 0x05, 0xa1, 0x01, 0x85, 0x01,
@@ -30,8 +30,11 @@ FALLBACK_HID_DESCRIPTOR = bytes([
 ])
 
 
-# The MediaTek MT8110 controller on the Kindle PW5 rejects HCI_Switch_Role, so
-# whenever the peer pages first the host stays peripheral. Two consequences:
+# When the peer pages first the host stays peripheral, and by default we
+# leave it there: the MediaTek MT8110 on the Kindle PW5 rejects
+# HCI_Switch_Role, and on firmwares that accept it the switch is precisely
+# on firmwares that accept it the switch is precisely what breaks the link
+# (see _setup_classic_session). Two consequences:
 #
 #   1. Requesting authentication from the peripheral side goes unanswered by
 #      some peers, so the 5 s cap was burning time on a command that never got
@@ -192,69 +195,119 @@ class ClassicMixin:
     async def _setup_classic_session(self, session, old=None):
         """Authenticate, open HID channels, and finalize one Classic session."""
         connection = session.connection
+        loop = asyncio.get_event_loop()
+        t_start = loop.time()
+
+        def elapsed(since=None):
+            """Milliseconds since setup began, or since a given loop timestamp."""
+            return int((loop.time() - (t_start if since is None else since)) * 1000)
+
         log.info(f"[Classic] Device connected: {self._format_device(session.raw_address)}")
 
         if old is not None:
             await self._teardown_session(old)
 
         is_peripheral = connection.role != Role.CENTRAL
+        policy = config.classic_role_policy
 
-        if is_peripheral:
-            log.info("[Classic] Requesting role switch to central...")
+        def role_name():
+            return 'PERIPHERAL' if is_peripheral else 'CENTRAL'
+
+        log.info(
+            f"[Classic] setup: role={role_name()} policy={policy} "
+            f"encrypted={connection.is_encrypted} "
+            f"authenticated={getattr(connection, 'authenticated', None)} "
+            f"handle={getattr(connection, 'handle', None)}")
+
+        # BR/EDR role policy, selectable so the alternatives can be compared on
+        # a single build. Measured on kernel 5.15.41-lab126 against a Keychron
+        # K2: of seven inbound sessions, all five where HCI_Switch_Role
+        # succeeded ended with authenticate() raising HCI_Error, the HID
+        # control channel raising L2capError, and the peer terminating the link
+        # with reason 0x13 (Remote User Terminated). Both sessions where the
+        # switch was rejected came up and stayed up, one of them with the bond
+        # restore failing too, which did not matter: as peripheral the central
+        # drives security and opens the HID channels. Hence 'keep' by default.
+        #
+        #   keep            leave the role the peer assigned (default)
+        #   switch          request central, then authenticate + encrypt
+        #   switch_no_auth  request central, but never call authenticate()
+        if is_peripheral and policy in ('switch', 'switch_no_auth'):
+            t_role = loop.time()
+            log.info("[Classic] role: requesting switch to CENTRAL...")
             try:
                 await asyncio.wait_for(connection.switch_role(Role.CENTRAL), timeout=5.0)
-                log.success("[Classic] Role switch complete, now central")
                 is_peripheral = False
+                log.success(f"[Classic] role: switch accepted in {elapsed(t_role)}ms, now CENTRAL")
             except Exception as e:
-                log.warning(f"[Classic] Role switch failed: {e!r}")
+                log.warning(f"[Classic] role: switch rejected in {elapsed(t_role)}ms: {errstr(e)}")
+        elif is_peripheral:
+            log.info("[Classic] role: staying PERIPHERAL (policy=keep)")
 
-        if not connection.is_encrypted:
-            log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
+        if connection.is_encrypted:
+            log.info("[Classic] security: link already encrypted, nothing to do")
+        else:
+            # As peripheral the central drives authentication; asking for it
+            # ourselves is what times out. Go straight to encryption, which the
+            # peer answers using the stored link key.
+            want_auth = not is_peripheral and policy != 'switch_no_auth'
+            log.info(f"[Classic] security: restoring bond (authenticate={want_auth})...")
+            t_sec = loop.time()
             try:
-                # As peripheral the central drives authentication; asking for
-                # it ourselves is what times out. Go straight to encryption,
-                # which the peer answers using the stored link key.
-                if not is_peripheral:
+                if want_auth:
                     await asyncio.wait_for(
                         connection.authenticate(), timeout=CLASSIC_AUTH_TIMEOUT)
+                    log.info(f"[Classic] security: authenticate() ok in {elapsed(t_sec)}ms")
+                t_enc = loop.time()
                 await asyncio.wait_for(
                     connection.encrypt(enable=True), timeout=CLASSIC_AUTH_TIMEOUT)
-                log.success("[Classic] Bonding restored")
+                log.success(
+                    f"[Classic] security: encrypted in {elapsed(t_enc)}ms "
+                    f"(bond restore took {elapsed(t_sec)}ms)")
             except Exception as e:
-                log.warning(f"[Classic] Bonding restore failed: {e!r}")
+                log.warning(
+                    f"[Classic] security: bond restore failed after {elapsed(t_sec)}ms: {errstr(e)}")
 
         channels = session.channels
 
         # The peer paged us, so it is the HID Device and will normally open
         # both channels itself. Give it that window before paging outward.
         if is_peripheral and not channels.intr_channel:
-            log.info("[Classic] Peripheral role: waiting for peer to open HID channels...")
-            loop = asyncio.get_event_loop()
+            log.info("[Classic] channels: peripheral role, waiting for the peer to open them...")
+            t_ch = loop.time()
             deadline = loop.time() + CLASSIC_PEER_CHANNEL_WAIT
             while loop.time() < deadline and not channels.intr_channel:
                 await asyncio.sleep(0.25)
             if channels.intr_channel:
-                log.success("[Classic] Peer opened HID channels")
+                log.success(f"[Classic] channels: peer opened them in {elapsed(t_ch)}ms")
             else:
-                log.info("[Classic] Peer did not open channels, paging outward")
+                log.info(
+                    f"[Classic] channels: peer opened nothing in {elapsed(t_ch)}ms, paging outward")
 
         if not channels.ctrl_channel:
-            log.info("[Classic] Connecting to HID control channel...")
+            log.info("[Classic] channels: connecting HID control...")
+            t_ctrl = loop.time()
             try:
                 await asyncio.wait_for(channels.connect_control_channel(), timeout=5.0)
-                log.success("[Classic] HID control channel connected")
+                log.success(f"[Classic] channels: HID control connected in {elapsed(t_ctrl)}ms")
             except Exception as e:
-                log.warning(f"[Classic] Control channel: {e!r}")
+                log.warning(
+                    f"[Classic] channels: HID control failed after {elapsed(t_ctrl)}ms: {errstr(e)}")
 
         if not channels.intr_channel:
-            log.info("[Classic] Connecting to HID interrupt channel...")
+            log.info("[Classic] channels: connecting HID interrupt...")
+            t_intr = loop.time()
             try:
                 await asyncio.wait_for(channels.connect_interrupt_channel(), timeout=5.0)
-                log.success("[Classic] HID interrupt channel connected")
+                log.success(f"[Classic] channels: HID interrupt connected in {elapsed(t_intr)}ms")
             except Exception as e:
-                log.warning(f"[Classic] Interrupt channel: {e!r}")
+                log.warning(
+                    f"[Classic] channels: HID interrupt failed after {elapsed(t_intr)}ms: {errstr(e)}")
 
         if not channels.intr_channel:
+            log.warning(
+                f"[Classic] RESULT FAILED in {elapsed()}ms role={role_name()} policy={policy} "
+                f"encrypted={connection.is_encrypted} reason=peer-never-opened-hid-channels")
             raise InvalidStateError("[Classic] HID channels not opened by peer")
 
         self._classic_set_report_protocol(session)
@@ -263,7 +316,11 @@ class ClassicMixin:
             await self._query_classic_sdp(session)
 
         self._finalize_classic_hid(session)
-        log.success(f"[Classic] {self._format_device(session.address)} receiving HID reports")
+        log.success(
+            f"[Classic] {self._format_device(session.address)} receiving HID reports")
+        log.success(
+            f"[Classic] RESULT OK in {elapsed()}ms role={role_name()} policy={policy} "
+            f"encrypted={connection.is_encrypted}")
 
     def _is_classic_allowed(self, addr_str: str) -> bool:
         """Check if Classic address is allowed."""
@@ -448,7 +505,7 @@ class ClassicMixin:
                 await asyncio.wait_for(connection.authenticate(), timeout=30.0)
                 log.success("[Classic] Authentication complete")
             except Exception as e:
-                log.warning(f"[Classic] Authentication: {e!r}")
+                log.warning(f"[Classic] Authentication: {errstr(e)}")
 
             log.info("[Classic] Waiting for link key...")
             try:
@@ -465,7 +522,7 @@ class ClassicMixin:
                         timeout=10.0
                     )
                 except Exception as e:
-                    log.warning(f"[Classic] Encryption: {e!r}")
+                    log.warning(f"[Classic] Encryption: {errstr(e)}")
 
             await self._query_classic_sdp(session)
 
@@ -543,14 +600,14 @@ class ClassicMixin:
             await asyncio.wait_for(channels.connect_control_channel(), timeout=5.0)
             log.success("[Classic] HID control channel connected")
         except Exception as e:
-            log.warning(f"[Classic] Control channel: {e!r}")
+            log.warning(f"[Classic] Control channel: {errstr(e)}")
 
         log.info("[Classic] Connecting to HID interrupt channel...")
         try:
             await asyncio.wait_for(channels.connect_interrupt_channel(), timeout=5.0)
             log.success("[Classic] HID interrupt channel connected")
         except Exception as e:
-            log.warning(f"[Classic] Interrupt channel: {e!r}")
+            log.warning(f"[Classic] Interrupt channel: {errstr(e)}")
 
         if not channels.intr_channel:
             log.error("[Classic] Failed to connect HID interrupt channel")
