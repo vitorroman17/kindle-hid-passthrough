@@ -235,9 +235,10 @@ class HIDHost(ClassicMixin, BLEMixin):
                 
                 # We will just add the capabilities to the listener later, 
                 # or when a connection arrives. For now, just register SDP.
-                self.device.sdp_service_records.update(
-                    make_audio_source_service_sdp_records(service_record_handle=0x00010002)
-                )
+                handle = 0x00010002
+                self.device.sdp_service_records.update({
+                    handle: make_audio_source_service_sdp_records(service_record_handle=handle)
+                })
                 log.info("A2DP Source SDP records configured. AVDTP Listener active.")
             except Exception as e:
                 log.warning(f"Failed to setup A2DP Source: {e}")
