@@ -33,3 +33,10 @@ evsieve-kindle/
 future-work.md
 pr-24-*.md
 .worktrees/
+
+# Local build output (scripts/build-local.sh mantem caches em volumes Docker)
+nuitka-out/local.dist/
+nuitka-out/local-release/
+nuitka-out/compilation-report.xml
+nuitka-crash-report.xml
+.nuitka-cache/

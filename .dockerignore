@@ -1,0 +1,14 @@
+# O Dockerfile.arm so precisa de patches/ e kindle_hid_passthrough/.
+# Sem isto o build context tem ~620 MB (.git + nuitka-out + .nuitka-cache) e
+# cada `docker build` streama tudo isso pelo drvfs do WSL antes de comecar.
+.git/
+.github/
+nuitka-out/
+.nuitka-cache/
+docs/
+tests/
+screenshots/
+**/__pycache__/
+*.pyc
+*.pyo
+nuitka-crash-report.xml
