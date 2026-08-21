@@ -194,7 +194,8 @@ class ClassicMixin:
         if not connection.is_encrypted:
             log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
             try:
-                await asyncio.wait_for(connection.authenticate(), timeout=5.0)
+                if not connection.authenticated:
+                    await asyncio.wait_for(connection.authenticate(), timeout=5.0)
                 await asyncio.wait_for(connection.encrypt(enable=True), timeout=5.0)
                 log.success("[Classic] Bonding restored")
             except Exception as e:
