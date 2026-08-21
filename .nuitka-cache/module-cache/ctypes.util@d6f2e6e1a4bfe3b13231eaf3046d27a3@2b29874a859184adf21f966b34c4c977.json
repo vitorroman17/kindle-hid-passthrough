@@ -1,0 +1,92 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "ctypes.util",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/shutil.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "shutil",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/subprocess.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "subprocess",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 94
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tempfile.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tempfile",
+      "reason": "import",
+      "source_ref_line": 94
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/struct.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "struct",
+      "reason": "import",
+      "source_ref_line": 274
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.22652011999997512,
+      null,
+      null,
+      5,
+      {
+        "1": 230,
+        "2": 101,
+        "3": 10,
+        "4": 30,
+        "5": 22,
+        "6": 10,
+        "7": 5,
+        "8": 5,
+        "9": 4,
+        "10": 2,
+        "12": 5
+      }
+    ]
+  ]
+}

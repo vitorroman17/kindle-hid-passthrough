@@ -1,0 +1,57 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "importlib._abc",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/importlib",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "importlib",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": null,
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "built-in",
+      "module_name": "importlib._bootstrap",
+      "reason": "import fromlist",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "abc",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 4
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.028220098000005578,
+      null,
+      null,
+      4,
+      {
+        "1": 29,
+        "2": 7,
+        "6": 8
+      }
+    ]
+  ]
+}

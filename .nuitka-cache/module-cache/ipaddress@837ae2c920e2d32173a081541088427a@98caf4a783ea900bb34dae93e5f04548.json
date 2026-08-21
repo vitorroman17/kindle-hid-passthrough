@@ -1,0 +1,60 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "ipaddress",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 641
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.8895442809999992,
+      null,
+      null,
+      5,
+      {
+        "1": 1613,
+        "2": 595,
+        "3": 234,
+        "4": 126,
+        "5": 89,
+        "6": 45,
+        "7": 18,
+        "8": 53,
+        "9": 25,
+        "10": 23,
+        "11": 14,
+        "12": 13,
+        "13": 2,
+        "14": 10,
+        "15": 11,
+        "16": 5,
+        "17": 10,
+        "18": 1,
+        "20": 1,
+        "27": 5,
+        "31": 3,
+        "38": 5,
+        "43": 1,
+        "44": 1
+      }
+    ]
+  ]
+}

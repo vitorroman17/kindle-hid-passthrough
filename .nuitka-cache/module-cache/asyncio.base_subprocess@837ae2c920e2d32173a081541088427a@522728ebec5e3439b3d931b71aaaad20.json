@@ -1,0 +1,110 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "asyncio.base_subprocess",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/subprocess.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "subprocess",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/protocols.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.protocols",
+      "reason": "import fromlist",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/transports.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.transports",
+      "reason": "import fromlist",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import path parent",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/log.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "asyncio.log",
+      "reason": "import",
+      "source_ref_line": 7
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.26620545200000834,
+      null,
+      null,
+      4,
+      {
+        "1": 269,
+        "2": 132,
+        "3": 34,
+        "4": 20,
+        "5": 11,
+        "8": 12,
+        "9": 1,
+        "10": 10,
+        "16": 1,
+        "17": 3,
+        "27": 4
+      }
+    ]
+  ]
+}

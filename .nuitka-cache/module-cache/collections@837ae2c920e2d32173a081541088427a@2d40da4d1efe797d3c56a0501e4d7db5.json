@@ -1,0 +1,201 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "collections",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/_collections_abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_collections_abc",
+      "reason": "import",
+      "source_ref_line": 29
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 30
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 32
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 33
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 34
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/keyword.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "keyword",
+      "reason": "import",
+      "source_ref_line": 35
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/operator.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "operator",
+      "reason": "import",
+      "source_ref_line": 36
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/operator.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "operator",
+      "reason": "import",
+      "source_ref_line": 37
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/reprlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "reprlib",
+      "reason": "import",
+      "source_ref_line": 38
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_weakref",
+      "reason": "import",
+      "source_ref_line": 39
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_collections",
+      "reason": "import",
+      "source_ref_line": 42
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_collections",
+      "reason": "import",
+      "source_ref_line": 49
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_collections",
+      "reason": "import",
+      "source_ref_line": 335
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_collections",
+      "reason": "import",
+      "source_ref_line": 346
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_collections",
+      "reason": "import",
+      "source_ref_line": 532
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/heapq.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "heapq",
+      "reason": "import",
+      "source_ref_line": 623
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/copy.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "copy",
+      "reason": "import",
+      "source_ref_line": 1176
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      2.9601325299999957,
+      null,
+      null,
+      5,
+      {
+        "1": 1597,
+        "2": 777,
+        "3": 187,
+        "4": 178,
+        "5": 101,
+        "6": 59,
+        "7": 58,
+        "8": 42,
+        "9": 21,
+        "10": 3,
+        "11": 5,
+        "13": 9,
+        "18": 5,
+        "27": 5,
+        "31": 5,
+        "34": 5,
+        "36": 5,
+        "39": 3,
+        "40": 1,
+        "52": 1,
+        "73": 5
+      }
+    ]
+  ]
+}

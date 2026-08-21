@@ -1,0 +1,78 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "concurrent.futures._base",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/logging",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "logging",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "types",
+      "reason": "import",
+      "source_ref_line": 10
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.9854439599999978,
+      null,
+      null,
+      5,
+      {
+        "1": 1176,
+        "2": 498,
+        "3": 110,
+        "4": 60,
+        "5": 118,
+        "6": 18,
+        "7": 12,
+        "8": 54,
+        "9": 24,
+        "10": 15,
+        "11": 5,
+        "12": 4,
+        "13": 1,
+        "14": 3,
+        "20": 5
+      }
+    ]
+  ]
+}

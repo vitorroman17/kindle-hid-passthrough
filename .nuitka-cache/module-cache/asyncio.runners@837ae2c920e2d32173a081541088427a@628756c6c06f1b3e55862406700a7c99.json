@@ -1,0 +1,162 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "asyncio.runners",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/contextvars.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "contextvars",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/enum.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "enum",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/signal.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "signal",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/coroutines.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.coroutines",
+      "reason": "import fromlist",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/events.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.events",
+      "reason": "import fromlist",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/exceptions.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.exceptions",
+      "reason": "import fromlist",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/tasks.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.tasks",
+      "reason": "import fromlist",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 105
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.1280326700000387,
+      null,
+      null,
+      4,
+      {
+        "1": 139,
+        "2": 69,
+        "3": 16,
+        "4": 5,
+        "5": 6,
+        "6": 4,
+        "7": 7,
+        "9": 5,
+        "11": 4
+      }
+    ]
+  ]
+}

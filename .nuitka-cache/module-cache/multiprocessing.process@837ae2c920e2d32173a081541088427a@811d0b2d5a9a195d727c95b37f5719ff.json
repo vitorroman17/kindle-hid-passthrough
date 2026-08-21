@@ -1,0 +1,194 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "multiprocessing.process",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 17
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/signal.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "signal",
+      "reason": "import",
+      "source_ref_line": 19
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 20
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 21
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/_weakrefset.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_weakrefset",
+      "reason": "import",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import",
+      "source_ref_line": 291
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/util.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing.util",
+      "reason": "import fromlist",
+      "source_ref_line": 291
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/context.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing.context",
+      "reason": "import fromlist",
+      "source_ref_line": 291
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/traceback.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "traceback",
+      "reason": "import",
+      "source_ref_line": 328
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import",
+      "source_ref_line": 340
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/util.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing.util",
+      "reason": "import fromlist",
+      "source_ref_line": 340
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import path parent",
+      "source_ref_line": 351
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/context.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing.context",
+      "reason": "import",
+      "source_ref_line": 351
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import path parent",
+      "source_ref_line": 377
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/connection.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing.connection",
+      "reason": "import",
+      "source_ref_line": 377
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import path parent",
+      "source_ref_line": 388
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/connection.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing.connection",
+      "reason": "import",
+      "source_ref_line": 388
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.387539830999998,
+      null,
+      null,
+      5,
+      {
+        "1": 339,
+        "2": 165,
+        "3": 30,
+        "4": 14,
+        "5": 13,
+        "6": 12,
+        "7": 3,
+        "8": 14,
+        "9": 15,
+        "10": 2,
+        "11": 1,
+        "13": 3,
+        "14": 1,
+        "28": 5
+      }
+    ]
+  ]
+}

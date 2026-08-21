@@ -1,0 +1,217 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "trace",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 52
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/linecache.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "linecache",
+      "reason": "import",
+      "source_ref_line": 53
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 54
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 55
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/sysconfig.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "sysconfig",
+      "reason": "import",
+      "source_ref_line": 56
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/token.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "token",
+      "reason": "import",
+      "source_ref_line": 57
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tokenize.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tokenize",
+      "reason": "import",
+      "source_ref_line": 58
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/inspect.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "inspect",
+      "reason": "import",
+      "source_ref_line": 59
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "gc",
+      "reason": "import",
+      "source_ref_line": 60
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/dis.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "dis",
+      "reason": "import",
+      "source_ref_line": 61
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/pickle.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "pickle",
+      "reason": "import",
+      "source_ref_line": 62
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 63
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 65
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 123
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 134
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 137
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 147
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 151
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 271
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "__main__",
+      "reason": "import",
+      "source_ref_line": 439
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.9543334339999774,
+      null,
+      null,
+      5,
+      {
+        "1": 662,
+        "2": 419,
+        "3": 145,
+        "4": 85,
+        "5": 52,
+        "6": 42,
+        "7": 19,
+        "8": 10,
+        "9": 5,
+        "10": 10,
+        "12": 10,
+        "13": 1,
+        "14": 1,
+        "15": 4,
+        "17": 3,
+        "18": 3,
+        "22": 1,
+        "23": 3,
+        "24": 1
+      }
+    ]
+  ]
+}

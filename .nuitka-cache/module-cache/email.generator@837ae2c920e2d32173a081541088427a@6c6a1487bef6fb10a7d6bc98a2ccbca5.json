@@ -1,0 +1,124 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "email.generator",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/random.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "random",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/copy.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "copy",
+      "reason": "import",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 15
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/utils.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.utils",
+      "reason": "import",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 17
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/errors.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.errors",
+      "reason": "import",
+      "source_ref_line": 17
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.3396426959999985,
+      null,
+      null,
+      4,
+      {
+        "1": 224,
+        "2": 187,
+        "3": 17,
+        "4": 19,
+        "5": 10,
+        "6": 11,
+        "7": 5,
+        "8": 4,
+        "9": 8,
+        "10": 13,
+        "11": 14,
+        "12": 10,
+        "13": 1,
+        "20": 1,
+        "21": 1,
+        "26": 3
+      }
+    ]
+  ]
+}

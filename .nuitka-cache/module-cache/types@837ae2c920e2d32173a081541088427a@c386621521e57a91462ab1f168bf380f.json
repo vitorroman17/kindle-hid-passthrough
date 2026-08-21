@@ -1,0 +1,56 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "types",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 277
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/_collections_abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_collections_abc",
+      "reason": "import",
+      "source_ref_line": 278
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.3078160029999992,
+      null,
+      null,
+      5,
+      {
+        "1": 257,
+        "2": 65,
+        "3": 45,
+        "4": 17,
+        "5": 16,
+        "6": 7,
+        "7": 3,
+        "8": 6,
+        "9": 5,
+        "10": 1,
+        "17": 1
+      }
+    ]
+  ]
+}

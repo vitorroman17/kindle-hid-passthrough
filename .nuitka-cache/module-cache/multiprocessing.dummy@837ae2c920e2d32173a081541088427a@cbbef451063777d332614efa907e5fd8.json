@@ -1,0 +1,145 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "multiprocessing.dummy",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 20
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 21
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/weakref.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "weakref",
+      "reason": "import",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/array.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "array",
+      "reason": "import",
+      "source_ref_line": 23
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import path parent",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/dummy",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing.dummy",
+      "reason": "import path parent",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/dummy/connection.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing.dummy.connection",
+      "reason": "import",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 26
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 27
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/queue.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "queue",
+      "reason": "import",
+      "source_ref_line": 28
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import path parent",
+      "source_ref_line": 123
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/pool.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing.pool",
+      "reason": "import",
+      "source_ref_line": 123
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.23585829799998237,
+      null,
+      null,
+      5,
+      {
+        "1": 146,
+        "2": 66,
+        "3": 10,
+        "4": 14,
+        "5": 3,
+        "6": 13,
+        "7": 5,
+        "8": 5,
+        "9": 11,
+        "10": 4
+      }
+    ]
+  ]
+}

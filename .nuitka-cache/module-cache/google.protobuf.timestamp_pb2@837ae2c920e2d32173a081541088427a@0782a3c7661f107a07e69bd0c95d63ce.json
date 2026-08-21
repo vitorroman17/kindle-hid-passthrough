@@ -1,0 +1,161 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "google.protobuf.timestamp_pb2",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google",
+      "reason": "import path parent",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google.protobuf",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf/descriptor.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "google.protobuf.descriptor",
+      "reason": "import fromlist",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google",
+      "reason": "import path parent",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google.protobuf",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf/descriptor_pool.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "google.protobuf.descriptor_pool",
+      "reason": "import fromlist",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google",
+      "reason": "import path parent",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google.protobuf",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf/runtime_version.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "google.protobuf.runtime_version",
+      "reason": "import fromlist",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google",
+      "reason": "import path parent",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google.protobuf",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf/symbol_database.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "google.protobuf.symbol_database",
+      "reason": "import fromlist",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google",
+      "reason": "import path parent",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google.protobuf",
+      "reason": "import path parent",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf/internal",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "google.protobuf.internal",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/site-packages/google/protobuf/internal/builder.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "google.protobuf.internal.builder",
+      "reason": "import fromlist",
+      "source_ref_line": 11
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.06261198600000739,
+      null,
+      null,
+      3,
+      {}
+    ]
+  ]
+}

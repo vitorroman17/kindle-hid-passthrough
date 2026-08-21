@@ -1,0 +1,43 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "json.scanner",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_json.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_json",
+      "reason": "import",
+      "source_ref_line": 5
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.05090938899999742,
+      null,
+      null,
+      3,
+      {
+        "1": 42,
+        "2": 15,
+        "4": 3,
+        "8": 1,
+        "10": 3,
+        "12": 3,
+        "21": 2
+      }
+    ]
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "contextlib",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "abc",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/_collections_abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_collections_abc",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 1,
+      "module_kind": null,
+      "module_name": "collections.deque",
+      "reason": "import fromlist",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "types",
+      "reason": "import",
+      "source_ref_line": 8
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.947308095000011,
+      null,
+      null,
+      5,
+      {
+        "1": 1031,
+        "2": 390,
+        "3": 74,
+        "4": 48,
+        "5": 16,
+        "6": 26,
+        "7": 28,
+        "8": 87,
+        "9": 19,
+        "10": 22,
+        "11": 2,
+        "12": 1,
+        "14": 5
+      }
+    ]
+  ]
+}

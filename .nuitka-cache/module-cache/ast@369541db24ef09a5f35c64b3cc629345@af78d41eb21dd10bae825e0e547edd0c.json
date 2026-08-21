@@ -1,0 +1,111 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "ast",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 27
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_ast",
+      "reason": "import",
+      "source_ref_line": 28
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/contextlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "contextlib",
+      "reason": "import",
+      "source_ref_line": 29
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/enum.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "enum",
+      "reason": "import",
+      "source_ref_line": 30
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/inspect.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "inspect",
+      "reason": "import",
+      "source_ref_line": 302
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 386
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 1,
+      "module_kind": null,
+      "module_name": "collections.deque",
+      "reason": "import fromlist",
+      "source_ref_line": 386
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 445
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      4.519655861999997,
+      null,
+      null,
+      4,
+      {
+        "1": 2066,
+        "2": 1241,
+        "3": 211,
+        "4": 116,
+        "5": 278,
+        "6": 114,
+        "7": 34,
+        "8": 48,
+        "9": 44,
+        "10": 30,
+        "11": 19,
+        "12": 5,
+        "13": 4,
+        "14": 3,
+        "15": 8,
+        "16": 2,
+        "19": 4,
+        "21": 1,
+        "23": 1,
+        "24": 3,
+        "112": 4
+      }
+    ]
+  ]
+}

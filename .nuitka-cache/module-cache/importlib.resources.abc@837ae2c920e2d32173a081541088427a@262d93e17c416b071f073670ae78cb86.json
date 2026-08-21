@@ -1,0 +1,81 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "importlib.resources.abc",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "abc",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/typing.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "typing",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/typing.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "typing",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/typing.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "typing",
+      "reason": "import",
+      "source_ref_line": 6
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.13787708399996745,
+      null,
+      null,
+      4,
+      {
+        "1": 178,
+        "2": 46,
+        "3": 4,
+        "5": 5,
+        "6": 3,
+        "7": 12,
+        "8": 4,
+        "10": 8,
+        "14": 4
+      }
+    ]
+  ]
+}

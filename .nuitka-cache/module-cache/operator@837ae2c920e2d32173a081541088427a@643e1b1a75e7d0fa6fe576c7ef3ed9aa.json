@@ -1,0 +1,63 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "operator",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "builtins",
+      "reason": "import",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 333
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_operator",
+      "reason": "import",
+      "source_ref_line": 414
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_operator",
+      "reason": "import",
+      "source_ref_line": 418
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.31601137699999526,
+      null,
+      null,
+      4,
+      {
+        "1": 467,
+        "2": 94,
+        "3": 30,
+        "4": 30,
+        "5": 15,
+        "6": 6,
+        "8": 3,
+        "11": 2,
+        "12": 2
+      }
+    ]
+  ]
+}

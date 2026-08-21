@@ -1,0 +1,45 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "ctypes._endian",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ctypes",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ctypes",
+      "reason": "import",
+      "source_ref_line": 2
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.10596504700001219,
+      null,
+      null,
+      4,
+      {
+        "1": 131,
+        "2": 54,
+        "3": 3,
+        "4": 9,
+        "6": 4,
+        "7": 11,
+        "8": 5,
+        "9": 4,
+        "11": 8
+      }
+    ]
+  ]
+}

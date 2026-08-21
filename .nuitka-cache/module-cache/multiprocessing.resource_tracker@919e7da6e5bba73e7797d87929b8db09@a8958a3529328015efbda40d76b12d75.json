@@ -1,0 +1,127 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "multiprocessing.resource_tracker",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/signal.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "signal",
+      "reason": "import",
+      "source_ref_line": 19
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 20
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 21
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import",
+      "source_ref_line": 24
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/spawn.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing.spawn",
+      "reason": "import fromlist",
+      "source_ref_line": 24
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/util.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing.util",
+      "reason": "import fromlist",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_multiprocessing.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_multiprocessing",
+      "reason": "import",
+      "source_ref_line": 37
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_posixshmem.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_posixshmem",
+      "reason": "import",
+      "source_ref_line": 38
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.48186761799999545,
+      null,
+      null,
+      5,
+      {
+        "1": 338,
+        "2": 204,
+        "3": 67,
+        "4": 17,
+        "5": 13,
+        "6": 20,
+        "7": 15,
+        "8": 5,
+        "9": 4,
+        "13": 5
+      }
+    ]
+  ]
+}

@@ -1,0 +1,343 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "asyncio.unix_events",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "errno",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/selectors.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "selectors",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/signal.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "signal",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/stat.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "stat",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/subprocess.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "subprocess",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 13
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/base_events.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.base_events",
+      "reason": "import fromlist",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 17
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/base_subprocess.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.base_subprocess",
+      "reason": "import fromlist",
+      "source_ref_line": 17
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/constants.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.constants",
+      "reason": "import fromlist",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 19
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/coroutines.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.coroutines",
+      "reason": "import fromlist",
+      "source_ref_line": 19
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 20
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/events.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.events",
+      "reason": "import fromlist",
+      "source_ref_line": 20
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 21
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/exceptions.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.exceptions",
+      "reason": "import fromlist",
+      "source_ref_line": 21
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/futures.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.futures",
+      "reason": "import fromlist",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 23
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/selector_events.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.selector_events",
+      "reason": "import fromlist",
+      "source_ref_line": 23
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 24
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/tasks.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.tasks",
+      "reason": "import fromlist",
+      "source_ref_line": 24
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/transports.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.transports",
+      "reason": "import fromlist",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import path parent",
+      "source_ref_line": 26
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/log.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "asyncio.log",
+      "reason": "import",
+      "source_ref_line": 26
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      2.4790898830000287,
+      null,
+      null,
+      6,
+      {
+        "1": 1626,
+        "2": 938,
+        "3": 266,
+        "4": 75,
+        "5": 75,
+        "6": 38,
+        "7": 21,
+        "8": 73,
+        "9": 26,
+        "10": 12,
+        "11": 24,
+        "12": 13,
+        "13": 10,
+        "14": 6,
+        "15": 6,
+        "16": 6,
+        "20": 6,
+        "21": 6,
+        "22": 6
+      }
+    ]
+  ]
+}

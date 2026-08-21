@@ -1,0 +1,53 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "_collections_abc",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "abc",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 10
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.870175040999996,
+      null,
+      null,
+      5,
+      {
+        "1": 1652,
+        "2": 609,
+        "3": 138,
+        "4": 116,
+        "5": 80,
+        "6": 89,
+        "7": 17,
+        "8": 127,
+        "9": 11,
+        "10": 26,
+        "11": 2,
+        "13": 5,
+        "14": 5,
+        "15": 10,
+        "16": 5,
+        "19": 1,
+        "22": 5
+      }
+    ]
+  ]
+}

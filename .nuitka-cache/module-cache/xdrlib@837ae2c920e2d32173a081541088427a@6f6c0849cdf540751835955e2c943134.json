@@ -1,0 +1,66 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "xdrlib",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/struct.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "struct",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 10
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.29503542600002675,
+      null,
+      null,
+      5,
+      {
+        "1": 317,
+        "2": 103,
+        "3": 38,
+        "4": 44,
+        "5": 17,
+        "6": 8,
+        "7": 7,
+        "8": 10,
+        "9": 3,
+        "10": 2,
+        "23": 1,
+        "25": 1
+      }
+    ]
+  ]
+}

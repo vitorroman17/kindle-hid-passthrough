@@ -1,0 +1,289 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "asyncio.tasks",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/concurrent",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "concurrent",
+      "reason": "import path parent",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/concurrent/futures",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "concurrent.futures",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/contextvars.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "contextvars",
+      "reason": "import",
+      "source_ref_line": 13
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/inspect.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "inspect",
+      "reason": "import",
+      "source_ref_line": 15
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "types",
+      "reason": "import",
+      "source_ref_line": 17
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/weakref.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "weakref",
+      "reason": "import",
+      "source_ref_line": 19
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "types",
+      "reason": "import",
+      "source_ref_line": 20
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/base_tasks.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.base_tasks",
+      "reason": "import fromlist",
+      "source_ref_line": 22
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 23
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/coroutines.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.coroutines",
+      "reason": "import fromlist",
+      "source_ref_line": 23
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 24
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/events.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.events",
+      "reason": "import fromlist",
+      "source_ref_line": 24
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/exceptions.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.exceptions",
+      "reason": "import fromlist",
+      "source_ref_line": 25
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 26
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/futures.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.futures",
+      "reason": "import fromlist",
+      "source_ref_line": 26
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import path parent",
+      "source_ref_line": 27
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/coroutines.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "asyncio.coroutines",
+      "reason": "import",
+      "source_ref_line": 27
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_asyncio.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_asyncio",
+      "reason": "import",
+      "source_ref_line": 368
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 468
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 555
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import path parent",
+      "source_ref_line": 589
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/queues.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "asyncio.queues",
+      "reason": "import",
+      "source_ref_line": 589
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_asyncio.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_asyncio",
+      "reason": "import",
+      "source_ref_line": 981
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.802998468999931,
+      null,
+      null,
+      5,
+      {
+        "1": 561,
+        "2": 391,
+        "3": 76,
+        "4": 70,
+        "5": 28,
+        "6": 37,
+        "7": 25,
+        "8": 9,
+        "9": 7,
+        "12": 5,
+        "13": 1,
+        "14": 7,
+        "15": 2,
+        "16": 4,
+        "17": 1,
+        "18": 1,
+        "19": 5,
+        "21": 4,
+        "22": 5
+      }
+    ]
+  ]
+}

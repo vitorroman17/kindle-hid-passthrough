@@ -1,0 +1,43 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "encodings.zlib_codec",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/codecs.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "codecs",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/zlib.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "zlib",
+      "reason": "import",
+      "source_ref_line": 9
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.08747702100004062,
+      null,
+      null,
+      3,
+      {
+        "1": 111,
+        "2": 52,
+        "4": 2,
+        "5": 6,
+        "6": 3,
+        "7": 10,
+        "8": 15
+      }
+    ]
+  ]
+}

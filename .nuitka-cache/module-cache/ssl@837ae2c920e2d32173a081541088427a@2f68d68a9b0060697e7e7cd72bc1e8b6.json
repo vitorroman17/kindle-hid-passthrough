@@ -1,0 +1,243 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "ssl",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 94
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 95
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 96
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 1,
+      "module_kind": null,
+      "module_name": "collections.namedtuple",
+      "reason": "import fromlist",
+      "source_ref_line": 96
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/enum.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "enum",
+      "reason": "import",
+      "source_ref_line": 97
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/enum.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "enum",
+      "reason": "import",
+      "source_ref_line": 98
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 100
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 102
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 103
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 104
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 108
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 109
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 111
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 117
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_ssl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_ssl",
+      "reason": "import",
+      "source_ref_line": 121
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 260
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 261
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 262
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/base64.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "base64",
+      "reason": "import",
+      "source_ref_line": 263
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "errno",
+      "reason": "import",
+      "source_ref_line": 264
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 265
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 1500
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/calendar.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "calendar",
+      "reason": "import",
+      "source_ref_line": 1501
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.743739608000027,
+      null,
+      null,
+      6,
+      {
+        "1": 1181,
+        "2": 672,
+        "3": 127,
+        "4": 130,
+        "5": 62,
+        "6": 40,
+        "7": 39,
+        "8": 22,
+        "9": 31,
+        "10": 19,
+        "11": 11,
+        "13": 1,
+        "14": 11,
+        "25": 1,
+        "26": 1,
+        "36": 6,
+        "37": 1,
+        "46": 6
+      }
+    ]
+  ]
+}

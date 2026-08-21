@@ -1,0 +1,124 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "warnings",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/linecache.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "linecache",
+      "reason": "import",
+      "source_ref_line": 41
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tracemalloc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tracemalloc",
+      "reason": "import",
+      "source_ref_line": 56
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 153
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 225
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "builtins",
+      "reason": "import",
+      "source_ref_line": 256
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/linecache.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "linecache",
+      "reason": "import",
+      "source_ref_line": 367
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/linecache.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "linecache",
+      "reason": "import",
+      "source_ref_line": 524
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/traceback.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "traceback",
+      "reason": "import",
+      "source_ref_line": 524
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_warnings",
+      "reason": "import",
+      "source_ref_line": 550
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.3395182509999977,
+      null,
+      null,
+      5,
+      {
+        "1": 414,
+        "2": 382,
+        "3": 35,
+        "4": 49,
+        "5": 22,
+        "6": 34,
+        "7": 10,
+        "8": 13,
+        "9": 16,
+        "10": 11,
+        "15": 4,
+        "18": 6,
+        "19": 4,
+        "20": 1,
+        "25": 4,
+        "27": 1
+      }
+    ]
+  ]
+}

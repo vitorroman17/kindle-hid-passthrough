@@ -1,0 +1,44 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "struct",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_struct.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_struct",
+      "reason": "import",
+      "source_ref_line": 13
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_struct.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_struct",
+      "reason": "import",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_struct.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_struct",
+      "reason": "import",
+      "source_ref_line": 15
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.0046184640000035415,
+      null,
+      null,
+      2,
+      {}
+    ]
+  ]
+}

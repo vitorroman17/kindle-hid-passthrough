@@ -1,0 +1,93 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "asyncio.base_tasks",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/linecache.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "linecache",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/reprlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "reprlib",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/traceback.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "traceback",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/base_futures.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.base_futures",
+      "reason": "import fromlist",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/coroutines.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.coroutines",
+      "reason": "import fromlist",
+      "source_ref_line": 6
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.11933639599999424,
+      null,
+      null,
+      4,
+      {
+        "1": 46,
+        "2": 40,
+        "3": 7,
+        "4": 2,
+        "6": 3,
+        "8": 3,
+        "9": 1,
+        "10": 1,
+        "12": 4,
+        "13": 1,
+        "14": 1,
+        "15": 1
+      }
+    ]
+  ]
+}

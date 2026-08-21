@@ -1,0 +1,47 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "email.quoprimime",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 42
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/string.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "string",
+      "reason": "import",
+      "source_ref_line": 44
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.17724395099997992,
+      null,
+      null,
+      4,
+      {
+        "1": 142,
+        "2": 71,
+        "3": 26,
+        "4": 23,
+        "5": 2,
+        "7": 1,
+        "8": 6,
+        "9": 3,
+        "14": 1,
+        "17": 6,
+        "18": 1
+      }
+    ]
+  ]
+}

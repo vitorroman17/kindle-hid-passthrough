@@ -1,0 +1,101 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "asyncio.locks",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/enum.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "enum",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/exceptions.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.exceptions",
+      "reason": "import fromlist",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/mixins.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.mixins",
+      "reason": "import fromlist",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/asyncio/tasks.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "asyncio.tasks",
+      "reason": "import fromlist",
+      "source_ref_line": 11
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.42258186700007627,
+      null,
+      null,
+      4,
+      {
+        "1": 590,
+        "2": 211,
+        "3": 46,
+        "4": 22,
+        "5": 27,
+        "6": 14,
+        "7": 8,
+        "8": 29,
+        "9": 3,
+        "11": 16,
+        "19": 4
+      }
+    ]
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "_osx_support",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 4
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 39
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 46
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/contextlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "contextlib",
+      "reason": "import",
+      "source_ref_line": 61
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tempfile.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tempfile",
+      "reason": "import",
+      "source_ref_line": 63
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.4743754280000303,
+      null,
+      null,
+      5,
+      {
+        "1": 414,
+        "2": 362,
+        "3": 80,
+        "4": 41,
+        "5": 26,
+        "6": 27,
+        "7": 12,
+        "8": 11,
+        "9": 1,
+        "10": 11,
+        "14": 4,
+        "20": 1,
+        "24": 4,
+        "28": 1
+      }
+    ]
+  ]
+}

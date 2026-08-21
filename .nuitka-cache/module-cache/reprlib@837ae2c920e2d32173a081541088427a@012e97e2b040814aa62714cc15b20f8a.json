@@ -1,0 +1,58 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "reprlib",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "builtins",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_thread",
+      "reason": "import",
+      "source_ref_line": 7
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.16826425700000414,
+      null,
+      null,
+      4,
+      {
+        "1": 119,
+        "2": 72,
+        "3": 9,
+        "4": 12,
+        "5": 6,
+        "6": 4,
+        "7": 3,
+        "8": 6,
+        "9": 5,
+        "10": 3,
+        "11": 6,
+        "12": 2,
+        "16": 1
+      }
+    ]
+  ]
+}

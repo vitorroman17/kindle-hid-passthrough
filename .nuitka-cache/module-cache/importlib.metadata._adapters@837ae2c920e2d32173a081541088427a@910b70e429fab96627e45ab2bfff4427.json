@@ -1,0 +1,90 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "importlib.metadata._adapters",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 1
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/textwrap.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "textwrap",
+      "reason": "import",
+      "source_ref_line": 2
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/message.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.message",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/importlib",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "importlib",
+      "reason": "import path parent",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/importlib/metadata",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "importlib.metadata",
+      "reason": "import path parent",
+      "source_ref_line": 5
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/importlib/metadata/_text.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "importlib.metadata._text",
+      "reason": "import",
+      "source_ref_line": 5
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.11211801499996454,
+      null,
+      null,
+      4,
+      {
+        "1": 74,
+        "2": 29,
+        "3": 11,
+        "4": 3,
+        "5": 3,
+        "6": 4,
+        "9": 4,
+        "10": 3,
+        "11": 1
+      }
+    ]
+  ]
+}

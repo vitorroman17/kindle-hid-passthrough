@@ -1,0 +1,120 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "urllib.parse",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 34
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 1,
+      "module_kind": null,
+      "module_name": "collections.namedtuple",
+      "reason": "import fromlist",
+      "source_ref_line": 34
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 35
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 36
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 37
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/types.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "types",
+      "reason": "import",
+      "source_ref_line": 38
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 39
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ipaddress.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ipaddress",
+      "reason": "import",
+      "source_ref_line": 40
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/unicodedata.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "unicodedata",
+      "reason": "import",
+      "source_ref_line": 426
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      2.910268826999996,
+      null,
+      null,
+      5,
+      {
+        "1": 949,
+        "2": 843,
+        "3": 204,
+        "4": 188,
+        "5": 33,
+        "6": 79,
+        "7": 65,
+        "8": 80,
+        "9": 18,
+        "10": 28,
+        "11": 21,
+        "12": 4,
+        "14": 1,
+        "15": 1,
+        "17": 1,
+        "19": 3,
+        "23": 1,
+        "25": 4,
+        "27": 1,
+        "29": 3,
+        "30": 1
+      }
+    ]
+  ]
+}

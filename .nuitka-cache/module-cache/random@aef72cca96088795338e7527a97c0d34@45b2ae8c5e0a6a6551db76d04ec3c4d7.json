@@ -1,0 +1,178 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "random",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 48
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/math.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "math",
+      "reason": "import",
+      "source_ref_line": 49
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/math.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "math",
+      "reason": "import",
+      "source_ref_line": 50
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/math.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "math",
+      "reason": "import",
+      "source_ref_line": 51
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 52
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/_collections_abc.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "_collections_abc",
+      "reason": "import",
+      "source_ref_line": 53
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/operator.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "operator",
+      "reason": "import",
+      "source_ref_line": 54
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 55
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/bisect.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "bisect",
+      "reason": "import",
+      "source_ref_line": 56
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 57
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_random.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_random",
+      "reason": "import",
+      "source_ref_line": 58
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_sha512.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_sha512",
+      "reason": "import",
+      "source_ref_line": 62
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/hashlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "hashlib",
+      "reason": "import",
+      "source_ref_line": 65
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/statistics.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "statistics",
+      "reason": "import",
+      "source_ref_line": 861
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 862
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.277969958,
+      null,
+      null,
+      5,
+      {
+        "1": 452,
+        "2": 228,
+        "3": 86,
+        "4": 46,
+        "5": 33,
+        "6": 16,
+        "7": 4,
+        "8": 7,
+        "9": 13,
+        "10": 1,
+        "11": 13,
+        "12": 15,
+        "13": 4,
+        "14": 1,
+        "15": 1,
+        "16": 4,
+        "17": 1,
+        "19": 4,
+        "21": 4,
+        "22": 1,
+        "24": 4,
+        "27": 1,
+        "33": 1,
+        "35": 5,
+        "39": 4
+      }
+    ]
+  ]
+}

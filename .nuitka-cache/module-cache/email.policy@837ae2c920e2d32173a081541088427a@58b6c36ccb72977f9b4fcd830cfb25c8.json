@@ -1,0 +1,135 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "email.policy",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 5
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/_policybase.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email._policybase",
+      "reason": "import",
+      "source_ref_line": 7
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/utils.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.utils",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/headerregistry.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.headerregistry",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/contentmanager.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.contentmanager",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email",
+      "reason": "import path parent",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/email/message.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "email.message",
+      "reason": "import",
+      "source_ref_line": 11
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.5169050449999872,
+      null,
+      null,
+      4,
+      {
+        "1": 68,
+        "2": 55,
+        "3": 17,
+        "4": 9,
+        "5": 4,
+        "10": 1,
+        "12": 6,
+        "13": 1,
+        "18": 4
+      }
+    ]
+  ]
+}

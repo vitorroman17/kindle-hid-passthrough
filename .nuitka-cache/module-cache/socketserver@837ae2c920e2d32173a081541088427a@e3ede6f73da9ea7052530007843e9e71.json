@@ -1,0 +1,114 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "socketserver",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 126
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/selectors.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "selectors",
+      "reason": "import",
+      "source_ref_line": 127
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 128
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 129
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 130
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 131
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "time",
+      "reason": "import",
+      "source_ref_line": 132
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/traceback.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "traceback",
+      "reason": "import",
+      "source_ref_line": 380
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/io.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "io",
+      "reason": "import",
+      "source_ref_line": 846
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.827278629000034,
+      null,
+      null,
+      5,
+      {
+        "1": 1019,
+        "2": 375,
+        "3": 74,
+        "4": 54,
+        "5": 25,
+        "6": 11,
+        "7": 15,
+        "8": 48,
+        "9": 26,
+        "10": 13,
+        "11": 5,
+        "12": 1,
+        "13": 5,
+        "18": 5,
+        "21": 1
+      }
+    ]
+  ]
+}

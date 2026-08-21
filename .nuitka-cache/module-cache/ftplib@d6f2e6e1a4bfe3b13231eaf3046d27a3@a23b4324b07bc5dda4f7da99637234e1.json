@@ -1,0 +1,95 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "ftplib",
+  "modules_used": [
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 39
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 40
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 41
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/ssl.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "ssl",
+      "reason": "import",
+      "source_ref_line": 677
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 729
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 823
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 842
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.0358330309999815,
+      null,
+      null,
+      6,
+      {
+        "1": 735,
+        "2": 654,
+        "3": 121,
+        "4": 104,
+        "5": 43,
+        "6": 67,
+        "7": 27,
+        "8": 30,
+        "9": 37,
+        "10": 14,
+        "11": 11,
+        "12": 10,
+        "14": 6,
+        "54": 1
+      }
+    ]
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "encodings.idna",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/stringprep.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "stringprep",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/codecs.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "codecs",
+      "reason": "import",
+      "source_ref_line": 3
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/unicodedata.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "unicodedata",
+      "reason": "import",
+      "source_ref_line": 4
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.3642213820000961,
+      null,
+      null,
+      5,
+      {
+        "1": 385,
+        "2": 196,
+        "3": 21,
+        "4": 27,
+        "5": 26,
+        "6": 12,
+        "7": 9,
+        "8": 20,
+        "9": 5,
+        "10": 5,
+        "11": 7,
+        "12": 4,
+        "13": 5,
+        "14": 5,
+        "15": 7,
+        "17": 1,
+        "18": 1
+      }
+    ]
+  ]
+}

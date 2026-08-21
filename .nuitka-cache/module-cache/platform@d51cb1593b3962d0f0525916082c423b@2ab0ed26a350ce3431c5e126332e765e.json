@@ -1,0 +1,259 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "platform",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 115
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 116
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/re",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "re",
+      "reason": "import",
+      "source_ref_line": 117
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 118
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/functools.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "functools",
+      "reason": "import",
+      "source_ref_line": 119
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "itertools",
+      "reason": "import",
+      "source_ref_line": 120
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 197
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/subprocess.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "subprocess",
+      "reason": "import",
+      "source_ref_line": 281
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "winreg",
+      "reason": "import",
+      "source_ref_line": 348
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "_winreg",
+      "reason": "import",
+      "source_ref_line": 350
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 365
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "winreg",
+      "reason": "import",
+      "source_ref_line": 398
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "_winreg",
+      "reason": "import",
+      "source_ref_line": 400
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "java",
+      "reason": "import path parent",
+      "source_ref_line": 457
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "java.lang",
+      "reason": "import",
+      "source_ref_line": 457
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "java",
+      "reason": "import path parent",
+      "source_ref_line": 480
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "java.lang",
+      "reason": "import",
+      "source_ref_line": 480
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/socket.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "socket",
+      "reason": "import",
+      "source_ref_line": 580
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 596
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/posixpath.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "posixpath",
+      "reason": "import",
+      "source_ref_line": 598
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/subprocess.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "subprocess",
+      "reason": "import",
+      "source_ref_line": 616
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/struct.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "struct",
+      "reason": "import",
+      "source_ref_line": 670
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 0,
+      "module_kind": null,
+      "module_name": "vms_lib",
+      "reason": "import",
+      "source_ref_line": 746
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/subprocess.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "subprocess",
+      "reason": "import",
+      "source_ref_line": 758
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      1.0926970259999962,
+      null,
+      null,
+      5,
+      {
+        "1": 586,
+        "2": 759,
+        "3": 129,
+        "4": 75,
+        "5": 32,
+        "6": 43,
+        "7": 19,
+        "8": 2,
+        "9": 9,
+        "10": 10,
+        "11": 4,
+        "12": 10,
+        "13": 1,
+        "14": 1,
+        "15": 5,
+        "16": 4,
+        "17": 2,
+        "19": 4,
+        "22": 1,
+        "23": 1,
+        "24": 6,
+        "25": 1,
+        "29": 1,
+        "31": 4,
+        "38": 1
+      }
+    ]
+  ]
+}

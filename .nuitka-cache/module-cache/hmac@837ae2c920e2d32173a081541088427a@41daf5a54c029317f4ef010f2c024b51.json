@@ -1,0 +1,63 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "hmac",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/warnings.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "warnings",
+      "reason": "import",
+      "source_ref_line": 6
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/_hashlib.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "_hashlib",
+      "reason": "import",
+      "source_ref_line": 8
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "_operator",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/hashlib.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "hashlib",
+      "reason": "import",
+      "source_ref_line": 17
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.12902640499999052,
+      null,
+      null,
+      4,
+      {
+        "1": 132,
+        "2": 96,
+        "3": 10,
+        "4": 12,
+        "5": 1,
+        "11": 3,
+        "12": 2,
+        "13": 2,
+        "14": 2
+      }
+    ]
+  ]
+}

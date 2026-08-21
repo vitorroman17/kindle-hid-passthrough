@@ -1,0 +1,93 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "pty",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/select.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "select",
+      "reason": "import",
+      "source_ref_line": 9
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tty.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tty",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 15
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tty.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tty",
+      "reason": "import",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/fcntl.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "fcntl",
+      "reason": "import",
+      "source_ref_line": 74
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.2837555909999878,
+      null,
+      null,
+      6,
+      {
+        "1": 176,
+        "2": 239,
+        "3": 53,
+        "4": 17,
+        "5": 5,
+        "6": 5,
+        "7": 2,
+        "9": 1,
+        "10": 1,
+        "11": 10,
+        "23": 1,
+        "29": 5
+      }
+    ]
+  ]
+}

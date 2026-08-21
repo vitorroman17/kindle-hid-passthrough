@@ -1,0 +1,137 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "multiprocessing.heap",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/bisect.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "bisect",
+      "reason": "import",
+      "source_ref_line": 10
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/collections",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "collections",
+      "reason": "import",
+      "source_ref_line": 11
+    },
+    {
+      "filename": null,
+      "finding": "not-found",
+      "level": 1,
+      "module_kind": null,
+      "module_name": "collections.defaultdict",
+      "reason": "import fromlist",
+      "source_ref_line": 11
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/mmap.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "mmap",
+      "reason": "import",
+      "source_ref_line": 12
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/os.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "os",
+      "reason": "import",
+      "source_ref_line": 13
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 14
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/tempfile.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "tempfile",
+      "reason": "import",
+      "source_ref_line": 15
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/threading.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "threading",
+      "reason": "import",
+      "source_ref_line": 16
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import path parent",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/context.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "multiprocessing.context",
+      "reason": "import",
+      "source_ref_line": 18
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing",
+      "finding": "absolute",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing",
+      "reason": "import",
+      "source_ref_line": 19
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/multiprocessing/util.py",
+      "finding": "relative",
+      "level": 1,
+      "module_kind": "py",
+      "module_name": "multiprocessing.util",
+      "reason": "import fromlist",
+      "source_ref_line": 19
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.4035527100000138,
+      null,
+      null,
+      5,
+      {
+        "1": 232,
+        "2": 172,
+        "3": 69,
+        "4": 47,
+        "5": 25,
+        "6": 4,
+        "7": 12,
+        "8": 18,
+        "9": 12,
+        "10": 2,
+        "18": 5
+      }
+    ]
+  ]
+}

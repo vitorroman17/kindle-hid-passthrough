@@ -1,0 +1,78 @@
+{
+  "distribution_names": {},
+  "file_format_version": 8,
+  "module_name": "cmd",
+  "modules_used": [
+    {
+      "filename": "/usr/local/lib/python3.11/string.py",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "py",
+      "module_name": "string",
+      "reason": "import",
+      "source_ref_line": 45
+    },
+    {
+      "filename": null,
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "built-in",
+      "module_name": "sys",
+      "reason": "import",
+      "source_ref_line": 45
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/readline.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "readline",
+      "reason": "import",
+      "source_ref_line": 108
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/readline.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "readline",
+      "reason": "import",
+      "source_ref_line": 144
+    },
+    {
+      "filename": "/usr/local/lib/python3.11/lib-dynload/readline.cpython-311-arm-linux-gnueabihf.so",
+      "finding": "absolute",
+      "level": 0,
+      "module_kind": "extension",
+      "module_name": "readline",
+      "reason": "import",
+      "source_ref_line": 258
+    }
+  ],
+  "timing_infos": [
+    [
+      1,
+      0.5083362389999593,
+      null,
+      null,
+      6,
+      {
+        "1": 368,
+        "2": 278,
+        "3": 55,
+        "4": 51,
+        "5": 13,
+        "6": 11,
+        "7": 22,
+        "8": 9,
+        "10": 5,
+        "11": 6,
+        "12": 2,
+        "13": 6,
+        "14": 10,
+        "15": 2,
+        "32": 1
+      }
+    ]
+  ]
+}
