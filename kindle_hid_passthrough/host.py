@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from bumble.core import InvalidStateError
-from bumble.hci import HCI_LE_SET_PRIVACY_MODE_COMMAND, HCI_LE_Set_Privacy_Mode_Command, HCI_Write_Class_Of_Device_Command, HCI_Write_Local_Name_Command
+from bumble.hci import HCI_Constant, HCI_LE_SET_PRIVACY_MODE_COMMAND, HCI_LE_Set_Privacy_Mode_Command, HCI_Write_Class_Of_Device_Command, HCI_Write_Local_Name_Command
 
 from ble import BLEMixin
 from bt_setup import ensure_uhid
@@ -373,7 +373,8 @@ class HIDHost(ClassicMixin, BLEMixin):
 
     def _on_session_disconnection(self, session: DeviceSession, reason):
         proto = session.protocol.value.upper()
-        log.warning(f"[{proto}] Device disconnected: {session.address} (reason={reason})")
+        log.warning(f"[{proto}] Device disconnected: {session.address} "
+                    f"(reason={reason} {HCI_Constant.error_name(reason)})")
 
         if reason == 5 and session.protocol == Protocol.CLASSIC:
             log.info("[Classic] Authentication failure - will clear stale key and retry")
