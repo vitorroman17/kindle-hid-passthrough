@@ -6,6 +6,7 @@ import asyncio
 from bumble.core import BT_BR_EDR_TRANSPORT, BT_HUMAN_INTERFACE_DEVICE_SERVICE, InvalidStateError, TimeoutError as BumbleTimeoutError
 from bumble.hci import (
     Address,
+    HCI_Error,
     HCI_Write_Scan_Enable_Command,
     Role,
 )
@@ -14,7 +15,14 @@ from bumble.l2cap import ClassicChannelSpec
 from bumble.sdp import Client as SDPClient
 
 from config import Protocol, config, normalize_addr, clean_device_name
-from logging_utils import log
+from logging_utils import errstr, log
+
+# 0x23 LMP Error Transaction Collision, 0x2A Different Transaction Collision.
+# Either means the peer is already running the procedure we just asked for.
+CLASSIC_COLLISION_ERRORS = (0x23, 0x2A)
+
+# How long to let the peer open the HID channels before paging outward.
+CLASSIC_PEER_CHANNEL_WAIT = 3.0
 
 FALLBACK_HID_DESCRIPTOR = bytes([
     0x05, 0x01, 0x09, 0x05, 0xa1, 0x01, 0x85, 0x01,
@@ -183,24 +191,60 @@ class ClassicMixin:
         if old is not None:
             await self._teardown_session(old)
 
-        if connection.role != Role.CENTRAL:
+        def is_collision(e):
+            """Our command ran into an LMP procedure the peer already started."""
+            return isinstance(e, HCI_Error) and e.error_code in CLASSIC_COLLISION_ERRORS
+
+        # A peer that pages us may begin its own security procedure straight
+        # away. Anything we issue inside that window collides (0x23 / 0x2A) and
+        # the peer drops the link with 0x13 a few hundred ms later; measured on
+        # a Keychron K2, that was 14 sessions out of 14. So the first collision
+        # hands the procedure over to the peer. A peer that runs no procedure
+        # of its own never collides and still gets a central host, which is
+        # what #117 needs.
+        peer_driving = False
+        is_peripheral = connection.role != Role.CENTRAL
+
+        if is_peripheral:
             log.info("[Classic] Requesting role switch to central...")
             try:
                 await asyncio.wait_for(connection.switch_role(Role.CENTRAL), timeout=5.0)
                 log.success("[Classic] Role switch complete, now central")
+                is_peripheral = False
             except Exception as e:
-                log.warning(f"[Classic] Role switch failed: {e!r}")
+                log.warning(f"[Classic] Role switch failed: {errstr(e)}")
+                peer_driving = is_collision(e)
 
-        if not connection.is_encrypted:
+        if peer_driving:
+            log.info("[Classic] Peer is driving security, staying out of its way")
+        elif not connection.is_encrypted:
             log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
             try:
-                await asyncio.wait_for(connection.authenticate(), timeout=5.0)
+                # An already authenticated link never re-emits the event
+                # authenticate() waits for, so the call would sit until its cap.
+                if not connection.authenticated:
+                    await asyncio.wait_for(connection.authenticate(), timeout=5.0)
                 await asyncio.wait_for(connection.encrypt(enable=True), timeout=5.0)
                 log.success("[Classic] Bonding restored")
             except Exception as e:
-                log.warning(f"[Classic] Bonding restore failed: {e!r}")
+                log.warning(f"[Classic] Bonding restore failed: {errstr(e)}")
+                peer_driving = is_collision(e)
 
         channels = session.channels
+
+        # In HID over BR/EDR the Device opens both channels toward the Host.
+        # Paging outward races that, and every peer measured opened them
+        # within 250 ms, so a short wait costs less than the collision does.
+        if (peer_driving or is_peripheral) and not channels.intr_channel:
+            log.info("[Classic] Waiting for the peer to open the HID channels...")
+            loop = asyncio.get_event_loop()
+            deadline = loop.time() + CLASSIC_PEER_CHANNEL_WAIT
+            while loop.time() < deadline and not channels.intr_channel:
+                await asyncio.sleep(0.1)
+            if channels.intr_channel:
+                log.success("[Classic] Peer opened the HID channels")
+            else:
+                log.info("[Classic] Peer opened nothing, paging outward")
 
         if not channels.ctrl_channel:
             log.info("[Classic] Connecting to HID control channel...")
@@ -208,7 +252,7 @@ class ClassicMixin:
                 await asyncio.wait_for(channels.connect_control_channel(), timeout=5.0)
                 log.success("[Classic] HID control channel connected")
             except Exception as e:
-                log.warning(f"[Classic] Control channel: {e!r}")
+                log.warning(f"[Classic] Control channel: {errstr(e)}")
 
         if not channels.intr_channel:
             log.info("[Classic] Connecting to HID interrupt channel...")
@@ -216,7 +260,7 @@ class ClassicMixin:
                 await asyncio.wait_for(channels.connect_interrupt_channel(), timeout=5.0)
                 log.success("[Classic] HID interrupt channel connected")
             except Exception as e:
-                log.warning(f"[Classic] Interrupt channel: {e!r}")
+                log.warning(f"[Classic] Interrupt channel: {errstr(e)}")
 
         if not channels.intr_channel:
             raise InvalidStateError("[Classic] HID channels not opened by peer")
