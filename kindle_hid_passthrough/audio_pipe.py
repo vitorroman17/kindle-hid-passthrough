@@ -13,6 +13,18 @@ FRAMES_PER_PACKET = 5
 PCM_FRAME_SIZE = SAMPLES_PER_FRAME * PCM_BYTES_PER_SAMPLE
 PCM_PACKET_SIZE = PCM_FRAME_SIZE * FRAMES_PER_PACKET
 
+class SbcStruct(__import__('ctypes').Structure):
+    _fields_ = [
+        ("flags", __import__('ctypes').c_ulong),
+        ("frequency", __import__('ctypes').c_uint8),
+        ("blocks", __import__('ctypes').c_uint8),
+        ("subbands", __import__('ctypes').c_uint8),
+        ("mode", __import__('ctypes').c_uint8),
+        ("allocation", __import__('ctypes').c_uint8),
+        ("bitpool", __import__('ctypes').c_uint8),
+        ("endian", __import__('ctypes').c_uint8),
+    ]
+
 class SbcEncoder:
     def __init__(self, bitpool: int = SBC_BITPOOL_DEFAULT):
         self.bitpool = bitpool
@@ -40,6 +52,14 @@ class SbcEncoder:
             
             ret = self._sbc_lib.sbc_init(self._sbc_struct, 0)
             if ret == 0:
+                # FIX A2DP MISMATCH (Synthesizer voice)
+                sbc_cfg = ctypes.cast(self._sbc_struct, ctypes.POINTER(SbcStruct)).contents
+                sbc_cfg.frequency = 0x02 # 44100
+                sbc_cfg.blocks = 0x03 # 16 blocks
+                sbc_cfg.subbands = 0x01 # 8 subbands
+                sbc_cfg.mode = 0x03 # JOINT_STEREO (default was STEREO 0x02, causing metal synth)
+                sbc_cfg.allocation = 0x00 # LOUDNESS
+                sbc_cfg.bitpool = self.bitpool # 53
                 self._available = True
                 log.info("[Audio] libsbc carregada com sucesso!")
         except Exception as e:
