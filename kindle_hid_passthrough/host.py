@@ -2,6 +2,12 @@
 """HID Host — runs BLE + Classic handlers on a single Bumble device."""
 
 import asyncio
+from bumble.core import ProtocolError
+from bumble import avrcp, avc
+
+from bumble.core import ProtocolError
+from bumble import avrcp, avc
+
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -106,7 +112,49 @@ class DeviceSession:
             self.teardown_done.set()
 
 
+
+class KindleAvrcpDelegate(avrcp.Delegate):
+    def __init__(self, host):
+        super().__init__()
+        self.host = host
+
+    async def on_key_event(
+        self,
+        operation_id: avc.PassThroughFrame.OperationId,
+        pressed: bool,
+        operation_data: bytes
+    ) -> None:
+        import logging
+        log = logging.getLogger(__name__)
+        log.info(f"[AVRCP] Key {operation_id.name} {'pressed' if pressed else 'released'}")
+        
+        target_session = None
+        for session in self.host.sessions.values():
+            if session.protocol.value == "classic_audio" and session.uhid_device:
+                target_session = session
+                break
+                
+        if not target_session:
+            return
+
+        keycode = 0x00
+        if operation_id in (avc.PassThroughFrame.OperationId.PLAY, avc.PassThroughFrame.OperationId.PAUSE):
+            keycode = 0x4E # PageDown
+        elif operation_id in (avc.PassThroughFrame.OperationId.FORWARD, avc.PassThroughFrame.OperationId.VOLUME_UP, avc.PassThroughFrame.OperationId.UP, avc.PassThroughFrame.OperationId.RIGHT):
+            keycode = 0x4E # PageDown
+        elif operation_id in (avc.PassThroughFrame.OperationId.BACKWARD, avc.PassThroughFrame.OperationId.VOLUME_DOWN, avc.PassThroughFrame.OperationId.DOWN, avc.PassThroughFrame.OperationId.LEFT):
+            keycode = 0x4B # PageUp
+        else:
+            keycode = 0x4E
+
+        report = bytes([0x01, 0x00, 0x00, keycode if pressed else 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+        try:
+            target_session.uhid_device.send_input(report)
+        except Exception as e:
+            log.error(f"Failed to send AVRCP input: {e}")
+
 class HIDHost(ClassicMixin, BLEMixin):
+
     """HID Host supporting both BLE and Classic Bluetooth.
 
     Protocol-specific handlers live in ClassicMixin and BLEMixin.
@@ -216,6 +264,8 @@ class HIDHost(ClassicMixin, BLEMixin):
 
             # A2DP Source setup
             self.a2dp_listener = Listener.for_device(device=self.device)
+            self.avrcp_protocol = avrcp.Protocol(KindleAvrcpDelegate(self))
+            self.avrcp_protocol.listen(self.device)
             
             handle = 0x00010002
             self.device.sdp_service_records.update({
@@ -501,6 +551,10 @@ class HIDHost(ClassicMixin, BLEMixin):
             else:
                 await self._continue_ble_after_pairing(session)
             proto_name = session.protocol.value.upper()
+            from kindle_hid_passthrough.uhid_handler import create_uhid_device
+            if not session.uhid_device:
+                desc = await self._query_classic_sdp(session)
+                session.uhid_device = create_uhid_device(session, desc)
             log.success(f"\n[{proto_name}] Paired and receiving HID reports.")
         else:
             log.info("Paired device disconnected; the connect loops will pick it up")
@@ -533,9 +587,13 @@ class HIDHost(ClassicMixin, BLEMixin):
             ),
         )
 
-        avdtp_protocol = None
-        if self.a2dp_listener.servers.get(session.connection.handle):
-            avdtp_protocol = self.a2dp_listener.servers[session.connection.handle]
+        avdtp_protocol = self.a2dp_listener.servers.get(session.connection.handle)
+        if avdtp_protocol and getattr(avdtp_protocol, 'l2cap_channel', None):
+            from bumble.l2cap import ClassicChannel
+            if avdtp_protocol.l2cap_channel.state != ClassicChannel.State.OPEN:
+                del self.a2dp_listener.servers[session.connection.handle]
+                avdtp_protocol = None
+        if avdtp_protocol:
             log.info("AVDTP already connected by remote")
         else:
             try:
@@ -546,27 +604,27 @@ class HIDHost(ClassicMixin, BLEMixin):
                 log.error(f"Failed to connect AVDTP: {e}")
                 return
 
-        # Prepare dummy SBC audio
-        sbc_frame = bytes([0x9C, 0xBD, 0x35, 0x00]) + bytes(115)
-        frames_per_packet = 5
-        media_payload_header = bytes([frames_per_packet])
-        rtp_payload = media_payload_header + (sbc_frame * frames_per_packet)
-        samples_per_frame = 16 * 8  # 128
-        samples_per_packet = samples_per_frame * frames_per_packet
+        from audio_pipe import FifoAudioStreamer, SAMPLES_PER_FRAME, FRAMES_PER_PACKET
+        audio_streamer = FifoAudioStreamer(fifo_path="/tmp/kindle_audio.fifo")
+        samples_per_packet = SAMPLES_PER_FRAME * FRAMES_PER_PACKET
 
         async def packet_generator():
             seq = 0
             ts = 0
-            while True:
-                packet = MediaPacket(
-                    version=2, padding=0, extension=0, marker=0,
-                    sequence_number=seq, timestamp=ts, ssrc=0,
-                    csrc_list=[], payload_type=96, payload=rtp_payload
-                )
-                packet.timestamp_seconds = ts / 44100.0
-                yield packet
-                seq = (seq + 1) & 0xFFFF
-                ts = (ts + samples_per_packet) & 0xFFFFFFFF
+            try:
+                while True:
+                    payload = audio_streamer.get_next_payload()
+                    packet = MediaPacket(
+                        version=2, padding=0, extension=0, marker=0,
+                        sequence_number=seq, timestamp=ts, ssrc=0,
+                        csrc_list=[], payload_type=96, payload=payload
+                    )
+                    packet.timestamp_seconds = ts / 44100.0
+                    yield packet
+                    seq = (seq + 1) & 0xFFFF
+                    ts = (ts + samples_per_packet) & 0xFFFFFFFF
+            finally:
+                audio_streamer.close()
 
         pump = MediaPacketPump(packet_generator(), RealtimeClock())
         
@@ -574,7 +632,7 @@ class HIDHost(ClassicMixin, BLEMixin):
         source = avdtp_protocol.add_source(codec_caps, pump)
 
         endpoints = await avdtp_protocol.discover_remote_endpoints()
-        sink_endpoint = next((e for e in endpoints if e.tsep == StreamEndPointType.SINK), None)
+        sink_endpoint = next((e for e in endpoints if e.tsep == StreamEndPointType.SNK), None)
         if not sink_endpoint:
             log.error("No AVDTP SINK endpoints found on remote")
             return
