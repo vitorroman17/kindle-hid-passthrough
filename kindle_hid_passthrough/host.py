@@ -510,8 +510,11 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         if session.is_alive():
             self._register_session(session)
-            if session.protocol == Protocol.CLASSIC:
-                await self._continue_classic_after_pairing(session)
+            if session.protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO):
+                if session.protocol == Protocol.CLASSIC:
+                    await self._continue_classic_after_pairing(session)
+                else:
+                    await self._continue_classic_audio_after_pairing(session)
             else:
                 await self._continue_ble_after_pairing(session)
             proto_name = session.protocol.value.upper()
@@ -522,6 +525,89 @@ class HIDHost(ClassicMixin, BLEMixin):
         self._parse_devices()
         await self._load_keystore_addresses()
         await self._serve()
+
+
+    async def _continue_classic_audio_after_pairing(self, session):
+        from bumble.avdtp import Protocol, LocalSource, StreamEndPointType, State
+        from bumble.rtp import MediaPacket
+        from bumble.core import BT_L2CAP_PROTOCOL_ID
+        import time
+
+        log.info("[Classic] Audio device connected. Initiating AVDTP...")
+        
+        # We need the codec caps defined earlier. Let's rebuild it or grab it.
+        from bumble.avdtp import MediaCodecCapabilities, AVDTP_AUDIO_MEDIA_TYPE
+        from bumble.a2dp import A2DP_SBC_CODEC_TYPE, SbcMediaCodecInformation
+        
+        codec_caps = MediaCodecCapabilities(
+            media_type=AVDTP_AUDIO_MEDIA_TYPE,
+            media_codec_type=A2DP_SBC_CODEC_TYPE,
+            media_codec_information=SbcMediaCodecInformation(
+                sampling_frequency=SbcMediaCodecInformation.SamplingFrequency.SF_44100,
+                channel_mode=SbcMediaCodecInformation.ChannelMode.JOINT_STEREO,
+                block_length=SbcMediaCodecInformation.BlockLength.BL_16,
+                subbands=SbcMediaCodecInformation.Subbands.S_8,
+                allocation_method=SbcMediaCodecInformation.AllocationMethod.LOUDNESS,
+                minimum_bitpool_value=2,
+                maximum_bitpool_value=53,
+            ),
+        )
+        
+        source = LocalSource([codec_caps])
+        self.a2dp_listener.add_source(source)
+
+        avdtp_protocol = None
+        # Check if they connected to our listener
+        if self.a2dp_listener.servers.get(session.connection.handle):
+            avdtp_protocol = self.a2dp_listener.servers[session.connection.handle]
+            log.info("AVDTP already connected by remote")
+        else:
+            try:
+                log.info("Connecting AVDTP to remote...")
+                avdtp_protocol = await Protocol.connect(session.connection)
+                self.a2dp_listener.set_server(session.connection, avdtp_protocol)
+            except Exception as e:
+                log.error(f"Failed to connect AVDTP: {e}")
+                return
+
+        endpoints = await avdtp_protocol.discover_remote_endpoints()
+        sink_endpoint = next((e for e in endpoints if e.tsep == StreamEndPointType.SINK), None)
+        if not sink_endpoint:
+            log.error("No AVDTP SINK endpoints found on remote")
+            return
+
+        log.info(f"Found remote SINK endpoint: {sink_endpoint.seid}")
+        
+        stream = await avdtp_protocol.create_stream(source, sink_endpoint)
+        log.info("Configured stream. Opening...")
+        
+        await stream.open()
+        log.info("Stream opened. Starting...")
+        
+        await stream.start()
+        log.success("[Classic Audio] AVDTP streaming started! Injecting silence...")
+
+        async def send_dummy_audio():
+            seq = 0
+            # A valid SBC silence frame (44.1kHz, JS, 16 blocks, 8 subbands, bitpool 53)
+            # Actually, we can just send any valid SBC header with zeros.
+            sbc_header = bytes([0x9C, 0x10, 0x00, 0x35]) # example header
+            payload = sbc_header + bytes(50)
+            while True:
+                if stream.state != State.STREAMING:
+                    log.info("Stream stopped.")
+                    break
+                
+                packet = MediaPacket(
+                    version=2, padding=0, extension=0, marker=0,
+                    sequence_number=seq, timestamp=seq * 128, ssrc=0,
+                    csrc_list=[], payload_type=96, payload=payload
+                )
+                stream.send_media_packet(packet)
+                seq = (seq + 1) % 65536
+                await asyncio.sleep(0.01) # Send packets regularly
+
+        asyncio.create_task(send_dummy_audio())
 
     # ==================== COMMON ====================
 

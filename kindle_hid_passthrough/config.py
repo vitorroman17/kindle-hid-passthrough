@@ -197,6 +197,8 @@ class Config:
         """Parse protocol string to Protocol enum."""
         if protocol_str in ('classic', 'br/edr', 'bredr'):
             return Protocol.CLASSIC
+        if protocol_str == 'classic_audio':
+            return Protocol.CLASSIC_AUDIO
         return Protocol.BLE
 
     def _get(self, section: str, key: str, default: str) -> str:

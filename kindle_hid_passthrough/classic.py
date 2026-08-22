@@ -163,11 +163,18 @@ class ClassicMixin:
 
             addr = normalize_addr(addr_str)
             old = self.sessions.get(addr)
-            session = self._new_session(addr, Protocol.CLASSIC, connection)
-            session.channels = ClassicHIDChannels(
-                connection,
-                lambda pdu: self._on_classic_interrupt_data(session, pdu),
-                lambda: self._on_virtual_cable_unplug(session))
+            proto = Protocol.CLASSIC
+            for dev in self.classic_devices:
+                if dev.address == addr or dev.address == '*':
+                    proto = dev.protocol
+                    break
+
+            session = self._new_session(addr, proto, connection)
+            if proto != Protocol.CLASSIC_AUDIO:
+                session.channels = ClassicHIDChannels(
+                    connection,
+                    lambda pdu: self._on_classic_interrupt_data(session, pdu),
+                    lambda: self._on_virtual_cable_unplug(session))
             self._register_session(session)
             session.setup_task = self._track_task(asyncio.create_task(
                 self._run_session_setup(
@@ -519,6 +526,10 @@ class ClassicMixin:
 
     async def _continue_classic_after_pairing(self, session):
         """Continue Classic connection after pairing."""
+        if session.protocol == Protocol.CLASSIC_AUDIO:
+            log.info("[Classic] Audio device connected. Letting AVDTP listener take over.")
+            return
+
         self._ensure_classic_psm_servers()
         session.channels = ClassicHIDChannels(
             session.connection,
