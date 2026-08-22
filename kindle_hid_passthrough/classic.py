@@ -15,6 +15,9 @@ from bumble.sdp import Client as SDPClient
 
 from config import Protocol, config, normalize_addr, clean_device_name
 from logging_utils import errstr, log
+from bumble.hci import HCI_Error
+
+CLASSIC_COLLISION_ERRORS = (0x23, 0x2A)
 
 FALLBACK_HID_DESCRIPTOR = bytes([
     0x05, 0x01, 0x09, 0x05, 0xa1, 0x01, 0x85, 0x01,
@@ -193,6 +196,10 @@ class ClassicMixin:
         if old is not None:
             await self._teardown_session(old)
 
+        def is_collision(e):
+            return isinstance(e, HCI_Error) and e.error_code in CLASSIC_COLLISION_ERRORS
+
+        peer_driving = False
         is_peripheral = connection.role != Role.CENTRAL
 
         if is_peripheral:
@@ -202,10 +209,11 @@ class ClassicMixin:
                 log.success("[Classic] Role switch complete, now central")
                 is_peripheral = False
             except Exception as e:
-                log.warning(f"[Classic] Role switch failed: {errstr(e)}")
+                log.warning(f"[Classic] Role switch failed: {errstr(e) if 'errstr' in globals() else repr(e)}")
+                peer_driving = is_collision(e)
 
-        if is_peripheral:
-            log.info("[Classic] Still peripheral, leaving security to the central")
+        if peer_driving or is_peripheral:
+            log.info("[Classic] Peer is driving security, staying out of its way")
         elif not connection.is_encrypted:
             log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
             try:
@@ -214,16 +222,18 @@ class ClassicMixin:
                 await asyncio.wait_for(connection.encrypt(enable=True), timeout=5.0)
                 log.success("[Classic] Bonding restored")
             except Exception as e:
-                log.warning(f"[Classic] Bonding restore failed: {errstr(e)}")
+                log.warning(f"[Classic] Bonding restore failed: {errstr(e) if 'errstr' in globals() else repr(e)}")
+                peer_driving = is_collision(e)
 
         channels = session.channels
 
         if session.protocol == Protocol.CLASSIC_AUDIO:
             log.info("[Classic] Audio device connected. Letting AVDTP listener take over.")
             log.success(f"[Classic] {self._format_device(session.address)} connected (Audio)")
+            self._track_task(asyncio.create_task(self._continue_classic_audio_after_pairing(session)))
             return
 
-        if is_peripheral and not channels.intr_channel:
+        if (peer_driving or is_peripheral) and not channels.intr_channel:
             log.info("[Classic] Waiting for the peer to open the HID channels...")
             loop = asyncio.get_running_loop()
             deadline = loop.time() + CLASSIC_PEER_CHANNEL_WAIT
