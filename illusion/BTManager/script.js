@@ -217,7 +217,8 @@ var BTManager = (function() {
 
     function setAutostartUI(on) {
         autostartOn = on;
-        getEl("btnAutostart").className = on ? "toggle on" : "toggle";
+        getEl("btnAutostart").className = on
+            ? "toggle toggle-secondary on" : "toggle toggle-secondary";
     }
 
     function toggleAutostart() {
@@ -551,6 +552,35 @@ var BTManager = (function() {
         }, 2000);
     }
 
+    var discoverableTimer = null;
+
+    function startDiscoverable() {
+        if (discoverableTimer) clearTimeout(discoverableTimer);
+        request("/discoverable?duration=60", function(data, err) {
+            if (err || !data || !data.ok) {
+                showMessage(err || (data && data.error) || "Failed", true);
+                return;
+            }
+            showMessage("Visible to phones as an audio device", false);
+            discoverableCountdown(data.duration);
+        });
+    }
+
+    function discoverableCountdown(remaining) {
+        var btn = getEl("btnDiscoverable");
+        if (remaining <= 0) {
+            discoverableTimer = null;
+            btn.innerHTML = "Pair Phone";
+            btn.className = "btn btn-scan";
+            return;
+        }
+        btn.innerHTML = "Visible (" + remaining + "s) — pair from your phone";
+        btn.className = "btn btn-scan scanning";
+        discoverableTimer = setTimeout(function() {
+            discoverableCountdown(remaining - 1);
+        }, 1000);
+    }
+
     function resetScanUI() {
         isScanning = false;
         var btn = getEl("btnScan");
@@ -752,6 +782,19 @@ var BTManager = (function() {
         confirmAction = action;
     }
 
+    function showInfo(message) {
+        getEl("dialogMessage").innerHTML = message;
+        getEl("dialogCancelBtn").style.display = "none";
+        getEl("dialogConfirmBtn").innerHTML = "OK";
+        getEl("confirmOverlay").className = "overlay visible";
+        confirmAction = null;
+    }
+
+    function resetDialogButtons() {
+        getEl("dialogCancelBtn").style.display = "";
+        getEl("dialogConfirmBtn").innerHTML = "Confirm";
+    }
+
     function confirmOk() {
         pressBtn("dialogConfirmBtn");
         getEl("confirmOverlay").className = "overlay";
@@ -759,13 +802,17 @@ var BTManager = (function() {
             removeDevice(confirmAddr);
         } else if (confirmAction === "cache") {
             clearCache();
+        } else {
+            releaseBtn("dialogConfirmBtn");
         }
+        resetDialogButtons();
         confirmAction = null;
         confirmAddr = null;
     }
 
     function confirmCancel() {
         getEl("confirmOverlay").className = "overlay";
+        resetDialogButtons();
         confirmAction = null;
         confirmAddr = null;
     }
@@ -781,6 +828,14 @@ var BTManager = (function() {
         bindBtn("btnToggle", toggleBluetooth);
         bindBtn("btnAutostart", toggleAutostart);
         bindBtn("btnScan", toggleScan);
+        bindBtn("btnDiscoverable", startDiscoverable);
+        bindBtn("btnPairInfo", function() {
+            showInfo("Pairing makes this Kindle visible to phones as a " +
+                "Bluetooth audio device. Once connected, the phone's volume " +
+                "buttons act as page-turn keys: volume up pages forward, " +
+                "volume down pages back. They can be remapped in " +
+                "Button Mapper.");
+        });
         bindBtn("footerDebug", showLogs);
         bindBtn("btnDetailClose", hideDeviceDetail);
         bindBtn("btnDetailAction", detailAction);

@@ -3,7 +3,8 @@
 
 import asyncio
 
-from bumble.core import BT_BR_EDR_TRANSPORT, BT_HUMAN_INTERFACE_DEVICE_SERVICE, InvalidStateError, TimeoutError as BumbleTimeoutError
+from bumble.core import BT_BR_EDR_TRANSPORT, BT_HUMAN_INTERFACE_DEVICE_SERVICE, InvalidStateError
+from bumble.core import TimeoutError as BumbleTimeoutError
 from bumble.hci import (
     Address,
     HCI_Write_Scan_Enable_Command,
@@ -13,7 +14,7 @@ from bumble.hid import HID_CONTROL_PSM, HID_INTERRUPT_PSM, Message, SetProtocolM
 from bumble.l2cap import ClassicChannelSpec
 from bumble.sdp import Client as SDPClient
 
-from config import Protocol, config, normalize_addr, clean_device_name
+from config import Protocol, clean_device_name, config, normalize_addr
 from logging_utils import errstr, log
 
 FALLBACK_HID_DESCRIPTOR = bytes([
@@ -154,6 +155,9 @@ class ClassicMixin:
 
             addr_str = str(connection.peer_address)
             if not self._is_classic_allowed(addr_str):
+                if self.media_remote:
+                    self.media_remote.adopt(connection)
+                    return
                 log.warning(f"[Classic] Rejecting {addr_str} (not allowed)")
                 self._track_task(asyncio.create_task(self._reject_connection(connection)))
                 return
@@ -230,7 +234,12 @@ class ClassicMixin:
         log.success(f"[Classic] {self._format_device(session.address)} receiving HID reports")
 
     def _is_classic_allowed(self, addr_str: str) -> bool:
-        """Check if Classic address is allowed."""
+        """Check if a Classic address should get an HID session.
+
+        With the media remote on, bonded phones live in the same keystore
+        as HID devices, so only devices.conf decides what is HID; anything
+        else is handed to the media remote by the caller.
+        """
         norm_addr = normalize_addr(addr_str)
 
         for dev in self.classic_devices:
@@ -239,7 +248,7 @@ class ClassicMixin:
             if dev.address == norm_addr:
                 return True
 
-        if norm_addr in self._keystore_addresses:
+        if self.media_remote is None and norm_addr in self._keystore_addresses:
             return True
 
         return False

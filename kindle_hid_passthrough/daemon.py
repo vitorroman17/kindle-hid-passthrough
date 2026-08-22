@@ -154,7 +154,8 @@ class HIDDaemon:
                 if not self.running:
                     break
 
-            if not self._has_devices(log_details=True):
+            if not self._has_devices(log_details=True) \
+                    and not config.media_remote_enabled:
                 logger.info("No devices configured, waiting for pairing...")
                 self._resume_event.clear()
                 await self._resume_event.wait()
