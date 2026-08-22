@@ -494,7 +494,7 @@ class HIDHost(ClassicMixin, BLEMixin):
         await self.start(pairing=True)
 
         if protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO):
-            return await self._pair_classic(address)
+            return await self._pair_classic(address, protocol)
         else:
             return await self._pair_ble(address)
 

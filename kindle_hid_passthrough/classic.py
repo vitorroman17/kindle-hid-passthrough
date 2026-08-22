@@ -408,10 +408,11 @@ class ClassicMixin:
         session.vc_unplug = True
         self._track_task(asyncio.create_task(self._teardown_session(session)))
 
-    async def _pair_classic(self, address: str) -> bool:
-        """Pair with a Classic Bluetooth device."""
-        log.info(f"[Classic] Pairing with {address}...")
+    async def _pair_classic(self, address: str, protocol: Protocol = Protocol.CLASSIC) -> bool:
+        """Execute pairing flow for a single Classic device."""
+        self._pairing_session = None
 
+        log.info(f"[Classic] Pairing with {address}/P...")
         try:
             target_address = Address(address, Address.PUBLIC_DEVICE_ADDRESS)
             connection = await self.device.connect(
@@ -427,7 +428,7 @@ class ClassicMixin:
             log.error(f"[Classic] Connection failed: {e}")
             return False
 
-        session = self._new_session(normalize_addr(address), Protocol.CLASSIC, connection)
+        session = self._new_session(normalize_addr(address), protocol, connection)
         self._pairing_session = session
 
         link_key_received = asyncio.Event()
