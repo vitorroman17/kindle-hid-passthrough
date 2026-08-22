@@ -54,11 +54,7 @@ Kernels without UHID support are handled automatically: the daemon loads a bundl
 
 Community walkthrough by [@jencaps89](https://www.tiktok.com/@jencaps89) showing the whole setup as a Bluetooth page turner, [watch it on TikTok](https://www.tiktok.com/@jencaps89/video/7658167614736223496) or through the [embedded player](https://www.tiktok.com/player/v1/7658167614736223496) if you'd rather not log in.
 
-### KindleForge (recommended)
-
-Install directly from [KindleForge](https://github.com/KindleTweaks/KindleForge) â€” search for "Kindle HID Passthrough" in the on-device app store.
-
-### KPM
+### KPM (recommended)
 
 If you have [KPM](https://kindlemodding.org/kindle-dev/kpm/) installed, add this repository once and install:
 
@@ -68,6 +64,10 @@ kpm install kindle-hid-passthrough
 ```
 
 `kpm upgrade` picks up later releases and keeps your `config.ini`, paired devices and pairing keys. `kpm uninstall kindle-hid-passthrough` removes everything, including the udev rules, the upstart job, BTManager and Button Mapper.
+
+### KindleForge (currently unavailable)
+
+[KindleForge](https://github.com/KindleTweaks/KindleForge) is being reworked, so installing from it is not an option right now. Use KPM or the manual install below.
 
 ### Manual install
 
@@ -110,7 +110,7 @@ A built-in Kindle app for managing Bluetooth HID devices from the touchscreen â€
 
 Paired list, scanning for nearby BLE and Classic HID devices, and the per-device view with status, protocol, address, connect and remove.
 
-Installed automatically via KindleForge. For manual installs, use option 6 in `scripts/install.sh`.
+Installed automatically via KPM. For manual installs, use option 6 in `scripts/install.sh`.
 
 The **Start on boot** toggle at the bottom installs or removes the upstart job. It is off by default, so the daemon only runs while you use it, which leaves the Bluetooth radio free for audio. Turn it on if you want your keyboard connected right after a reboot.
 
