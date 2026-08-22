@@ -12,8 +12,6 @@ A userspace Bluetooth HID host for Amazon Kindle e-readers. Connects Bluetooth H
 >
 > **If you only care about KOReader**, use the bundled [KOReader plugin](koreader-plugin/README.md). Bind any button to any KOReader action from inside KOReader, nothing else to install. That covers most people.
 >
-> Buttons, D-pad, triggers and analog sticks all map there.
->
 > **If you want mappings that work system-wide**, outside KOReader as well as in it, pair this with [kindle-button-mapper-rs](https://github.com/zampierilucas/kindle-button-mapper-rs). More setup, more power, and it keeps working with KOReader closed.
 
 ## Overview
