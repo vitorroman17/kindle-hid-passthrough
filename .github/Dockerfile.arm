@@ -38,6 +38,8 @@ COPY patches/ /build/patches/
 RUN BUMBLE_DIR="$(python3 -c 'import bumble, os; print(os.path.dirname(bumble.__file__))')" && \
     patch -p1 -d "$BUMBLE_DIR" < /build/patches/bumble-gatt-server-async-genexpr.patch
 
+COPY .github/nuitka-plugins/ /build/nuitka-plugins/
+
 # Enable ccache and Nuitka's own caching
 ENV CCACHE_DIR=/ccache
 ENV NUITKA_CACHE_DIR=/nuitka-cache
@@ -80,6 +82,9 @@ RUN --mount=type=cache,target=/nuitka-cache \
     --mode=standalone \
     --jobs=$(nproc) \
     --lto=yes \
+    --user-plugin=/build/nuitka-plugins/bytecode_large_modules.py \
+    --python-flag=no_asserts \
+    --python-flag=no_docstrings \
     --show-progress \
     --output-dir=/build/nuitka-out \
     --include-data-file=kindle_hid_passthrough/config.ini=kindle_hid_passthrough/config.ini \
