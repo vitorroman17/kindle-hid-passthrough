@@ -196,7 +196,7 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         # Classic-specific setup
         if self.classic_devices:
-            class_of_device = 0x000104  # Computer/Desktop
+            class_of_device = 0x200104  # Computer/Desktop
             await self.device.host.send_command(
                 HCI_Write_Class_Of_Device_Command(class_of_device=class_of_device),
                 check_result=True
@@ -217,23 +217,6 @@ class HIDHost(ClassicMixin, BLEMixin):
             # A2DP Source setup
             self.a2dp_listener = Listener.for_device(device=self.device)
             
-            # Setup SBC capabilities
-            codec_caps = MediaCodecCapabilities(
-                media_type=AVDTP_AUDIO_MEDIA_TYPE,
-                media_codec_type=A2DP_SBC_CODEC_TYPE,
-                media_codec_information=SbcMediaCodecInformation(
-                    sampling_frequency=SbcMediaCodecInformation.SamplingFrequency.SF_44100,
-                    channel_mode=SbcMediaCodecInformation.ChannelMode.JOINT_STEREO,
-                    block_length=SbcMediaCodecInformation.BlockLength.BL_16,
-                    subbands=SbcMediaCodecInformation.Subbands.S_8,
-                    allocation_method=SbcMediaCodecInformation.AllocationMethod.LOUDNESS,
-                    minimum_bitpool_value=2,
-                    maximum_bitpool_value=53,
-                ),
-            )
-            
-            # We will just add the capabilities to the listener later, 
-            # or when a connection arrives. For now, just register SDP.
             handle = 0x00010002
             self.device.sdp_service_records.update({
                 handle: make_audio_source_service_sdp_records(service_record_handle=handle)
@@ -527,18 +510,18 @@ class HIDHost(ClassicMixin, BLEMixin):
         await self._serve()
 
 
+
     async def _continue_classic_audio_after_pairing(self, session):
-        from bumble.avdtp import Protocol, LocalSource, StreamEndPointType, State
+        from bumble.avdtp import Protocol, LocalSource, StreamEndPointType, State, MediaPacketPump, RealtimeClock
         from bumble.rtp import MediaPacket
-        from bumble.core import BT_L2CAP_PROTOCOL_ID
         import time
 
         log.info("[Classic] Audio device connected. Initiating AVDTP...")
         
-        # We need the codec caps defined earlier. Let's rebuild it or grab it.
         from bumble.avdtp import MediaCodecCapabilities, AVDTP_AUDIO_MEDIA_TYPE
         from bumble.a2dp import A2DP_SBC_CODEC_TYPE, SbcMediaCodecInformation
         
+        # We reuse the capabilities
         codec_caps = MediaCodecCapabilities(
             media_type=AVDTP_AUDIO_MEDIA_TYPE,
             media_codec_type=A2DP_SBC_CODEC_TYPE,
@@ -556,7 +539,6 @@ class HIDHost(ClassicMixin, BLEMixin):
         source = LocalSource([codec_caps])
 
         avdtp_protocol = None
-        # Check if they connected to our listener
         if self.a2dp_listener.servers.get(session.connection.handle):
             avdtp_protocol = self.a2dp_listener.servers[session.connection.handle]
             log.info("AVDTP already connected by remote")
@@ -588,27 +570,51 @@ class HIDHost(ClassicMixin, BLEMixin):
         await stream.start()
         log.success("[Classic Audio] AVDTP streaming started! Injecting silence...")
 
-        async def send_dummy_audio():
+        # 44.1kHz, JS, 16 blocks, 8 subbands, bitpool 53 -> 119 bytes per frame
+        # SBC Syncword = 0x9C. sf_cm_am = 0xBD. bitpool = 0x35. CRC = 0x00.
+        # We will use dummy zeros for the rest of the frame.
+        # The headset may drop it due to bad CRC, but it will keep the connection alive.
+        sbc_frame = bytes([0x9C, 0xBD, 0x35, 0x00]) + bytes(115)
+        
+        # We put 5 frames per RTP packet to reduce overhead (5 * 2.9ms = 14.5ms per packet)
+        frames_per_packet = 5
+        # A2DP SBC Media Payload Header:
+        # bit 7: Fragment=0, bit 6: Start=0, bit 5: Last=0, bit 4: RFA=0, bits 0-3: number of frames (5)
+        media_payload_header = bytes([frames_per_packet])
+        rtp_payload = media_payload_header + (sbc_frame * frames_per_packet)
+        
+        samples_per_frame = 16 * 8  # 128
+        samples_per_packet = samples_per_frame * frames_per_packet
+
+        async def packet_generator():
             seq = 0
-            # A valid SBC silence frame (44.1kHz, JS, 16 blocks, 8 subbands, bitpool 53)
-            # Actually, we can just send any valid SBC header with zeros.
-            sbc_header = bytes([0x9C, 0x10, 0x00, 0x35]) # example header
-            payload = sbc_header + bytes(50)
-            while True:
-                if stream.state != State.STREAMING:
-                    log.info("Stream stopped.")
-                    break
-                
+            ts = 0
+            while stream.state == State.STREAMING:
                 packet = MediaPacket(
                     version=2, padding=0, extension=0, marker=0,
-                    sequence_number=seq, timestamp=seq * 128, ssrc=0,
-                    csrc_list=[], payload_type=96, payload=payload
+                    sequence_number=seq, timestamp=ts, ssrc=0,
+                    csrc_list=[], payload_type=96, payload=rtp_payload
                 )
-                stream.send_media_packet(packet)
-                seq = (seq + 1) % 65536
-                await asyncio.sleep(0.01) # Send packets regularly
+                yield packet
+                seq = (seq + 1) & 0xFFFF
+                ts = (ts + samples_per_packet) & 0xFFFFFFFF
 
-        asyncio.create_task(send_dummy_audio())
+        pump = MediaPacketPump(packet_generator(), RealtimeClock(44100))
+        
+        # Track the task properly
+        session.audio_pump_task = self._track_task(asyncio.create_task(pump.start(stream.send_media_packet)))
+        
+        def pump_done(task):
+            try:
+                task.result()
+                log.warning("Audio pump stopped unexpectedly.")
+            except Exception as e:
+                log.error(f"Audio pump crashed: {e!r}")
+            # Fail fast
+            import os, signal
+            os.kill(os.getpid(), signal.SIGTERM)
+            
+        session.audio_pump_task.add_done_callback(pump_done)
 
     # ==================== COMMON ====================
 
