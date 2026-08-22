@@ -11,9 +11,16 @@
       "artifacts": [
         {
           "url": "https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest/download/kindle-hid-passthrough.kpkg",
-          "version": [3, 14, 0],
+          "version": [
+            3,
+            14,
+            0
+          ],
           "dependencies": [],
-          "supported_platforms": ["kindlehf", "kindlepw2"]
+          "supported_platforms": [
+            "kindlehf",
+            "kindlepw2"
+          ]
         }
       ]
     }

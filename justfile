@@ -288,14 +288,8 @@ version-bump version:
         echo "ERROR: failed to update version in config.py" >&2
         exit 1
     fi
-    sed -i -E "s/\"version\": \[[0-9]+, [0-9]+, [0-9]+\]/\"version\": [${version//./, }]/" kpm/manifest.json kpm/repo.json
-    for f in kpm/manifest.json kpm/repo.json; do
-        if ! grep -q "\"version\": \[${version//./, }\]" "$f"; then
-            echo "ERROR: failed to update version in $f" >&2
-            exit 1
-        fi
-    done
-    git add kindle_hid_passthrough/config.py kpm/manifest.json kpm/repo.json
+    python3 scripts/gen_kpm_manifests.py
+    git add kindle_hid_passthrough/config.py kpm/repo.json
     git commit -s -m "chore: bump version to $version"
     git tag "v$version"
     git push origin main

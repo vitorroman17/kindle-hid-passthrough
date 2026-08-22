@@ -178,6 +178,7 @@ jobs:
 
       - name: Create KPM package
         run: |
+          python3 scripts/gen_kpm_manifests.py
           cp kpm/manifest.json kpm/install.sh kpm/uninstall.sh output/
           tar -czf "kindle-hid-passthrough.kpkg" -C output .
           ls -lh kindle-hid-passthrough.kpkg
