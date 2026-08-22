@@ -180,7 +180,9 @@ jobs:
         run: |
           python3 scripts/gen_kpm_manifests.py
           cp kpm/manifest.json kpm/install.sh kpm/uninstall.sh output/
-          tar -czf "kindle-hid-passthrough.kpkg" -C output .
+          # KPM only finds manifest.json at the archive root, so no ./ prefix.
+          tar -czf "kindle-hid-passthrough.kpkg" -C output $(ls -A output)
+          tar -tzf kindle-hid-passthrough.kpkg | grep -qx manifest.json
           ls -lh kindle-hid-passthrough.kpkg
 
       - name: Upload artifact
