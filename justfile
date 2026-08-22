@@ -288,7 +288,8 @@ version-bump version:
         echo "ERROR: failed to update version in config.py" >&2
         exit 1
     fi
-    git add kindle_hid_passthrough/config.py
+    python3 scripts/gen_kpm_manifests.py
+    git add kindle_hid_passthrough/config.py kpm/repo.json
     git commit -s -m "chore: bump version to $version"
     git tag "v$version"
     git push origin main
