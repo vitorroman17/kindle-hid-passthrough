@@ -348,6 +348,7 @@ uninstallAll()
   echo ""
   echo "=== Uninstall ==="
   printf "This will stop the daemon, remove udev/upstart/WAF app, Button Mapper, and delete the install directory.\n"
+  printf "Your paired devices (devices.conf) and pairing keys (cache/) are kept.\n"
   # Only prompt when there is someone to answer. Package managers run this
   # without a tty and have already asked in their own UI.
   if [ -t 0 ]; then
@@ -407,9 +408,15 @@ EOF
   echo " -> Removing KUAL menu entry"
   rm -rf "$KUAL_DIR"
 
-  echo " -> Removing install directory $INSTALL_DIR"
+  echo " -> Removing install directory $INSTALL_DIR, keeping devices.conf and cache/"
   cd /tmp
-  rm -rf "$INSTALL_DIR"
+  for entry in "$INSTALL_DIR"/* "$INSTALL_DIR"/.[!.]*; do
+    [ -e "$entry" ] || continue
+    case "${entry##*/}" in
+      devices.conf|cache) continue ;;
+    esac
+    rm -rf "$entry"
+  done
 
   echo ""
   echo "Uninstall complete. Reboot recommended."
