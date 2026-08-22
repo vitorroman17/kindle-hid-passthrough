@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install Python build tools
 RUN pip install --no-cache-dir \
-    nuitka \
+    https://github.com/Nuitka/Nuitka/archive/51f7e3703cea42263b0b8bb9029afb74dd48349d.tar.gz \
     ordered-set \
     bumble==0.0.226 \
     aiofiles>=23.0.0
