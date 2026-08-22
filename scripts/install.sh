@@ -1,5 +1,8 @@
 #!/bin/sh
 
+trap '/usr/sbin/mntroot ro 2>/dev/null' EXIT
+trap 'exit 130' INT TERM HUP
+
 INSTALL_DIR="/mnt/us/kindle_hid_passthrough"
 MAPPER_DIR="/mnt/us/kindle-button-mapper"
 APP_ID="com.lzampier.btmanager"
