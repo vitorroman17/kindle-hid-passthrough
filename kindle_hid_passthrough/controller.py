@@ -35,6 +35,7 @@ class DaemonController:
 
         self._op_lock = asyncio.Lock()
         self._suspended_by_system = False
+        self.bt_enabled = True
 
         # Scan state
         self.scan_result = None
@@ -59,7 +60,7 @@ class DaemonController:
         devices = self._get_devices_cached()
 
         status = {
-            "daemon_running": self.daemon.running and not self.daemon._suspended,
+            "daemon_running": self.bt_enabled and self.daemon.running,
             "devices": devices,
             "device_count": len(devices),
             "scanning": self.is_scanning,
@@ -68,19 +69,14 @@ class DaemonController:
         }
 
         conn = self.daemon.connection_state
-        if conn.get("connected"):
-            status["connected_device"] = conn.get("address")
-            status["connected_protocol"] = conn.get("protocol")
-            status["connected_name"] = conn.get("name")
-            status["hid_ready"] = conn.get("hid_ready", False)
-            if conn.get("uhid_name"):
-                status["uhid_name"] = conn["uhid_name"]
-            if conn.get("input_paths"):
-                status["input_paths"] = conn["input_paths"]
-            if conn.get("descriptor_size"):
-                status["descriptor_size"] = conn["descriptor_size"]
+        status["connections"] = conn.get("connections", [])
 
         return status
+
+    async def _resume_if_enabled(self):
+        """Resume unless BT was toggled off while the op ran."""
+        if self.bt_enabled:
+            await self.daemon.resume()
 
     def _get_devices_cached(self) -> list:
         """Device list from devices.conf, cached by file mtime."""
@@ -148,7 +144,7 @@ class DaemonController:
                 self.scan_result = {"ok": False, "error": str(e)}
             finally:
                 self.is_scanning = False
-                await self.daemon.resume()
+                await self._resume_if_enabled()
 
     # ---- Pair ----
 
@@ -186,7 +182,7 @@ class DaemonController:
                 self.pair_result = {"ok": False, "address": address, "error": str(e)}
             finally:
                 self.is_pairing = False
-                await self.daemon.resume()
+                await self._resume_if_enabled()
 
     # ---- Connect / Resume ----
 
@@ -216,10 +212,10 @@ class DaemonController:
             try:
                 await self.daemon.suspend()
                 config.add_device(address, protocol)
-                await self.daemon.resume()
+                await self._resume_if_enabled()
             except Exception as e:
                 logger.error(f"Connect failed: {errstr(e)}")
-                await self.daemon.resume()
+                await self._resume_if_enabled()
 
     # ---- System suspend (powerd) ----
 
@@ -229,12 +225,19 @@ class DaemonController:
 
     async def _do_system_suspend(self, event):
         async with self._op_lock:
+            keeps_radio = chip().survives_suspend
+            # A chip that outlives the screensaver keeps serving the remote
+            # with the screen off; only a real suspend has to detach, and it
+            # must, or the peer holds a dead link and stops page scanning.
+            if keeps_radio and event != 'readyToSuspend':
+                return
             if self.daemon._suspended:
                 return
-            logger.info(f"System suspend ({event}): powering BT off")
+            logger.info(f"System suspend ({event}): releasing BT")
             self._suspended_by_system = True
             await self.daemon.suspend()
-            chip().power_off()
+            if not keeps_radio:
+                chip().power_off()
 
     def on_system_resume(self, event):
         """From power monitor thread: re-warm BT after wake."""
@@ -245,7 +248,7 @@ class DaemonController:
             if not self._suspended_by_system:
                 return
             self._suspended_by_system = False
-            if not self.daemon._suspended:
+            if not self.bt_enabled or not self.daemon._suspended:
                 return
             logger.info(f"System resume ({event}): restarting BT")
             await self.daemon.resume()
@@ -253,11 +256,11 @@ class DaemonController:
     # ---- Remove ----
 
     def request_remove(self, address: str) -> dict:
-        """Remove a device from config, clear its cache, and disconnect."""
+        """Remove a device from config, clear its cache, and disconnect it."""
         result = config.remove_device(address)
         if result["removed"]:
             DeviceCache(config.cache_dir).clear(normalize_addr(address))
-            self.request_disconnect()
+            self.request_disconnect(address=address)
         return result
 
     # ---- Clear Cache ----
@@ -278,7 +281,7 @@ class DaemonController:
             if self._cursor_proc is not None and self._cursor_proc.poll() is None:
                 return
             # reap any stray overlay (e.g. orphaned by a prior daemon restart)
-            subprocess.run(['pkill', '-x', 'mousecursor'], capture_output=True)
+            subprocess.run(['killall', '-q', 'mousecursor'], capture_output=True)
             binary = os.path.join(config.base_path, 'scripts', 'mousecursor')
             errlog = os.path.join(config.base_path, 'cache', 'mousecursor.log')
             try:
@@ -303,27 +306,28 @@ class DaemonController:
                     proc.kill()
                     proc.wait()
             # safety net: reap any stray/orphaned overlay too
-            subprocess.run(['pkill', '-x', 'mousecursor'], capture_output=True)
+            subprocess.run(['killall', '-q', 'mousecursor'], capture_output=True)
 
     # ---- Disconnect / Stop ----
 
-    def request_disconnect(self, suspend=False):
-        """From HTTP thread: drop connection.
+    def request_disconnect(self, suspend=False, address=None):
+        """From HTTP thread: drop one connection, or all.
 
-        suspend=False: drop connection, daemon keeps running (reconnect loop).
+        address given: drop that device's session, daemon keeps running.
+        address None:  drop every session (reconnect loops bring them back).
         suspend=True:  suspend daemon entirely (/stop).
         """
         asyncio.run_coroutine_threadsafe(
-            self._do_disconnect(suspend), self.loop
+            self._do_disconnect(suspend, address), self.loop
         )
 
-    async def _do_disconnect(self, suspend):
+    async def _do_disconnect(self, suspend, address=None):
         async with self._op_lock:
             try:
                 if suspend:
                     await self.daemon.suspend()
                     chip().power_off()
                 else:
-                    await self.daemon.disconnect()
+                    await self.daemon.disconnect(address)
             except Exception as e:
                 logger.error(f"Disconnect failed: {errstr(e)}")

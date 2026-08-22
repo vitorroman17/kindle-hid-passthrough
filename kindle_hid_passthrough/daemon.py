@@ -22,6 +22,8 @@ from scanner import Scanner
 
 logger = logging.getLogger(__name__)
 
+SUSPEND_TIMEOUT = 10.0
+
 
 class HIDDaemon:
     """Daemon that maintains persistent connection to an HID device."""
@@ -41,7 +43,7 @@ class HIDDaemon:
         """Current connection state for API."""
         if self.host and not self._suspended:
             return self.host.connection_state
-        return {"connected": False}
+        return {"connected": False, "connections": []}
 
     async def suspend(self):
         """Disconnect and release transport for scan/pair."""
@@ -52,21 +54,32 @@ class HIDDaemon:
         # Cancel the host task first — this stops host.run()'s connect loop
         if self._host_task and not self._host_task.done():
             self._host_task.cancel()
-            try:
-                await self._host_task
-            except (asyncio.CancelledError, Exception):
-                pass
+            await self._abandon_after_timeout(self._host_task, "host task")
             self._host_task = None
 
         # Then clean up any remaining resources
         if self.host:
-            try:
-                await self.host.cleanup()
-            except Exception:
-                pass
+            await self._abandon_after_timeout(
+                asyncio.ensure_future(self.host.cleanup()), "host cleanup")
             self.host = None
 
         logger.info("Daemon suspended")
+
+    @staticmethod
+    async def _abandon_after_timeout(task, what):
+        """Wait out a teardown task, then leave it behind if it will not end.
+
+        asyncio.wait() is deliberate: wait_for() re-cancels and awaits, which
+        hangs forever on a task that ignores cancellation.
+        """
+        done, _ = await asyncio.wait({task}, timeout=SUSPEND_TIMEOUT)
+        if not done:
+            logger.warning(f"Suspend: {what} did not finish, abandoning it")
+            return
+        try:
+            task.result()
+        except (asyncio.CancelledError, Exception):
+            pass
 
     async def scan(self, duration=10.0, on_device_found=None):
         """Scan for BT devices. Must be called while suspended."""
@@ -93,14 +106,13 @@ class HIDDaemon:
             await host.cleanup()
             raise
 
-    async def disconnect(self):
-        """Drop the active connection; daemon keeps running and will reconnect."""
-        if self.host and self.host._is_connection_alive():
-            await self.host.connection.disconnect()
+    async def disconnect(self, address=None):
+        """Drop one session by address, or all; daemon keeps running and
+        the connect loops will reconnect."""
+        if self.host and not self._suspended:
+            await self.host.end_session(address)
         else:
             logger.info("No active connection to disconnect")
-        if self._host_task and not self._host_task.done():
-            self._host_task.cancel()
 
     async def resume(self):
         """Resume connections after scan/pair."""
@@ -151,7 +163,6 @@ class HIDDaemon:
                     break
                 continue
 
-            skip_delay = False
             chip().ensure_powered()
 
             try:
@@ -190,26 +201,12 @@ class HIDDaemon:
                 # When suspended, suspend() owns cleanup of self.host. Skipping
                 # here avoids a race where both paths run host.cleanup() in
                 # parallel and deadlock on transport/connection teardown.
-                auth_fail_addr = None
-                vc_unplug_addr = None
                 if self.host and not self._suspended:
-                    auth_fail_addr = self.host.get_auth_failure_address()
-                    vc_unplug_addr = self.host.get_virtual_cable_unplug_address()
                     try:
                         await self.host.cleanup()
                     except Exception:
                         pass
                     self.host = None
-
-                if vc_unplug_addr:
-                    logger.info(f"Virtual cable unplugged by {vc_unplug_addr}, removing device")
-                    config.remove_device(vc_unplug_addr)
-                    skip_delay = True
-
-                if auth_fail_addr:
-                    logger.info(f"Auth failure for {auth_fail_addr}, clearing stale key")
-                    config.remove_pairing_key(auth_fail_addr)
-                    skip_delay = True
 
             if not self.running:
                 break
@@ -218,17 +215,16 @@ class HIDDaemon:
             if self._suspended:
                 continue
 
-            if not skip_delay:
-                logger.info(f"Reconnecting in {config.reconnect_delay}s...")
-                try:
-                    await asyncio.wait_for(
-                        self._resume_event.wait(),
-                        timeout=config.reconnect_delay
-                    )
-                    # Resume event fired during delay — go back to top
-                    self._resume_event.clear()
-                except asyncio.TimeoutError:
-                    pass  # Normal delay elapsed
+            logger.info(f"Reconnecting in {config.reconnect_delay}s...")
+            try:
+                await asyncio.wait_for(
+                    self._resume_event.wait(),
+                    timeout=config.reconnect_delay
+                )
+                # Resume event fired during delay, go back to top
+                self._resume_event.clear()
+            except asyncio.TimeoutError:
+                pass  # Normal delay elapsed
 
         logger.info("Daemon stopped")
 
@@ -259,7 +255,7 @@ async def main():
     controller.loop = asyncio.get_event_loop()
 
     # Reap any cursor overlay orphaned by a previous daemon before we start.
-    subprocess.run(['pkill', '-x', 'mousecursor'], capture_output=True)
+    subprocess.run(['killall', '-q', 'mousecursor'], capture_output=True)
 
     # Auto-toggle the mouse cursor overlay as pointer devices connect/disconnect.
     def _cursor_for_pointer(active):
@@ -276,11 +272,9 @@ async def main():
     server_thread.start()
     log.info(f"API server listening on port {PORT}")
 
-    monitor = None
-    if not chip().survives_suspend:
-        monitor = PowerMonitor(controller)
-        monitor.start()
-        log.info("Watching powerd for system suspend")
+    monitor = PowerMonitor(controller)
+    monitor.start()
+    log.info("Watching powerd for system suspend")
 
     # Signal handling
     shutdown = asyncio.Event()
@@ -310,8 +304,7 @@ async def main():
             except asyncio.CancelledError:
                 pass
 
-    if monitor:
-        monitor.stop()
+    monitor.stop()
     server.shutdown()
     logger.info("Daemon stopped")
 

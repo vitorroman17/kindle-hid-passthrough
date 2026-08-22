@@ -12,7 +12,9 @@ A userspace Bluetooth HID host for Amazon Kindle e-readers. Connects Bluetooth H
 >
 > **If you only care about KOReader**, use the bundled [KOReader plugin](koreader-plugin/README.md). Bind any button to any KOReader action from inside KOReader, nothing else to install. That covers most people.
 >
-> **If you want mappings that work system-wide**, outside KOReader as well as in it, pair this with [kindle-button-mapper-rs](https://github.com/zampierilucas/kindle-button-mapper-rs). More setup, more power, and the only option for analog sticks.
+> Buttons, D-pad and triggers all map there. Analog sticks are the one thing it can't do yet, tracked in [kindle-button-mapper#40](https://github.com/zampierilucas/kindle-button-mapper-rs/issues/40).
+>
+> **If you want mappings that work system-wide**, outside KOReader as well as in it, pair this with [kindle-button-mapper-rs](https://github.com/zampierilucas/kindle-button-mapper-rs). More setup, more power, and it keeps working with KOReader closed.
 
 ## Overview
 
@@ -27,7 +29,7 @@ BT HID Device ──┤                                          ──>  Bumble
 ## Features
 
 - **Generic HID support** - Works with any Bluetooth HID device (Classic or BLE)
-- **Mixed protocol support** - Configure both BLE and Classic devices simultaneously
+- **Multi-device support** - Multiple devices connected at once, BLE and Classic mixed
 - **UHID passthrough** - Devices appear as native Linux input devices
 - **UDEV keyboard device** - Devices can be treated as keyboard and keypresses used for text input.
 - **Auto-reconnection** - Daemon mode with automatic reconnection
@@ -60,7 +62,7 @@ Install directly from [KindleForge](https://github.com/KindleTweaks/KindleForge)
 
 1. Download the latest release from [GitHub Releases](https://github.com/zampierilucas/kindle-hid-passthrough/releases) and unpack it somewhere other than the install directory:
    ```bash
-   wget https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest/download/kindle-hid-passthrough-armv7.tar.gz
+   curl -L -o kindle-hid-passthrough-armv7.tar.gz https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest/download/kindle-hid-passthrough-armv7.tar.gz
    mkdir -p /mnt/us/khp-release
    tar -xzf kindle-hid-passthrough-armv7.tar.gz -C /mnt/us/khp-release
    ```
@@ -105,7 +107,7 @@ The **Start on boot** toggle at the bottom installs or removes the upstart job. 
 
 If you use KOReader, a bundled plugin gives you the same scan / pair / connect / disconnect / logs / cache controls from inside KOReader — no need to exit. Open via **cog icon (Settings) → Network → BT Manager - HID Passthrough**.
 
-It also maps keys. Press a button on a connected keyboard, gamepad or remote and bind it to any KOReader action, in-process, with no extra daemon and no HTTP Inspector.
+It also maps keys. Press a button, a D-pad direction or a trigger and bind it to any KOReader action, or to one that keeps working with KOReader closed. Mappings run through the bundled Button Mapper, and the KOReader actions need KOReader's HTTP Inspector on.
 
 <p align="center">
   <img src="koreader-plugin/screenshots/menu.png" width="48%" alt="Plugin menu">
@@ -113,6 +115,10 @@ It also maps keys. Press a button on a connected keyboard, gamepad or remote and
 </p>
 
 For most people this is all you need, and it's the simpler half of the note at the top of this README. Auto-installed via the interactive installer when `/mnt/us/koreader/plugins/` exists. Requires KOReader 2026.07 or newer, which handles keyboard hot-plug natively. See [`koreader-plugin/README.md`](koreader-plugin/README.md) for details.
+
+### KUAL
+
+If `/mnt/us/extensions/` exists you also get a KUAL entry with the installer options in it, so you can reinstall the plugin without SSH.
 
 ## Usage
 
@@ -148,7 +154,7 @@ Paired devices are stored in `devices.conf`:
 5C:2B:3E:50:4F:04/P ble BLE-M3
 ```
 
-**Mixed Protocol Support**: You can configure both BLE and Classic devices. The daemon automatically detects mixed protocols and uses a unified host that handles both simultaneously - the first device to connect wins.
+**Multi-device support**: Every configured device connects and stays connected at the same time, across both protocols. Sessions are tracked per address, so a keyboard over Classic and a mouse over BLE (or several of each) work together.
 
 ## Mapping Inputs to Specific Actions
 

@@ -17,6 +17,7 @@ import argparse
 import asyncio
 import os
 import sys
+import threading
 
 # Add current directory to path for imports
 sys.path.insert(0, '/mnt/us/kindle_hid_passthrough')
@@ -139,9 +140,8 @@ async def pair_mode(protocol_filter: Protocol = None, sequential: bool = False):
         await host.cleanup()
 
 
-async def run_mode(address: str):
+async def run_mode():
     """Normal run mode - connect and forward reports."""
-    log.info(f"Connecting to {address}")
     host = HIDHost()
 
     try:
@@ -169,6 +169,13 @@ def _close_inherited_sockets():
             pass
 
 
+def _clear_boot_attempts():
+    try:
+        os.unlink(os.path.join(config.base_path, 'boot_attempts'))
+    except OSError:
+        pass
+
+
 def main():
     _close_inherited_sockets()
 
@@ -189,6 +196,11 @@ def main():
                         help='Print a read-only diagnostics dump for bug reports')
 
     args = parser.parse_args()
+
+    if args.daemon:
+        timer = threading.Timer(120, _clear_boot_attempts)
+        timer.daemon = True
+        timer.start()
 
     if args.diagnostics:
         from diagnostics import run_diagnostics
@@ -216,7 +228,7 @@ def main():
     if not address:
         all_devices = config.get_all_devices()
         if all_devices:
-            # Show all configured devices
+            # Show all configured devices (the host reads them from config)
             if len(all_devices) == 1:
                 addr, protocol, name = all_devices[0]
                 display = f"{name} ({addr})" if name else addr
@@ -226,7 +238,6 @@ def main():
                 for addr, protocol, name in all_devices:
                     display = f"{name} ({addr})" if name else addr
                     log.info(f"  - [{protocol.value}] {display}")
-            # Use first device's address for compatibility (unified host reads all from config)
             address = all_devices[0][0]
         else:
             if args.daemon:
@@ -240,7 +251,7 @@ def main():
         # Use daemon module for proper reconnect handling
         asyncio.run(daemon_main())
     else:
-        asyncio.run(run_mode(address))
+        asyncio.run(run_mode())
 
 
 if __name__ == '__main__':

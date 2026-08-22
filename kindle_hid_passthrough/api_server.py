@@ -6,6 +6,20 @@ HTTP server that exposes daemon operations via a REST-like API.
 Runs embedded in the daemon process; all operations go through DaemonController.
 
 Port 8321 on localhost.
+
+/status shape:
+    {
+      "ok": true, "version": "...",
+      "daemon_running": bool, "scanning": bool, "pairing": bool,
+      "devices": [{"address", "protocol", "name"?}, ...],   # devices.conf
+      "device_count": int,
+      "connections": [                                      # live sessions
+        {"address", "protocol", "name", "hid_ready",
+         "uhid_name"?, "input_paths"?, "descriptor_size"?}, ...]
+    }
+
+/disconnect takes an optional addr param: with it, only that device's
+session is dropped; without it, every session is dropped.
 """
 
 import json
@@ -93,7 +107,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             case '/connect':
                 self._handle_connect(param('addr'), param('protocol'))
             case '/disconnect':
-                self._handle_disconnect()
+                self._handle_disconnect(param('addr'))
             case '/logs':
                 self._handle_logs(param('lines'))
             case _:
@@ -135,19 +149,15 @@ class RequestHandler(BaseHTTPRequestHandler):
 
     def _handle_start(self):
         controller = self._controller
-        if controller.daemon.running and not controller.daemon._suspended:
-            self._send_json({"ok": True, "message": "Daemon already running"})
-            return
+        controller.bt_enabled = True
         controller.request_connect()
-        self._send_json({"ok": True, "message": "Daemon resuming"})
+        self._send_json({"ok": True, "message": "Bluetooth on"})
 
     def _handle_stop(self):
         controller = self._controller
-        if controller.daemon._suspended:
-            self._send_json({"ok": True, "message": "Already stopped"})
-            return
+        controller.bt_enabled = False
         controller.request_disconnect(suspend=True)
-        self._send_json({"ok": True, "message": "Daemon stopped"})
+        self._send_json({"ok": True, "message": "Bluetooth off"})
 
     def _handle_devices(self):
         status = self._controller.get_status()
@@ -230,9 +240,9 @@ class RequestHandler(BaseHTTPRequestHandler):
         controller.request_connect(address, protocol_str or 'ble')
         self._send_json({"ok": True, "message": f"Connecting to {address}"})
 
-    def _handle_disconnect(self):
+    def _handle_disconnect(self, address=None):
         controller = self._controller
-        controller.request_disconnect()
+        controller.request_disconnect(address=address)
         self._send_json({"ok": True, "message": "Disconnecting"})
 
     def _handle_logs(self, lines_str):
