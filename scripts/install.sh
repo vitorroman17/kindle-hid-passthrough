@@ -51,7 +51,7 @@ stopDaemon()
   echo " -> Stopping daemon"
   lipc-set-prop com.lab126.appmgrd start app://com.lab126.booklet.home 2>/dev/null
   /sbin/stop hid-passthrough 2>/dev/null
-  pkill -f "kindle-hid-passthrough" 2>/dev/null
+  pkill -f "kindle-hid-passthrough --daemon" 2>/dev/null
   pkill -f "main.py --daemon" 2>/dev/null
   pkill -f "ld-linux-armhf." 2>/dev/null
 
