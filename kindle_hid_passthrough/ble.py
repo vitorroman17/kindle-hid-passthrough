@@ -147,13 +147,14 @@ class BLEMixin:
         self._load_cached_descriptor(session)
         await self._setup_ble_hid(session)
         log.success(f"[BLE] {self._format_device(session.address)} receiving HID reports")
-        self._track_task(asyncio.create_task(self._read_ble_battery(session)))
 
     async def _read_ble_battery(self, session):
         """Subscribe to Battery Level (0x2A19) and read it once, if present."""
         peer = session.peer
         service = next((s for s in peer.services if s.uuid == GATT_BATTERY_SERVICE), None)
         if service is None:
+            log.info(f"[BLE] No Battery Service on {session.address}, has "
+                     f"{[str(s.uuid) for s in peer.services]}")
             return
         try:
             await peer.discover_characteristics(service=service)
@@ -428,6 +429,7 @@ class BLEMixin:
         self._create_uhid_device(session)
         await self._subscribe_to_ble_reports(session)
         await self._ble_activate_hid_service(session)
+        self._track_task(asyncio.create_task(self._read_ble_battery(session)))
 
     async def _read_ble_device_name(self, session):
         """Read BLE device name from Generic Access Service."""
