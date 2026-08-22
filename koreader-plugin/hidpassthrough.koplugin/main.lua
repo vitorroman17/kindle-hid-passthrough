@@ -1680,9 +1680,6 @@ local battery_unavailable = false
 
 HIDPassthrough.BATTERY_POLL_INTERVAL = 300
 HIDPassthrough.BATTERY_FIRST_POLL = 2
--- Same glyph the footer uses for the Kindle's own battery, so it renders
--- with whatever font the status bar already falls back to.
-HIDPassthrough.BATTERY_SYMBOL = "\u{e790}"
 HIDPassthrough.BATTERY_LETTER = "BT"
 
 -- Lowest level among connected devices that report one, or nil for none.
@@ -1704,10 +1701,11 @@ function HIDPassthrough:_batteryText()
     if not level then return end
     local footer = self.ui.view and self.ui.view.footer
     local prefix = footer and footer.settings and footer.settings.item_prefix
-    if prefix == "icons" then
-        return self.BATTERY_LETTER .. self.BATTERY_SYMBOL .. " " .. level .. "%"
-    elseif prefix == "compact_items" then
-        return self.BATTERY_LETTER .. self.BATTERY_SYMBOL .. level .. "%"
+    if prefix == "icons" or prefix == "compact_items" then
+        -- Same per-decile glyphs the footer uses for the Kindle's own battery.
+        local symbol = PowerD:getBatterySymbol(false, false, level)
+        local gap = prefix == "icons" and " " or ""
+        return self.BATTERY_LETTER .. symbol .. gap .. level .. "%"
     end
     return self.BATTERY_LETTER .. ": " .. level .. "%"
 end
