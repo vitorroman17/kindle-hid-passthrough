@@ -7,6 +7,7 @@ Manage the kindle-hid-passthrough daemon and map keys from inside KOReader.
 local ConfirmBox = require("ui/widget/confirmbox")
 local Device = require("device")
 local Dispatcher = require("dispatcher")
+local Event = require("ui/event")
 local InfoMessage = require("ui/widget/infomessage")
 local InputContainer = require("ui/widget/container/inputcontainer")
 local Menu = require("ui/widget/menu")
@@ -216,6 +217,7 @@ function HIDPassthrough:_attachInput(path, force)
     input_fds[info.path] = Device.input:fdopen(info.fd, info.path, info.name)
     logger.info("HIDPassthrough: attached input", info.name, "@", info.path)
     self:_extendEventMap()
+    self:_startBatteryPoll()
 end
 
 -- Take a node back that we handed to the mapper. checkKeyDevice deliberately
@@ -233,6 +235,7 @@ function HIDPassthrough:_reclaimInput(path)
     input_fds[real] = Device.input:fdopen(fd, real, name)
     logger.info("HIDPassthrough: took", real, "back from Button Mapper")
     self:_extendEventMap()
+    self:_startBatteryPoll()
     return true
 end
 
@@ -241,6 +244,9 @@ function HIDPassthrough:_detachInput(path)
     Device.input:close(path)
     input_fds[path] = nil
     logger.info("HIDPassthrough: detached input", path)
+    if next(input_fds) == nil then
+        self:_stopBatteryPoll()
+    end
 end
 
 function HIDPassthrough:_scanInputs()
@@ -1665,6 +1671,106 @@ end
 
 function HIDPassthrough:onCloseWidget()
     self:_cancelPolls()
+    self:_stopBatteryPoll()
+end
+
+------------------------------------------------------------------------------
+-- Peripheral battery in the status bars
+------------------------------------------------------------------------------
+
+HIDPassthrough.BATTERY_POLL_INTERVAL = 300
+HIDPassthrough.BATTERY_FIRST_POLL = 2
+-- Same glyph the footer uses for the Kindle's own battery, so it renders
+-- with whatever font the status bar already falls back to.
+HIDPassthrough.BATTERY_SYMBOL = "\u{e790}"
+HIDPassthrough.BATTERY_LETTER = "BT"
+
+-- Lowest level among connected devices that report one, or nil for none.
+local function lowestBattery(data)
+    local lowest
+    if data and type(data.connections) == "table" then
+        for _, conn in ipairs(data.connections) do
+            local level = conn.battery_level
+            if type(level) == "number" and (not lowest or level < lowest) then
+                lowest = level
+            end
+        end
+    end
+    return lowest
+end
+
+function HIDPassthrough:_batteryText()
+    local level = self._battery
+    if not level then return end
+    local footer = self.ui.view and self.ui.view.footer
+    local prefix = footer and footer.settings and footer.settings.item_prefix
+    if prefix == "icons" then
+        return self.BATTERY_LETTER .. self.BATTERY_SYMBOL .. " " .. level .. "%"
+    elseif prefix == "compact_items" then
+        return self.BATTERY_LETTER .. self.BATTERY_SYMBOL .. level .. "%"
+    end
+    return self.BATTERY_LETTER .. ": " .. level .. "%"
+end
+
+-- Registering flips the footer's "External content" item on, so only do it
+-- once a device has actually reported a level.
+function HIDPassthrough:_setBatteryShown(shown)
+    if shown == self._battery_shown then return end
+    self._battery_shown = shown
+    local footer = self.ui.view and self.ui.view.footer
+    if footer then
+        if shown then
+            footer:addAdditionalFooterContent(self._battery_content_func)
+        else
+            footer:removeAdditionalFooterContent(self._battery_content_func)
+        end
+    end
+    if self.ui.crelistener then
+        if shown then
+            self.ui.crelistener:addAdditionalHeaderContent(self._battery_content_func)
+        else
+            self.ui.crelistener:removeAdditionalHeaderContent(self._battery_content_func)
+        end
+    end
+end
+
+function HIDPassthrough:_pollBattery()
+    local data = self:_httpGetJson("/status")
+    if not data then
+        -- Daemon is down. Drop the item and stop polling, rather than
+        -- stalling on a dead socket every five minutes.
+        self._battery = nil
+        self:_setBatteryShown(false)
+        self._battery_poll_cb = nil
+        return
+    end
+
+    local level = lowestBattery(data)
+    if level ~= self._battery then
+        self._battery = level
+        self:_setBatteryShown(level ~= nil)
+        UIManager:broadcastEvent(Event:new("RefreshAdditionalContent"))
+        if self.ui.crelistener then
+            UIManager:broadcastEvent(Event:new("UpdateHeader"))
+        end
+    end
+    UIManager:scheduleIn(self.BATTERY_POLL_INTERVAL, self._battery_poll_cb)
+end
+
+function HIDPassthrough:_startBatteryPoll()
+    if self._battery_poll_cb or not self.ui.view then return end
+    self._battery_content_func = function() return self:_batteryText() end
+    self._battery_poll_cb = function() self:_pollBattery() end
+    UIManager:scheduleIn(self.BATTERY_FIRST_POLL, self._battery_poll_cb)
+end
+
+function HIDPassthrough:_stopBatteryPoll()
+    if self._battery_poll_cb then
+        UIManager:unschedule(self._battery_poll_cb)
+        self._battery_poll_cb = nil
+    end
+    self:_setBatteryShown(false)
+    self._battery = nil
 end
 
 function HIDPassthrough:_doToggle(touchmenu_instance)
