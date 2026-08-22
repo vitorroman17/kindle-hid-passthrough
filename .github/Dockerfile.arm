@@ -5,7 +5,6 @@
 # Strategy: Nuitka standalone creates a directory with the binary + all .so deps.
 # We bundle the build container's ld-linux-armhf.so.3 and invoke it directly,
 # completely bypassing the Kindle's ancient glibc 2.20 / dynamic linker.
-# No staticx needed — just a directory with everything.
 
 FROM arm32v7/python:3.11-slim-bookworm
 
@@ -27,8 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip install --no-cache-dir \
     https://github.com/Nuitka/Nuitka/archive/51f7e3703cea42263b0b8bb9029afb74dd48349d.tar.gz \
     ordered-set \
-    bumble==0.0.226 \
-    aiofiles>=23.0.0
+    bumble==0.0.226
 
 COPY .github/nuitka-plugins/ /build/nuitka-plugins/
 
@@ -82,12 +80,6 @@ RUN --mount=type=cache,target=/nuitka-cache \
     --include-data-file=kindle_hid_passthrough/config.ini=kindle_hid_passthrough/config.ini \
     --include-data-file=kindle_hid_passthrough/BUILD_SHA=kindle_hid_passthrough/BUILD_SHA \
     --include-data-dir=kindle_hid_passthrough/modules=kindle_hid_passthrough/modules \
-    --nofollow-import-to=pytest \
-    --nofollow-import-to=unittest \
-    --nofollow-import-to=setuptools \
-    --nofollow-import-to=grpc \
-    --nofollow-import-to=google \
-    --nofollow-import-to=usb \
     --nofollow-import-to=bumble.transport.usb \
     --nofollow-import-to=bumble.transport.pyusb \
     --nofollow-import-to=bumble.transport.android_emulator \
