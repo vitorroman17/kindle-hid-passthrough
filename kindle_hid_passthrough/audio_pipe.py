@@ -25,7 +25,7 @@ class SbcEncoder:
         try:
             lib_name = os.path.join(os.path.dirname(__file__), "libsbc.so.1")
             if not os.path.exists(lib_name):
-                lib_name = ctypes.util.find_library("sbc") or "libsbc.so.1"
+                lib_name = "/mnt/us/kindle_hid_passthrough/libsbc.so.1"
             
             self._sbc_lib = ctypes.CDLL(lib_name)
             self._sbc_struct = ctypes.create_string_buffer(1024)
