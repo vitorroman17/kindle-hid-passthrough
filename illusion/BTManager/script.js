@@ -283,7 +283,7 @@ var BTManager = (function() {
         var i;
         for (i = 0; i < connections.length; i++) {
             if (connections[i].address) {
-                connectedAddrs[connections[i].address.toUpperCase()] = true;
+                connectedAddrs[connections[i].address.toUpperCase()] = connections[i];
             }
         }
 
@@ -322,7 +322,7 @@ var BTManager = (function() {
         var connList = getEl("connectedList");
         if (connected.length > 0) {
             connSection.style.display = "block";
-            connList.innerHTML = renderDeviceRows(connected, true);
+            connList.innerHTML = renderDeviceRows(connected, true, connectedAddrs);
         } else {
             connSection.style.display = "none";
         }
@@ -332,24 +332,33 @@ var BTManager = (function() {
         var pairedList = getEl("pairedList");
         if (paired.length > 0) {
             pairedSection.style.display = "block";
-            pairedList.innerHTML = renderDeviceRows(paired, false);
+            pairedList.innerHTML = renderDeviceRows(paired, false, connectedAddrs);
         } else {
             pairedSection.style.display = "none";
         }
     }
 
-    function renderDeviceRows(devices, isConnected) {
+    function batteryHtml(level) {
+        if (typeof level !== "number") return "";
+        var pct = level < 0 ? 0 : (level > 100 ? 100 : level);
+        return ' <span class="batt"><span class="batt-fill" style="width:' + pct +
+               '%"></span></span>' + pct + '%';
+    }
+
+    function renderDeviceRows(devices, isConnected, connByAddr) {
         var html = "";
         for (var i = 0; i < devices.length; i++) {
             var dev = devices[i];
             var addr = escapeHtml(dev.address || "");
             var proto = escapeHtml(dev.protocol || "");
             var name = escapeHtml(dev.name || "") || addr;
+            var conn = dev.address ? connByAddr[dev.address.toUpperCase()] : null;
+            var batt = conn ? batteryHtml(conn.battery_level) : "";
 
             html += '<div class="device-row" data-addr="' + addr + '" data-proto="' + proto + '" data-name="' + escapeHtml(dev.name || "") + '">';
             html += '<span class="device-row-chevron">&#x276F;</span>';
             html += '<div class="device-row-name' + (isConnected ? '' : ' idle') + '">' + name + '</div>';
-            html += '<div class="device-row-sub">' + proto.toUpperCase() + '</div>';
+            html += '<div class="device-row-sub">' + proto.toUpperCase() + batt + '</div>';
             html += '</div>';
         }
         return html;
@@ -375,9 +384,11 @@ var BTManager = (function() {
         var uhid = conn ? (conn.uhid_name || "") : "";
         var inputs = conn && conn.input_paths ? conn.input_paths.join(", ") : "";
         var hidReady = conn ? conn.hid_ready : null;
+        var battery = conn && typeof conn.battery_level === "number"
+            ? conn.battery_level : null;
 
         var key = [isConnected ? "1" : "0", String(hidReady), uhid, inputs,
-                   detailDevice.name, detailDevice.proto].join("|");
+                   detailDevice.name, detailDevice.proto, String(battery)].join("|");
         if (key === detailRenderKey) return;
         detailRenderKey = key;
 
@@ -386,6 +397,14 @@ var BTManager = (function() {
         getEl("detailProtocol").innerHTML = escapeHtml(detailDevice.proto).toUpperCase();
         getEl("detailAddress").innerHTML = escapeHtml(detailDevice.addr);
         getEl("btnDetailAction").innerHTML = isConnected ? "Disconnect" : "Connect";
+
+        var battRow = getEl("detailBatteryRow");
+        if (battery === null) {
+            battRow.style.display = "none";
+        } else {
+            getEl("detailBattery").innerHTML = batteryHtml(battery);
+            battRow.style.display = "block";
+        }
 
         var hidSection = getEl("detailHid");
         var hidWarn = getEl("detailHidWarning");
