@@ -207,7 +207,10 @@ def main():
 
     protocol_override = None
     if args.protocol:
-        protocol_override = Protocol.CLASSIC if args.protocol == 'classic' else Protocol.BLE
+        try:
+            protocol_override = Protocol(args.protocol)
+        except ValueError:
+            protocol_override = Protocol.CLASSIC if args.protocol == 'classic' else Protocol.BLE
 
     if args.pair:
         asyncio.run(pair_mode(protocol_override, sequential=args.sequential))
