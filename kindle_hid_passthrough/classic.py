@@ -30,6 +30,9 @@ FALLBACK_HID_DESCRIPTOR = bytes([
 ])
 
 
+CLASSIC_PEER_CHANNEL_WAIT = 5.0
+
+
 class ClassicHIDChannels:
     """HID L2CAP channel pair (control 0x11, interrupt 0x13) for one connection."""
 
@@ -183,24 +186,41 @@ class ClassicMixin:
         if old is not None:
             await self._teardown_session(old)
 
-        if connection.role != Role.CENTRAL:
+        is_peripheral = connection.role != Role.CENTRAL
+
+        if is_peripheral:
             log.info("[Classic] Requesting role switch to central...")
             try:
                 await asyncio.wait_for(connection.switch_role(Role.CENTRAL), timeout=5.0)
                 log.success("[Classic] Role switch complete, now central")
+                is_peripheral = False
             except Exception as e:
                 log.warning(f"[Classic] Role switch failed: {errstr(e)}")
 
-        if not connection.is_encrypted:
+        if is_peripheral:
+            log.info("[Classic] Still peripheral, leaving security to the central")
+        elif not connection.is_encrypted:
             log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
             try:
-                await asyncio.wait_for(connection.authenticate(), timeout=5.0)
+                if not connection.authenticated:
+                    await asyncio.wait_for(connection.authenticate(), timeout=5.0)
                 await asyncio.wait_for(connection.encrypt(enable=True), timeout=5.0)
                 log.success("[Classic] Bonding restored")
             except Exception as e:
                 log.warning(f"[Classic] Bonding restore failed: {errstr(e)}")
 
         channels = session.channels
+
+        if is_peripheral and not channels.intr_channel:
+            log.info("[Classic] Waiting for the peer to open the HID channels...")
+            loop = asyncio.get_running_loop()
+            deadline = loop.time() + CLASSIC_PEER_CHANNEL_WAIT
+            while loop.time() < deadline and not channels.intr_channel:
+                await asyncio.sleep(0.05)
+            if channels.intr_channel:
+                log.success("[Classic] Peer opened the HID channels")
+            else:
+                log.info("[Classic] Peer did not open them, paging outward")
 
         if not channels.ctrl_channel:
             log.info("[Classic] Connecting to HID control channel...")
