@@ -163,7 +163,7 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         for addr, protocol, name in devices:
             dev = DeviceConfig(address=addr, protocol=protocol, name=name)
-            if protocol == Protocol.CLASSIC:
+            if protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO):
                 self.classic_devices.append(dev)
             else:
                 self.ble_devices.append(dev)
@@ -486,14 +486,14 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         self._parse_devices()
 
-        bucket = self.classic_devices if protocol == Protocol.CLASSIC else self.ble_devices
+        bucket = self.classic_devices if protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO) else self.ble_devices
         norm = normalize_addr(address)
         if not any(d.address != '*' and normalize_addr(d.address) == norm for d in bucket):
             bucket.append(DeviceConfig(address=address, protocol=protocol, name=name))
 
         await self.start(pairing=True)
 
-        if protocol == Protocol.CLASSIC:
+        if protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO):
             return await self._pair_classic(address)
         else:
             return await self._pair_ble(address)
