@@ -23,7 +23,7 @@ Full feature parity with the BTManager WAF app — you can manage everything fro
 
 **Settings → Network → BT Manager - HID Passthrough → Key mappings**
 
-Pick the device, tap "Map a button…", press the control you want, then choose what it should do. Buttons, D-pad directions and triggers all register. Analog sticks don't yet.
+Pick the device, tap "Map a button…", press the control you want, then choose what it should do. Buttons, D-pad directions, triggers and analog sticks all register.
 
 <p align="center">
   <img src="screenshots/key-mappings.png" width="48%" alt="Key mappings">
@@ -57,7 +57,7 @@ just logs
 
 KOReader's `externalkeyboard` plugin only ever looks for keyboards, so a gamepad, which FBInk classifies as `JOYSTICK`, is never opened and its buttons reach nothing. This plugin opens those itself, so `BtnA` and friends arrive as ordinary keys whenever the mapper isn't holding the node. Set "Handled by" to "KOReader only" if that's what you're after.
 
-The D-pad and the triggers are `EV_ABS` and never become key events, so map those the way described above, the mapper reads the axes directly. Analog sticks are out for now, [kindle-button-mapper#40](https://github.com/zampierilucas/kindle-button-mapper-rs/issues/40).
+The D-pad, the triggers and the analog sticks are `EV_ABS` and never become key events, so map those the way described above, the mapper reads the axes directly.
 
 ## Requirements
 
