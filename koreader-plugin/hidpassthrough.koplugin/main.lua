@@ -217,7 +217,6 @@ function HIDPassthrough:_attachInput(path, force)
     input_fds[info.path] = Device.input:fdopen(info.fd, info.path, info.name)
     logger.info("HIDPassthrough: attached input", info.name, "@", info.path)
     self:_extendEventMap()
-    self:_startBatteryPoll()
 end
 
 -- Take a node back that we handed to the mapper. checkKeyDevice deliberately
@@ -235,7 +234,6 @@ function HIDPassthrough:_reclaimInput(path)
     input_fds[real] = Device.input:fdopen(fd, real, name)
     logger.info("HIDPassthrough: took", real, "back from Button Mapper")
     self:_extendEventMap()
-    self:_startBatteryPoll()
     return true
 end
 
@@ -244,9 +242,6 @@ function HIDPassthrough:_detachInput(path)
     Device.input:close(path)
     input_fds[path] = nil
     logger.info("HIDPassthrough: detached input", path)
-    if next(input_fds) == nil then
-        self:_stopBatteryPoll()
-    end
 end
 
 function HIDPassthrough:_scanInputs()
@@ -1667,6 +1662,7 @@ function HIDPassthrough:init()
     UIManager.event_hook:registerWidget("InputEvent", self)
     -- A device may already be connected.
     self:_scanInputs()
+    self:_startBatteryPoll()
 end
 
 function HIDPassthrough:onCloseWidget()
@@ -1677,6 +1673,10 @@ end
 ------------------------------------------------------------------------------
 -- Peripheral battery in the status bars
 ------------------------------------------------------------------------------
+
+-- One failed poll per KOReader run is enough to learn the daemon is down.
+-- Module level, so reopening a book doesn't stall on the socket again.
+local battery_unavailable = false
 
 HIDPassthrough.BATTERY_POLL_INTERVAL = 300
 HIDPassthrough.BATTERY_FIRST_POLL = 2
@@ -1735,10 +1735,10 @@ function HIDPassthrough:_setBatteryShown(shown)
 end
 
 function HIDPassthrough:_pollBattery()
-    local data = self:_httpGetJson("/status")
+    local data, err = self:_httpGetJson("/status")
     if not data then
-        -- Daemon is down. Drop the item and stop polling, rather than
-        -- stalling on a dead socket every five minutes.
+        logger.dbg("HIDPassthrough: battery poll failed,", err)
+        battery_unavailable = true
         self._battery = nil
         self:_setBatteryShown(false)
         self._battery_poll_cb = nil
@@ -1746,6 +1746,7 @@ function HIDPassthrough:_pollBattery()
     end
 
     local level = lowestBattery(data)
+    logger.dbg("HIDPassthrough: battery poll ->", tostring(level))
     if level ~= self._battery then
         self._battery = level
         self:_setBatteryShown(level ~= nil)
@@ -1758,7 +1759,9 @@ function HIDPassthrough:_pollBattery()
 end
 
 function HIDPassthrough:_startBatteryPoll()
-    if self._battery_poll_cb or not self.ui.view then return end
+    if self._battery_poll_cb or battery_unavailable then return end
+    -- Only the reader instance has status bars to draw into.
+    if not self.ui.view then return end
     self._battery_content_func = function() return self:_batteryText() end
     self._battery_poll_cb = function() self:_pollBattery() end
     UIManager:scheduleIn(self.BATTERY_FIRST_POLL, self._battery_poll_cb)
