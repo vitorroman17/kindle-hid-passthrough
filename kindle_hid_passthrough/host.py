@@ -6,7 +6,14 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from bumble.core import InvalidStateError
-from bumble.hci import HCI_Constant, HCI_LE_SET_PRIVACY_MODE_COMMAND, HCI_LE_Set_Privacy_Mode_Command, HCI_Write_Class_Of_Device_Command, HCI_Write_Local_Name_Command
+from bumble.hci import (
+    HCI_LE_SET_PRIVACY_MODE_COMMAND,
+    HCI_Constant,
+    HCI_LE_Set_Privacy_Mode_Command,
+    HCI_Write_Class_Of_Device_Command,
+    HCI_Write_Local_Name_Command,
+    HCI_Write_Scan_Enable_Command,
+)
 
 from ble import BLEMixin
 from bt_setup import ensure_uhid
@@ -14,6 +21,7 @@ from classic import ClassicMixin
 from config import Protocol, clean_device_name, config, get_version, normalize_addr
 from device_cache import DeviceCache
 from logging_utils import log
+from media_remote import MEDIA_REMOTE_COD, MediaRemote
 from pairing import create_keystore, create_pairing_config
 from transport import create_bumble_device
 from uhid_handler import Bus, UHIDDevice, descriptor_is_pointer, sanitize_digitizer
@@ -140,6 +148,9 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         self.keystore = create_keystore(config.pairing_keys_file)
         self.device_cache = DeviceCache(config.cache_dir)
+        self.media_remote = (MediaRemote(self._notify_sessions_changed)
+                             if config.media_remote_enabled else None)
+        self._discoverable_task = None
 
         # Set by the daemon: called with True when the first pointer device
         # gets its UHID device, False when the last goes away (drives the cursor).
@@ -153,6 +164,8 @@ class HIDHost(ClassicMixin, BLEMixin):
         """Current connection state as a dict for API consumers."""
         connections = [s.state_dict() for s in list(self.sessions.values())
                        if s.is_alive()]
+        if self.media_remote:
+            connections += self.media_remote.state_list()
         return {"connected": bool(connections), "connections": connections}
 
     def _parse_devices(self):
@@ -175,15 +188,16 @@ class HIDHost(ClassicMixin, BLEMixin):
         log.info(f"HID Host v{get_version()}")
 
         def configure(device):
-            device.classic_enabled = bool(self.classic_devices)
+            device.classic_enabled = (bool(self.classic_devices)
+                                      or bool(self.media_remote))
             device.le_enabled = bool(self.ble_devices)
+            device.discoverable = False
             if pairing:
                 # No inbound links while pairing; run mode re-enables page scan.
                 device.connectable = False
-                device.discoverable = False
             device.keystore = self.keystore
             device.pairing_config_factory = create_pairing_config
-            if self.classic_devices:
+            if device.classic_enabled:
                 device.classic_ssp_enabled = True
                 device.classic_sc_enabled = True
 
@@ -195,8 +209,9 @@ class HIDHost(ClassicMixin, BLEMixin):
             log.info("Controller address resolution enabled")
 
         # Classic-specific setup
-        if self.classic_devices:
-            class_of_device = 0x000104  # Computer/Desktop
+        if self.classic_devices or self.media_remote:
+            class_of_device = (MEDIA_REMOTE_COD if self.media_remote
+                               else 0x000104)
             await self.device.host.send_command(
                 HCI_Write_Class_Of_Device_Command(class_of_device=class_of_device),
                 check_result=True
@@ -208,6 +223,9 @@ class HIDHost(ClassicMixin, BLEMixin):
                 HCI_Write_Local_Name_Command(local_name=local_name_bytes),
                 check_result=True
             )
+
+        if self.media_remote:
+            self.media_remote.setup(self.device)
 
         if self.ble_devices:
             log.info("BLE enabled")
@@ -285,7 +303,7 @@ class HIDHost(ClassicMixin, BLEMixin):
         """Run the protocol handlers and watchdog until failure or cancel."""
         tasks = []
 
-        if self.classic_devices:
+        if self.classic_devices or self.media_remote:
             tasks.append(asyncio.create_task(
                 self._run_classic_handler(),
                 name="classic_handler"
@@ -303,8 +321,9 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         log.info(f"Serving devices (Classic: {len(self.classic_devices)}, BLE: {len(self.ble_devices)})")
 
-        tasks.append(asyncio.create_task(
-            self._session_watchdog(), name="session_watchdog"))
+        if self.classic_devices or self.ble_devices:
+            tasks.append(asyncio.create_task(
+                self._session_watchdog(), name="session_watchdog"))
 
         try:
             done, _ = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
@@ -331,7 +350,9 @@ class HIDHost(ClassicMixin, BLEMixin):
         had_session = False
         while True:
             self._sessions_changed.clear()
-            if self.sessions or had_session:
+            media_alive = bool(self.media_remote
+                               and self.media_remote.connections)
+            if self.sessions or media_alive or had_session:
                 had_session = True
                 await self._sessions_changed.wait()
                 continue
@@ -439,6 +460,44 @@ class HIDHost(ClassicMixin, BLEMixin):
             return
         for session in targets:
             await self._teardown_session(session)
+
+    async def make_discoverable(self, duration: float) -> bool:
+        """Open a pairing window: inquiry scan on for duration seconds."""
+        if not self.media_remote or not self.device:
+            return False
+        if self._discoverable_task and not self._discoverable_task.done():
+            self._discoverable_task.cancel()
+            try:
+                await self._discoverable_task
+            except (asyncio.CancelledError, Exception):
+                pass
+        self._discoverable_task = self._track_task(asyncio.create_task(
+            self._discoverable_window(duration)))
+        return True
+
+    async def _discoverable_window(self, duration: float):
+        try:
+            await self.device.host.send_command(
+                HCI_Write_Scan_Enable_Command(scan_enable=0x03),
+                check_result=True)
+            log.info(f"[Media] Discoverable as {config.device_name} "
+                     f"for {duration:.0f}s")
+            await asyncio.sleep(duration)
+        except asyncio.CancelledError:
+            raise
+        except Exception as e:
+            log.warning(f"[Media] Discoverable window failed: {e}")
+        finally:
+            if self.device:
+                try:
+                    await asyncio.wait_for(
+                        self.device.host.send_command(
+                            HCI_Write_Scan_Enable_Command(scan_enable=0x02),
+                            check_result=True),
+                        timeout=2.0)
+                    log.info("[Media] Discoverable window closed")
+                except Exception:
+                    pass
 
     # ==================== PAIRING ====================
 
@@ -584,6 +643,9 @@ class HIDHost(ClassicMixin, BLEMixin):
             except Exception:
                 pass
             self._pairing_session = None
+
+        if self.media_remote:
+            self.media_remote.close()
 
         if hasattr(self, '_classic_connection_listener') and self._classic_connection_listener:
             try:
