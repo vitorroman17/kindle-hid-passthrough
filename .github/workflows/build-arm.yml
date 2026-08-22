@@ -179,6 +179,8 @@ jobs:
       - name: Create KPM package
         run: |
           python3 scripts/gen_kpm_manifests.py
+          # Stale index means KPM never offers the upgrade.
+          git diff --exit-code kpm/repo.json
           cp kpm/manifest.json kpm/install.sh kpm/uninstall.sh output/
           # KPM only finds manifest.json at the archive root, so no ./ prefix.
           tar -czf "kindle-hid-passthrough.kpkg" -C output $(ls -A output)

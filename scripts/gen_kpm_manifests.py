@@ -1,77 +1,35 @@
 #!/usr/bin/env python3
-"""Regenerate the KPM manifests from __version__ in config.py.
+"""Stamp __version__ into kpm/repo.json and derive kpm/manifest.json from it.
 
     ./scripts/gen_kpm_manifests.py
-
-kpm/manifest.json is build output. kpm/repo.json is committed, because KPM
-fetches the repository index straight from raw.githubusercontent.com.
 """
 import json
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DEST = ROOT / 'kpm'
-
-ID = 'kindle-hid-passthrough'
-NAME = 'Kindle HID Passthrough'
-AUTHOR = 'Lucas Zampieri'
-DESCRIPTION = ('Userspace Bluetooth HID host. Pairs gamepads, keyboards and remotes and '
-               'passes their input straight to Linux via UHID, with a touchscreen manager '
-               'app and a KOReader plugin.')
-REPO_DESCRIPTION = 'Releases of Kindle HID Passthrough, a userspace Bluetooth HID host for Kindle.'
-PLATFORMS = ['kindlehf', 'kindlepw2']
-ARTIFACT_URL = ('https://github.com/zampierilucas/kindle-hid-passthrough/releases/'
-                'latest/download/kindle-hid-passthrough.kpkg')
+REPO = ROOT / 'kpm/repo.json'
+MANIFEST = ROOT / 'kpm/manifest.json'
 
 
 def version():
     src = (ROOT / 'kindle_hid_passthrough/config.py').read_text()
-    match = re.search(r'^__version__ = "(\d+)\.(\d+)\.(\d+)"$', src, re.M)
-    if not match:
-        raise SystemExit('could not read __version__ from kindle_hid_passthrough/config.py')
-    return [int(part) for part in match.groups()]
+    return [int(n) for n in re.search(r'^__version__ = "(\d+)\.(\d+)\.(\d+)"$', src, re.M).groups()]
 
 
 def manifests():
-    package = {
-        'manifest_version': 2,
-        'id': ID,
-        'name': NAME,
-        'author': AUTHOR,
-        'description': DESCRIPTION,
-        'version': version(),
-        'dependencies': [],
-        'supported_platforms': PLATFORMS,
-    }
-    repo = {
-        'manifest_version': 1,
-        'id': ID,
-        'name': NAME,
-        'description': REPO_DESCRIPTION,
-        'packages': {
-            ID: {
-                'name': NAME,
-                'author': AUTHOR,
-                'description': DESCRIPTION,
-                'artifacts': [{
-                    'url': ARTIFACT_URL,
-                    'version': package['version'],
-                    'dependencies': [],
-                    'supported_platforms': PLATFORMS,
-                }],
-            },
-        },
-    }
-    return package, repo
-
-
-def main():
-    package, repo = manifests()
-    for name, data in (('manifest.json', package), ('repo.json', repo)):
-        (DEST / name).write_text(json.dumps(data, indent=2) + '\n')
-        print(f'wrote {DEST / name}')
+    repo = json.loads(REPO.read_text())
+    pkg_id, pkg = next(iter(repo['packages'].items()))
+    artifact = pkg['artifacts'][0]
+    artifact['version'] = version()
+    manifest = {'manifest_version': 2, 'id': pkg_id, 'name': pkg['name'], 'author': pkg['author'],
+                'description': pkg['description'], 'version': artifact['version'],
+                'dependencies': artifact['dependencies'],
+                'supported_platforms': artifact['supported_platforms']}
+    return manifest, repo
 
 
 if __name__ == '__main__':
-    main()
+    manifest, repo = manifests()
+    MANIFEST.write_text(json.dumps(manifest, indent=2) + '\n')
+    REPO.write_text(json.dumps(repo, indent=2) + '\n')
