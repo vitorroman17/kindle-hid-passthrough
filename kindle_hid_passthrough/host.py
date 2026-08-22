@@ -554,7 +554,6 @@ class HIDHost(ClassicMixin, BLEMixin):
         )
         
         source = LocalSource([codec_caps])
-        self.a2dp_listener.add_source(source)
 
         avdtp_protocol = None
         # Check if they connected to our listener
@@ -569,6 +568,8 @@ class HIDHost(ClassicMixin, BLEMixin):
             except Exception as e:
                 log.error(f"Failed to connect AVDTP: {e}")
                 return
+
+        avdtp_protocol.add_source(source)
 
         endpoints = await avdtp_protocol.discover_remote_endpoints()
         sink_endpoint = next((e for e in endpoints if e.tsep == StreamEndPointType.SINK), None)
