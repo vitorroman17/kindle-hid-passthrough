@@ -5,7 +5,7 @@ class NuitkaPluginBytecodeLargeModules(NuitkaPluginBase):
     plugin_name = "bytecode-large-modules"
     plugin_desc = "Ship named modules as bytecode instead of compiling them to C."
 
-    BYTECODE_MODULES = ("bumble.hci",)
+    BYTECODE_MODULES = ("bumble.hci", "bumble.gatt_server")
 
     @staticmethod
     def isAlwaysEnabled():
