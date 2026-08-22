@@ -73,6 +73,22 @@ class DaemonController:
 
         return status
 
+    def request_discoverable(self, duration: float) -> bool:
+        """From HTTP thread: open a phone-pairing window on the host."""
+        future = asyncio.run_coroutine_threadsafe(
+            self._do_discoverable(duration), self.loop)
+        try:
+            return future.result(timeout=5)
+        except Exception as e:
+            logger.error(f"Discoverable failed: {errstr(e)}")
+            return False
+
+    async def _do_discoverable(self, duration: float) -> bool:
+        host = self.daemon.host
+        if host is None or self.daemon._suspended:
+            return False
+        return await host.make_discoverable(duration)
+
     async def _resume_if_enabled(self):
         """Resume unless BT was toggled off while the op ran."""
         if self.bt_enabled:
