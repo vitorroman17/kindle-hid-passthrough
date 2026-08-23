@@ -35,7 +35,14 @@ class DaemonController:
 
         self._op_lock = asyncio.Lock()
         self._suspended_by_system = False
-        self.bt_enabled = True
+        # HID on/off survives a reboot: /start and /stop write it to disk
+        # and boot honours what the user left. It used to always come up on.
+        self._bt_enabled = self._load_bt_state()
+        if not self._bt_enabled:
+            logger.info("HID was left off; daemon starts suspended")
+            daemon._suspended = True
+        else:
+            self._spawn_audio_hack(True)
 
         # Scan state
         self.scan_result = None
@@ -54,6 +61,69 @@ class DaemonController:
         # Mouse cursor overlay process
         self._cursor_proc = None
         self._cursor_lock = threading.Lock()
+
+    # ---- Persisted HID state + audio bypass hack ----
+
+    # Shipped location first, development checkout second.
+    _AUDIO_HACK_DIRS = ("assets/audio-hack", "teamwork_audio_hack")
+
+    def _bt_state_path(self):
+        return os.path.join(config.cache_dir, "bt_enabled")
+
+    def _load_bt_state(self) -> bool:
+        try:
+            with open(self._bt_state_path()) as f:
+                return f.read().strip() != "0"
+        except OSError:
+            return True
+
+    def _persist_bt_state(self, value: bool):
+        try:
+            os.makedirs(config.cache_dir, exist_ok=True)
+            tmp = self._bt_state_path() + ".tmp"
+            with open(tmp, "w") as f:
+                f.write("1" if value else "0")
+            os.replace(tmp, self._bt_state_path())
+        except OSError as e:
+            logger.warning(f"Could not persist bt_enabled: {errstr(e)}")
+
+    def _audio_hack_script(self, enable: bool):
+        name = "start_audio_hack.sh" if enable else "stop_audio_hack.sh"
+        for d in self._AUDIO_HACK_DIRS:
+            path = os.path.join(config.base_path, d, name)
+            if os.path.isfile(path):
+                return path
+        return None
+
+    def _spawn_audio_hack(self, enable: bool):
+        """Bring the audio LIPC mock up or down together with HID."""
+        threading.Thread(target=self._run_audio_hack, args=(enable,),
+                         daemon=True).start()
+
+    def _run_audio_hack(self, enable: bool):
+        script = self._audio_hack_script(enable)
+        if script is None:
+            return
+        try:
+            subprocess.run(["/bin/sh", script], timeout=30,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            logger.info(f"Audio hack {'started' if enable else 'stopped'}")
+        except Exception as e:
+            logger.warning(f"Audio hack {'start' if enable else 'stop'} "
+                           f"failed: {errstr(e)}")
+
+    @property
+    def bt_enabled(self) -> bool:
+        return self._bt_enabled
+
+    @bt_enabled.setter
+    def bt_enabled(self, value):
+        value = bool(value)
+        changed = value != getattr(self, "_bt_enabled", None)
+        self._bt_enabled = value
+        if changed:
+            self._persist_bt_state(value)
+            self._spawn_audio_hack(value)
 
     def get_status(self) -> dict:
         """Thread-safe read of daemon state. Called from HTTP thread."""

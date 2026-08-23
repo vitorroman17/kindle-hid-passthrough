@@ -1,0 +1,109 @@
+#!/bin/sh
+# ==============================================================================
+# Amazon Kindle Audio Bypass - Service Startup Script
+# Part of the kindle-hid-passthrough audio bypass
+#
+# Ensures audio FIFO exists, stops stock audiomgrd, launches the mock LIPC
+# daemon under the process name 'audiomgrd', and confirms service readiness.
+# ==============================================================================
+
+set -e
+
+WORK_DIR="$(cd "$(dirname "$0")" && pwd)"
+MOCK_SCRIPT="$WORK_DIR/lipc_audio_mock.lua"
+SYMLINK_BIN="$WORK_DIR/audiomgrd"
+FIFO="/tmp/kindle_audio.fifo"
+LOG_FILE="/tmp/audiomgrd_mock.log"
+
+log_info() {
+    echo "[start_audio_hack] INFO: $1"
+}
+
+log_warn() {
+    echo "[start_audio_hack] WARN: $1" >&2
+}
+
+log_error() {
+    echo "[start_audio_hack] ERROR: $1" >&2
+}
+
+# 1. Ensure FIFO exists with mode 0666
+if [ ! -p "$FIFO" ]; then
+    rm -f "$FIFO" 2>/dev/null || true
+    mkfifo -m 666 "$FIFO" 2>/dev/null || mkfifo "$FIFO" 2>/dev/null
+    chmod 666 "$FIFO" 2>/dev/null || true
+    log_info "Audio FIFO verified at $FIFO"
+fi
+
+# 2. Ensure symlink to luajit exists with name 'audiomgrd'
+if [ ! -L "$SYMLINK_BIN" ] || [ "$(readlink "$SYMLINK_BIN" 2>/dev/null)" != "/mnt/us/koreader/luajit" ]; then
+    log_info "Creating audiomgrd symlink -> /mnt/us/koreader/luajit"
+    ln -sf /mnt/us/koreader/luajit "$SYMLINK_BIN"
+fi
+
+# 3. Check if mock daemon is already running and responsive
+if pidof audiomgrd >/dev/null 2>&1; then
+    for pid in $(pidof audiomgrd); do
+        cmdline=$(cat /proc/$pid/cmdline 2>/dev/null | tr '\0' ' ')
+        if echo "$cmdline" | grep -q "lipc_audio_mock.lua"; then
+            val=$(lipc-get-prop com.lab126.audiomgrd audioOutputConnected 2>/dev/null || true)
+            if [ "$val" = "1" ]; then
+                log_info "Mock audiomgrd is already running (PID $pid) and responsive."
+                exit 0
+            fi
+            # Stale mock daemon, terminate it
+            log_warn "Mock audiomgrd (PID $pid) is unresponsive. Terminating..."
+            kill -9 "$pid" 2>/dev/null || true
+        fi
+    done
+fi
+
+# 4. Stop stock audiomgrd service
+if initctl status audiomgrd 2>/dev/null | grep -q "start/running"; then
+    log_info "Stopping stock audiomgrd via Upstart..."
+    initctl stop audiomgrd 2>/dev/null || true
+    sleep 1
+fi
+
+# Kill any remaining stock audiomgrd processes
+if pidof audiomgrd >/dev/null 2>&1; then
+    for pid in $(pidof audiomgrd); do
+        cmdline=$(cat /proc/$pid/cmdline 2>/dev/null | tr '\0' ' ')
+        if echo "$cmdline" | grep -qv "lipc_audio_mock.lua"; then
+            log_info "Terminating dangling stock audiomgrd (PID $pid)..."
+            kill -9 "$pid" 2>/dev/null || true
+        fi
+    done
+    sleep 1
+fi
+
+# 5. Launch mock daemon in background under symlinked name with setsid/nohup
+log_info "Launching mock audiomgrd daemon..."
+if [ -x /usr/bin/setsid ]; then
+    /usr/bin/setsid "$SYMLINK_BIN" "$MOCK_SCRIPT" >"$LOG_FILE" 2>&1 &
+elif [ -x /usr/bin/nohup ]; then
+    /usr/bin/nohup "$SYMLINK_BIN" "$MOCK_SCRIPT" >"$LOG_FILE" 2>&1 &
+else
+    "$SYMLINK_BIN" "$MOCK_SCRIPT" >"$LOG_FILE" 2>&1 &
+fi
+MOCK_PID=$!
+
+# 6. Wait and verify that the daemon registered the LIPC service
+READY=0
+for i in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+    val=$(lipc-get-prop com.lab126.audiomgrd audioOutputConnected 2>/dev/null || true)
+    if [ "$val" = "1" ]; then
+        READY=1
+        break
+    fi
+    usleep 200000 2>/dev/null || sleep 1
+done
+
+if [ "$READY" -eq 1 ]; then
+    log_info "Audio hack daemon started successfully (audioOutputConnected=1)."
+    exit 0
+else
+    log_error "Mock daemon failed to register com.lab126.audiomgrd within timeout."
+    cat "$LOG_FILE" >&2 2>/dev/null || true
+    exit 1
+fi
