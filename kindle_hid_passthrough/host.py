@@ -152,12 +152,13 @@ class KindleAvrcpDelegate(avrcp.Delegate):
         # We use a 1-byte report for Report ID 1.
         # Bits: [0: Next, 1: Prev, 2: Play/Pause, 3: VolUp, 4: VolDown, 5-7: padding]
         bitmask = 0x00
+        # Media keys are forwarded to the button mapper and nothing else: the
+        # daemon must not act on a key the user never mapped. Pressing
+        # Play/Pause used to toggle the audio pause here as well, so an unmapped
+        # button still paused, and a button mapped to something else did both.
+        # Universal pause lives behind /media/toggle, /media/play and
+        # /media/pause, which the mapper -- or anything else -- can call.
         if operation_id in (avc.PassThroughFrame.OperationId.PLAY, avc.PassThroughFrame.OperationId.PAUSE):
-            if pressed and hasattr(self.host, '_audio_session') and self.host._audio_session:
-                audio_streamer = self.host._audio_session[1]
-                if audio_streamer:
-                    audio_streamer.toggle_pause()
-                    log.info(f"Audio pause state toggled to {audio_streamer.paused}")
             bitmask = 0x04 # Bit 2
         elif operation_id in (avc.PassThroughFrame.OperationId.FORWARD, avc.PassThroughFrame.OperationId.UP, avc.PassThroughFrame.OperationId.RIGHT):
             bitmask = 0x01 # Bit 0
