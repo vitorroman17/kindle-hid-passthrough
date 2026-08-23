@@ -13,8 +13,8 @@
           "url": "https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest/download/kindle-hid-passthrough.kpkg",
           "version": [
             3,
-            14,
-            1
+            15,
+            0
           ],
           "dependencies": [],
           "supported_platforms": [

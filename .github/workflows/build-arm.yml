@@ -118,7 +118,7 @@ jobs:
       - name: Bundle kindle-button-mapper
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          KBM_VERSION: v1.4.6
+          KBM_VERSION: v1.5.0
         run: |
           mkdir -p output/button-mapper
           gh release download "$KBM_VERSION" \
