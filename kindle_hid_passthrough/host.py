@@ -731,6 +731,10 @@ class HIDHost(ClassicMixin, BLEMixin):
         await stream.start()
         log.success("[Classic Audio] AVDTP streaming started! Injecting silence...")
 
+        # FIX: Create UHID device for AVRCP media keys
+        if not session.uhid_device:
+            self._create_uhid_device(session)
+
     # ==================== COMMON ====================
 
     def _forward_report(self, session: DeviceSession, data: bytes):
