@@ -686,8 +686,15 @@ class HIDHost(ClassicMixin, BLEMixin):
                 avdtp_protocol = await AvdtpProtocol.connect(session.connection)
                 self.a2dp_listener.set_server(session.connection, avdtp_protocol)
             except Exception as e:
-                log.error(f"Failed to connect AVDTP: {e}")
-                return
+                log.warning(f"Failed to connect AVDTP: {e}")
+                # Race condition: Remote might be connecting to us. Wait a bit and check servers.
+                await asyncio.sleep(1.0)
+                avdtp_protocol = self.a2dp_listener.servers.get(session.connection.handle)
+                if avdtp_protocol:
+                    log.info("Picked up inbound AVDTP connection from remote after outbound failure")
+                else:
+                    log.error(f"Failed to establish AVDTP connection: {e}")
+                    return
 
         from audio_pipe import FifoAudioStreamer, SAMPLES_PER_FRAME, FRAMES_PER_PACKET
         audio_streamer = FifoAudioStreamer(fifo_path="/tmp/kindle_audio.fifo")
