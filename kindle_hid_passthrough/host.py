@@ -435,16 +435,6 @@ class HIDHost(ClassicMixin, BLEMixin):
                 raise InvalidStateError("No device connected within timeout")
 
     def _notify_sessions_changed(self):
-        import os
-        try:
-            if self.sessions:
-                os.system("lipc-set-prop com.lab126.audiomgrd audioOutput A2DP")
-                os.system("lipc-set-prop com.lab126.audiomgrd audioState PLAYING")
-            else:
-                os.system("lipc-set-prop com.lab126.audiomgrd audioOutput NONE")
-                os.system("lipc-set-prop com.lab126.audiomgrd audioState STOPPED")
-        except Exception:
-            pass
         if self._sessions_changed:
             self._sessions_changed.set()
 

@@ -288,6 +288,15 @@ async def main():
     for sig in (signal.SIGTERM, signal.SIGINT):
         loop.add_signal_handler(sig, on_signal)
 
+    def handle_exception(loop, context):
+        msg = context.get("exception", context["message"])
+        logger.error(f"Unhandled exception in asyncio loop: {msg}")
+        if "channel not open" in str(msg) or "InvalidStateError" in str(msg):
+            logger.error("Bumble L2CAP/AVDTP channel dropped. Reconnecting...")
+            shutdown.set()
+
+    loop.set_exception_handler(handle_exception)
+
     log.info(f"Kindle HID Passthrough v{get_version()} (daemon)")
     daemon_task = asyncio.create_task(daemon.run())
 
