@@ -23,6 +23,8 @@ return {
         { event = "ShowWikipediaLookup", title = "Wikipedia lookup" },
     } },
     { section = "Reader", actions = {
+                { event = "AudiobookToggle", title = "Play/Pause audiobook" },
+        { event = "AudiobookStop", title = "Stop audiobook" },
         { event = "AddCurrentLocationToStack", title = "Add current location to history" },
         { event = "Back", title = "Back" },
         { event = "GoBackLink", title = "Back to previous location" },
