@@ -50,9 +50,11 @@ class DeviceSession:
         self.connection = connection
         self.peer = None
         self.channels = None
+        self.uhid_loop = None
         self.name = None
         self.report_map: Optional[bytes] = None
         self.hid_reports = []
+        self.output_reports = {}
         self.uhid_device = None
         self.is_pointer = False
         self.last_report = None
@@ -101,6 +103,9 @@ class DeviceSession:
         self.closed = True
         try:
             if self.uhid_device:
+                if self.uhid_loop and self.uhid_device.fd is not None:
+                    self.uhid_loop.remove_reader(self.uhid_device.fd)
+                    self.uhid_loop = None
                 try:
                     self.uhid_device.destroy()
                 except Exception:
@@ -230,6 +235,30 @@ class HIDHost(ClassicMixin, BLEMixin):
         if self.media_remote:
             connections += self.media_remote.state_list()
         return {"connected": bool(connections), "connections": connections}
+
+    def _on_uhid_output(self, session: DeviceSession):
+        """Pass a hidraw write on to the device it was written for.
+
+        Classic takes the whole payload on the interrupt channel. BLE splits
+        it: hidraw always prefixes the report id, while HID over GATT carries
+        the id in the Report Reference descriptor and the characteristic holds
+        the body alone.
+        """
+        payload = session.uhid_device.read_output_report() if session.uhid_device else None
+        if not payload:
+            return
+        try:
+            if session.channels:
+                session.channels.send_output_report(payload)
+            elif session.peer:
+                char = session.output_reports.get(payload[0])
+                if char is None:
+                    log.debug(f"No BLE output report {payload[0]}")
+                    return
+                asyncio.ensure_future(
+                    session.peer.write_value(char, payload[1:], with_response=False))
+        except Exception as e:
+            log.debug(f"Output report not forwarded: {e}")
 
     def _parse_devices(self):
         """Parse devices from config and group by protocol."""
@@ -800,7 +829,10 @@ class HIDHost(ClassicMixin, BLEMixin):
                 uniq=session.address,
             )
             log.success(f"UHID device created: {name}")
-            asyncio.get_event_loop().call_later(
+            session.uhid_loop = asyncio.get_event_loop()
+            session.uhid_loop.add_reader(
+                session.uhid_device.fd, self._on_uhid_output, session)
+            session.uhid_loop.call_later(
                 0.5, session.uhid_device.discover_input_paths)
             session.is_pointer = descriptor_is_pointer(descriptor)
             if session.is_pointer:

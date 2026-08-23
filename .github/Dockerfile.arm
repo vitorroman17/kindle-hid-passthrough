@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libsbc-dev \
     rustc \
     cargo \
+    musl-tools \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python build tools
@@ -96,6 +97,11 @@ RUN --mount=type=cache,target=/nuitka-cache \
     --nofollow-import-to=bumble.transport.hci_socket \
     --nofollow-import-to=bumble.transport.pty \
     --nofollow-import-to=platformdirs \
+    --nofollow-import-to=cryptography \
+    --nofollow-import-to=ssl \
+    --nofollow-import-to=_hashlib \
+    --nofollow-import-to=multiprocessing \
+    --nofollow-import-to=concurrent.futures.process \
     kindle_hid_passthrough/main.py
 
 # Copy the build container's dynamic linker and core glibc libs into the dist.
@@ -104,7 +110,7 @@ RUN --mount=type=cache,target=/nuitka-cache \
 RUN cp /lib/ld-linux-armhf.so.3 /build/nuitka-out/main.dist/ld-linux-armhf.so.3 && \
     for lib in libc.so.6 libm.so.6 libpthread.so.0 libdl.so.2 librt.so.1 \
                libutil.so.1 libresolv.so.2 libnss_dns.so.2 libnss_files.so.2 \
-               libz.so.1 libstdc++.so.6 libsbc.so.1; do \
+               libz.so.1 libsbc.so.1; do \
         src=$(find /lib /usr/lib -name "$lib" 2>/dev/null | head -1); \
         if [ -n "$src" ]; then \
             cp -L "$src" /build/nuitka-out/main.dist/"$lib"; \
@@ -122,6 +128,18 @@ RUN gcc -O2 /build/mousecursor.c -o /build/nuitka-out/main.dist/mousecursor.bin 
     echo "Cursor deps:" && ls -la /build/nuitka-out/main.dist/mousecursor.bin \
         /build/nuitka-out/main.dist/libX11* /build/nuitka-out/main.dist/libxcb*
 
+# Nuitka force-includes the whole encodings package in standalone mode and
+# copies these with it, so --nofollow-import-to can't reach them. Nothing asks
+# for a CJK encoding, and the codec registry only loads them on lookup.
+RUN rm -f /build/nuitka-out/main.dist/_codecs_cn.so \
+          /build/nuitka-out/main.dist/_codecs_hk.so \
+          /build/nuitka-out/main.dist/_codecs_iso2022.so \
+          /build/nuitka-out/main.dist/_codecs_jp.so \
+          /build/nuitka-out/main.dist/_codecs_kr.so \
+          /build/nuitka-out/main.dist/_codecs_tw.so \
+          /build/nuitka-out/main.dist/_multibytecodec.so \
+          /build/nuitka-out/main.dist/unicodedata.so
+
 # Build C wrapper that invokes the bundled ld-linux directly
 # This bypasses the system dynamic linker entirely
 RUN printf '%s\n' \
@@ -131,7 +149,7 @@ RUN printf '%s\n' \
     '#include <string.h>' \
     '#include <unistd.h>' \
     '#include <libgen.h>' \
-    '#include <linux/limits.h>' \
+    '#include <limits.h>' \
     '' \
     'int main(int argc, char *argv[]) {' \
     '    char exe_path[PATH_MAX];' \
@@ -184,7 +202,7 @@ RUN printf '%s\n' \
     '    return 1;' \
     '}' \
     > /build/wrapper.c && \
-    gcc -static -o /build/kindle-hid-passthrough /build/wrapper.c && \
+    musl-gcc -Os -static -o /build/kindle-hid-passthrough /build/wrapper.c && \
     strip /build/kindle-hid-passthrough
 
 # Same wrapper trick for the cursor overlay. It ships in scripts/, so dist/ is
@@ -197,7 +215,7 @@ RUN printf '%s\n' \
     '#include <unistd.h>' \
     '#include <string.h>' \
     '#include <libgen.h>' \
-    '#include <linux/limits.h>' \
+    '#include <limits.h>' \
     '' \
     'int main(int argc, char *argv[]) {' \
     '    char exe_path[PATH_MAX];' \
@@ -240,7 +258,7 @@ RUN printf '%s\n' \
     '    return 1;' \
     '}' \
     > /build/mousecursor_wrapper.c && \
-    gcc -static -o /build/mousecursor /build/mousecursor_wrapper.c && \
+    musl-gcc -Os -static -o /build/mousecursor /build/mousecursor_wrapper.c && \
     strip /build/mousecursor
 
 # Prepare the output directory structure:

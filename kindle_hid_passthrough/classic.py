@@ -20,6 +20,9 @@ from bumble.hci import HCI_Error
 
 CLASSIC_COLLISION_ERRORS = (0x23, 0x2A)
 
+# HIDP DATA header, OUTPUT report type.
+HIDP_DATA_OUTPUT = 0xA2
+
 FALLBACK_HID_DESCRIPTOR = bytes([
     0x05, 0x01, 0x09, 0x06, 0xA1, 0x01, 0x85, 0x01, 0x05, 0x07, 0x19, 0xE0, 0x29, 0xE7, 0x15, 0x00,
     0x25, 0x01, 0x75, 0x01, 0x95, 0x08, 0x81, 0x02, 0x95, 0x01, 0x75, 0x08, 0x81, 0x01, 0x95, 0x05,
@@ -76,6 +79,12 @@ class ClassicHIDChannels:
         """Send HIDP SET_PROTOCOL(Report) on the control channel."""
         self.ctrl_channel.write(
             bytes(SetProtocolMessage(protocol_mode=Message.ProtocolMode.REPORT_PROTOCOL)))
+
+    def send_output_report(self, payload: bytes):
+        """Send a HIDP DATA/OUTPUT report on the interrupt channel."""
+        if self.intr_channel is None:
+            raise RuntimeError("interrupt channel is not connected")
+        self.intr_channel.write(bytes([HIDP_DATA_OUTPUT]) + payload)
 
     async def disconnect(self):
         """Close both channels, interrupt first, 1s cap each."""

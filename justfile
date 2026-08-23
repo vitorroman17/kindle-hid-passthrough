@@ -194,7 +194,7 @@ remove-autostart:
 
 repo := "zampierilucas/kindle-hid-passthrough"
 artifact_name := "kindle-hid-passthrough-armv7"
-tarball_name := "kindle-hid-passthrough-armv7.tar.gz"
+tarball_name := "kindle-hid-passthrough-armv7.tar.xz"
 
 # Install onto Kindle from a GitHub release (latest, version, or local tarball path)
 install-release source="":
@@ -225,7 +225,7 @@ install-release source="":
     just host={{host}} kill
     ssh {{host}} "/usr/sbin/mntroot rw && mount -o remount,rw /mnt/base-us"
     ssh {{host}} "mkdir -p {{remote_dir}}"
-    cat "$tarball" | ssh {{host}} "tar xzf - -C {{remote_dir}}"
+    cat "$tarball" | ssh {{host}} "tar xJf - -C {{remote_dir}}"
     ssh {{host}} "cd {{remote_dir}} && sh scripts/install.sh installAll"
     ssh {{host}} "/usr/sbin/mntroot ro"
     ssh {{host}} "/sbin/initctl start hid-passthrough"

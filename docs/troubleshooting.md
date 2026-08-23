@@ -19,6 +19,9 @@ status hid-passthrough
 
 # View logs
 tail -f /var/log/hid_passthrough.log
+
+# Verbose logs, including a timestamped line per HID report
+KINDLE_HID_DEBUG=1 /mnt/us/kindle_hid_passthrough/kindle-hid-passthrough --daemon &
 ```
 
 ### Pairing
