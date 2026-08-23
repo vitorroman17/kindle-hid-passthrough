@@ -112,6 +112,12 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self._handle_discoverable(param('duration'))
             case '/logs':
                 self._handle_logs(param('lines'))
+            case '/media/toggle':
+                self._handle_media_toggle()
+            case '/media/play':
+                self._handle_media_play()
+            case '/media/pause':
+                self._handle_media_pause()
             case _:
                 self._send_json({"ok": False, "error": "Not found"})
 
@@ -305,4 +311,34 @@ class RequestHandler(BaseHTTPRequestHandler):
             self._send_json({"ok": True, "lines": short})
         except OSError as e:
             self._send_json({"ok": False, "error": str(e)})
+
+    def _handle_media_toggle(self):
+        controller = self._controller
+        if hasattr(controller, 'daemon') and hasattr(controller.daemon, 'host') and hasattr(controller.daemon.host, '_audio_session') and controller.daemon.host._audio_session:
+            audio_streamer = controller.daemon.host._audio_session[1]
+            if audio_streamer:
+                audio_streamer.toggle_pause()
+                self._send_json({"ok": True, "paused": audio_streamer.paused})
+                return
+        self._send_json({"ok": False, "error": "No active audio session"})
+
+    def _handle_media_play(self):
+        controller = self._controller
+        if hasattr(controller, 'daemon') and hasattr(controller.daemon, 'host') and hasattr(controller.daemon.host, '_audio_session') and controller.daemon.host._audio_session:
+            audio_streamer = controller.daemon.host._audio_session[1]
+            if audio_streamer:
+                audio_streamer.play()
+                self._send_json({"ok": True, "paused": False})
+                return
+        self._send_json({"ok": False, "error": "No active audio session"})
+
+    def _handle_media_pause(self):
+        controller = self._controller
+        if hasattr(controller, 'daemon') and hasattr(controller.daemon, 'host') and hasattr(controller.daemon.host, '_audio_session') and controller.daemon.host._audio_session:
+            audio_streamer = controller.daemon.host._audio_session[1]
+            if audio_streamer:
+                audio_streamer.pause()
+                self._send_json({"ok": True, "paused": True})
+                return
+        self._send_json({"ok": False, "error": "No active audio session"})
 

@@ -267,6 +267,16 @@ class FifoAudioStreamer:
         else:
             self.silence_rtp_payload = bytes([0])
         self._ensure_fifo()
+        self.paused = False
+
+    def toggle_pause(self):
+        self.paused = not self.paused
+
+    def play(self):
+        self.paused = False
+
+    def pause(self):
+        self.paused = True
 
     # ---------- FIFO ----------
 
@@ -349,6 +359,9 @@ class FifoAudioStreamer:
                 break
 
     def get_next_payload(self) -> bytes:
+        if self.paused:
+            return self.silence_rtp_payload
+
         self.read_pcm_available()
 
         if self._avail >= PCM_PACKET_SIZE and self.encoder.is_available:
