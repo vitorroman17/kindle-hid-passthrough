@@ -74,9 +74,9 @@ kpm install kindle-hid-passthrough
 
 1. Download the latest release from [GitHub Releases](https://github.com/zampierilucas/kindle-hid-passthrough/releases) and unpack it somewhere other than the install directory:
    ```bash
-   curl -L -o kindle-hid-passthrough-armv7.tar.gz https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest/download/kindle-hid-passthrough-armv7.tar.gz
+   curl -L -o kindle-hid-passthrough-armv7.tar.xz https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest/download/kindle-hid-passthrough-armv7.tar.xz
    mkdir -p /mnt/us/khp-release
-   tar -xzf kindle-hid-passthrough-armv7.tar.gz -C /mnt/us/khp-release
+   tar -xJf kindle-hid-passthrough-armv7.tar.xz -C /mnt/us/khp-release
    ```
 
    The release contains a `dist/` directory with a bundled Python runtime and all dependencies — no Python installation required on the Kindle.
