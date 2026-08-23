@@ -2,6 +2,11 @@
 -- entries whose event takes no argument. Regenerate with
 -- scripts/gen_koreader_actions.py when KOReader gains actions.
 return {
+    { section = "Audio", actions = {
+        { event = "AudiobookToggle", title = "Play/Pause audiobook" },
+        { event = "AudiobookStop", title = "Stop audiobook" },
+    } },
+
     { section = "General", actions = {
         { event = "ShowBookMetadataArchive", title = "Book metadata archive" },
         { event = "ShowBookmarkBrowser", title = "Bookmark browser" },
@@ -23,9 +28,7 @@ return {
         { event = "ShowWikipediaLookup", title = "Wikipedia lookup" },
     } },
     { section = "Reader", actions = {
-                { event = "AudiobookToggle", title = "Play/Pause audiobook" },
-        { event = "AudiobookStop", title = "Stop audiobook" },
-        { event = "AddCurrentLocationToStack", title = "Add current location to history" },
+                { event = "AddCurrentLocationToStack", title = "Add current location to history" },
         { event = "Back", title = "Back" },
         { event = "GoBackLink", title = "Back to previous location" },
         { event = "ShowBookCover", title = "Book cover" },
