@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libx11-dev \
     rustc \
     cargo \
+    musl-tools \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python build tools
@@ -96,6 +97,14 @@ RUN --mount=type=cache,target=/nuitka-cache \
     --nofollow-import-to=bumble.transport.pty \
     --nofollow-import-to=platformdirs \
     --nofollow-import-to=cryptography \
+    --nofollow-import-to=ssl \
+    --nofollow-import-to=_hashlib \
+    --nofollow-import-to=_codecs_cn \
+    --nofollow-import-to=_codecs_hk \
+    --nofollow-import-to=_codecs_iso2022 \
+    --nofollow-import-to=_codecs_jp \
+    --nofollow-import-to=_codecs_kr \
+    --nofollow-import-to=_codecs_tw \
     kindle_hid_passthrough/main.py
 
 # Copy the build container's dynamic linker and core glibc libs into the dist.
@@ -184,7 +193,7 @@ RUN printf '%s\n' \
     '    return 1;' \
     '}' \
     > /build/wrapper.c && \
-    gcc -static -o /build/kindle-hid-passthrough /build/wrapper.c && \
+    musl-gcc -Os -static -o /build/kindle-hid-passthrough /build/wrapper.c && \
     strip /build/kindle-hid-passthrough
 
 # Same wrapper trick for the cursor overlay. It ships in scripts/, so dist/ is
@@ -240,7 +249,7 @@ RUN printf '%s\n' \
     '    return 1;' \
     '}' \
     > /build/mousecursor_wrapper.c && \
-    gcc -static -o /build/mousecursor /build/mousecursor_wrapper.c && \
+    musl-gcc -Os -static -o /build/mousecursor /build/mousecursor_wrapper.c && \
     strip /build/mousecursor
 
 # Prepare the output directory structure:
