@@ -5,9 +5,6 @@ import asyncio
 from bumble.core import ProtocolError
 from bumble import avrcp, avc
 
-from bumble.core import ProtocolError
-from bumble import avrcp, avc
-
 from dataclasses import dataclass
 from typing import List, Optional
 

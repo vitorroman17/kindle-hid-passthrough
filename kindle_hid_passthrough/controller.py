@@ -104,13 +104,27 @@ class DaemonController:
         script = self._audio_hack_script(enable)
         if script is None:
             return
+        action = "start" if enable else "stop"
         try:
-            subprocess.run(["/bin/sh", script], timeout=30,
-                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            logger.info(f"Audio hack {'started' if enable else 'stopped'}")
+            proc = subprocess.run(["/bin/sh", script], timeout=30,
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.STDOUT)
         except Exception as e:
-            logger.warning(f"Audio hack {'start' if enable else 'stop'} "
-                           f"failed: {errstr(e)}")
+            logger.warning(f"Audio hack {action} failed: {errstr(e)}")
+            return
+
+        # Report what the script actually did. Discarding its output and
+        # logging success unconditionally hid a real failure: on a device
+        # whose /mnt/us is FUSE the script aborted creating a symlink while
+        # the log still said the hack had started.
+        if proc.returncode == 0:
+            logger.info(f"Audio hack {action}ed")
+            return
+        logger.warning(f"Audio hack {action} failed (exit {proc.returncode})")
+        output = (proc.stdout or b"").decode("utf-8", "replace")
+        for line in output.splitlines():
+            if line.strip():
+                logger.warning(f"[audio-hack] {line.rstrip()}")
 
     @property
     def bt_enabled(self) -> bool:
