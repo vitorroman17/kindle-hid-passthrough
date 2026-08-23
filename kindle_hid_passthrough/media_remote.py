@@ -73,7 +73,7 @@ class MediaRemote:
         self._recenter_handle = None
         self._grace_until = 0.0
 
-    def setup(self, device):
+    def setup(self, device, listener=None, avrcp_protocol=None):
         """Register SDP records and profile listeners on the bumble device.
 
         Must run inside the event loop: avrcp.Protocol creates futures.
@@ -88,10 +88,40 @@ class MediaRemote:
                                     | avrcp.TargetFeatures.CATEGORY_2),
             ).to_service_attributes(),
         }
-        listener = avdtp.Listener.for_device(device)
+        if listener is None:
+            listener = avdtp.Listener.for_device(device)
         listener.on(listener.EVENT_CONNECTION, self._on_avdtp_connection)
-        self.avrcp = avrcp.Protocol(delegate=self.delegate)
-        self.avrcp.listen(device)
+        
+        if avrcp_protocol is None:
+            self.avrcp = avrcp.Protocol(delegate=self.delegate)
+            self.avrcp.listen(device)
+        else:
+            self.avrcp = avrcp_protocol
+            # Note: The delegate of the shared avrcp_protocol needs to handle both!
+            # Since host.py provides KindleAvrcpDelegate, and media_remote has its own delegate,
+            # this might mean media_remote will miss events. We should use a multiplexing delegate or 
+            # just hook into the existing one. For now we will overwrite the delegate to self.delegate
+            # or maybe chaining them is better. Wait!
+            
+            # Since MediaRemote uses AVRCP to receive Volume keys and map to page turns,
+            # and KindleAvrcpDelegate uses it for Play/Pause, we need both.
+            # Let's chain them!
+            original_delegate = self.avrcp.delegate
+            
+            class MultiplexDelegate(avrcp.Delegate):
+                def __init__(self, d1, d2):
+                    super().__init__()
+                    self.d1 = d1
+                    self.d2 = d2
+                
+                async def on_key_event(self, op_id, pressed, data):
+                    if hasattr(self.d1, 'on_key_event'):
+                        await self.d1.on_key_event(op_id, pressed, data)
+                    if hasattr(self.d2, 'on_key_event'):
+                        await self.d2.on_key_event(op_id, pressed, data)
+            
+            self.avrcp.delegate = MultiplexDelegate(original_delegate, self.delegate)
+            
         log.info("[Media] Remote ready (A2DP sink + AVRCP target)")
 
     def adopt(self, connection):

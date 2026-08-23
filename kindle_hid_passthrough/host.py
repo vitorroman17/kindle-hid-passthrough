@@ -312,7 +312,7 @@ class HIDHost(ClassicMixin, BLEMixin):
             )
 
         if self.media_remote:
-            self.media_remote.setup(self.device)
+            self.media_remote.setup(self.device, getattr(self, 'a2dp_listener', None), getattr(self, 'avrcp_protocol', None))
 
         if self.ble_devices:
             log.info("BLE enabled")
