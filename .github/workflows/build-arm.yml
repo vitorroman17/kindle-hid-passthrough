@@ -142,8 +142,8 @@ jobs:
 
       - name: Create tarball
         run: |
-          tar -czvf "kindle-hid-passthrough-armv7.tar.gz" -C output .
-          ls -lh *.tar.gz
+          tar -cJvf "kindle-hid-passthrough-armv7.tar.xz" -C output .
+          ls -lh *.tar.xz
 
       - name: Validate KindleForge install compatibility
         run: |
@@ -163,7 +163,7 @@ jobs:
             button-mapper/kindle-button-mapper \
             button-mapper/install.sh \
             button-mapper/config.ini; do
-            if ! tar -tzf kindle-hid-passthrough-armv7.tar.gz "./$f" >/dev/null 2>&1; then
+            if ! tar -tJf kindle-hid-passthrough-armv7.tar.xz "./$f" >/dev/null 2>&1; then
               echo "MISSING: $f"
               MISSING=1
             else
@@ -183,22 +183,22 @@ jobs:
           git diff --exit-code kpm/repo.json
           cp kpm/manifest.json kpm/install.sh kpm/uninstall.sh output/
           # KPM only finds manifest.json at the archive root, so no ./ prefix.
-          tar -czf "kindle-hid-passthrough.kpkg" -C output $(ls -A output)
-          tar -tzf kindle-hid-passthrough.kpkg | grep -qx manifest.json
+          tar -cJf "kindle-hid-passthrough.kpkg" -C output $(ls -A output)
+          tar -tJf kindle-hid-passthrough.kpkg | grep -qx manifest.json
           ls -lh kindle-hid-passthrough.kpkg
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: kindle-hid-passthrough-armv7
-          path: kindle-hid-passthrough-armv7.tar.gz
+          path: kindle-hid-passthrough-armv7.tar.xz
 
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v3
         with:
           files: |
-            kindle-hid-passthrough-armv7.tar.gz
+            kindle-hid-passthrough-armv7.tar.xz
             kindle-hid-passthrough.kpkg
           generate_release_notes: true
         env:
@@ -211,7 +211,7 @@ jobs:
           tag_name: dev-${{ steps.stamp.outputs.sha }}
           name: Dev build ${{ steps.stamp.outputs.sha }}
           files: |
-            kindle-hid-passthrough-armv7.tar.gz
+            kindle-hid-passthrough-armv7.tar.xz
             kindle-hid-passthrough.kpkg
           prerelease: true
           make_latest: "false"
