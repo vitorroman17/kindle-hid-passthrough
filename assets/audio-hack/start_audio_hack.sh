@@ -11,7 +11,7 @@ set -e
 
 WORK_DIR="$(cd "$(dirname "$0")" && pwd)"
 MOCK_SCRIPT="$WORK_DIR/lipc_audio_mock.lua"
-SYMLINK_BIN="$WORK_DIR/audiomgrd"
+SYMLINK_BIN="/tmp/audiomgrd"
 FIFO="/tmp/kindle_audio.fifo"
 LOG_FILE="/tmp/audiomgrd_mock.log"
 
