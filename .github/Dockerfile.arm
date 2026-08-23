@@ -99,6 +99,8 @@ RUN --mount=type=cache,target=/nuitka-cache \
     --nofollow-import-to=cryptography \
     --nofollow-import-to=ssl \
     --nofollow-import-to=_hashlib \
+    --nofollow-import-to=multiprocessing \
+    --nofollow-import-to=concurrent.futures.process \
     kindle_hid_passthrough/main.py
 
 # Copy the build container's dynamic linker and core glibc libs into the dist.
@@ -134,7 +136,8 @@ RUN rm -f /build/nuitka-out/main.dist/_codecs_cn.so \
           /build/nuitka-out/main.dist/_codecs_jp.so \
           /build/nuitka-out/main.dist/_codecs_kr.so \
           /build/nuitka-out/main.dist/_codecs_tw.so \
-          /build/nuitka-out/main.dist/_multibytecodec.so
+          /build/nuitka-out/main.dist/_multibytecodec.so \
+          /build/nuitka-out/main.dist/unicodedata.so
 
 # Build C wrapper that invokes the bundled ld-linux directly
 # This bypasses the system dynamic linker entirely
