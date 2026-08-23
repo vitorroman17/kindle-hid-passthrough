@@ -99,12 +99,16 @@ RUN --mount=type=cache,target=/nuitka-cache \
     --nofollow-import-to=cryptography \
     --nofollow-import-to=ssl \
     --nofollow-import-to=_hashlib \
-    --nofollow-import-to=_codecs_cn \
-    --nofollow-import-to=_codecs_hk \
-    --nofollow-import-to=_codecs_iso2022 \
-    --nofollow-import-to=_codecs_jp \
-    --nofollow-import-to=_codecs_kr \
-    --nofollow-import-to=_codecs_tw \
+    --nofollow-import-to=encodings.euc_* \
+    --nofollow-import-to=encodings.shift_jis* \
+    --nofollow-import-to=encodings.iso2022_* \
+    --nofollow-import-to=encodings.big5* \
+    --nofollow-import-to=encodings.gb* \
+    --nofollow-import-to=encodings.cp932 \
+    --nofollow-import-to=encodings.cp949 \
+    --nofollow-import-to=encodings.cp950 \
+    --nofollow-import-to=encodings.johab \
+    --nofollow-import-to=encodings.hz \
     kindle_hid_passthrough/main.py
 
 # Copy the build container's dynamic linker and core glibc libs into the dist.
