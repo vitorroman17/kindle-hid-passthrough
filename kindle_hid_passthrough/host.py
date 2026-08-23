@@ -151,17 +151,23 @@ class KindleAvrcpDelegate(avrcp.Delegate):
         if not target_session:
             return
 
-        keycode = 0x00
-        if operation_id in (avc.PassThroughFrame.OperationId.PLAY, avc.PassThroughFrame.OperationId.PAUSE):
-            keycode = 0x4E # PageDown
-        elif operation_id in (avc.PassThroughFrame.OperationId.FORWARD, avc.PassThroughFrame.OperationId.VOLUME_UP, avc.PassThroughFrame.OperationId.UP, avc.PassThroughFrame.OperationId.RIGHT):
-            keycode = 0x4E # PageDown
-        elif operation_id in (avc.PassThroughFrame.OperationId.BACKWARD, avc.PassThroughFrame.OperationId.VOLUME_DOWN, avc.PassThroughFrame.OperationId.DOWN, avc.PassThroughFrame.OperationId.LEFT):
-            keycode = 0x4B # PageUp
-        else:
-            keycode = 0x4E
 
-        report = bytes([0x01, 0x00, 0x00, keycode if pressed else 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+        # We use a 1-byte report for Report ID 1.
+        # Bits: [0: Next, 1: Prev, 2: Play/Pause, 3: VolUp, 4: VolDown, 5-7: padding]
+        bitmask = 0x00
+        if operation_id in (avc.PassThroughFrame.OperationId.PLAY, avc.PassThroughFrame.OperationId.PAUSE):
+            bitmask = 0x04 # Bit 2
+        elif operation_id in (avc.PassThroughFrame.OperationId.FORWARD, avc.PassThroughFrame.OperationId.UP, avc.PassThroughFrame.OperationId.RIGHT):
+            bitmask = 0x01 # Bit 0
+        elif operation_id in (avc.PassThroughFrame.OperationId.BACKWARD, avc.PassThroughFrame.OperationId.DOWN, avc.PassThroughFrame.OperationId.LEFT):
+            bitmask = 0x02 # Bit 1
+        elif operation_id == avc.PassThroughFrame.OperationId.VOLUME_UP:
+            bitmask = 0x08 # Bit 3
+        elif operation_id == avc.PassThroughFrame.OperationId.VOLUME_DOWN:
+            bitmask = 0x10 # Bit 4
+
+        # Send report with Report ID 1
+        report = bytes([0x01, bitmask if pressed else 0x00])
         try:
             target_session.uhid_device.send_input(report)
         except Exception as e:
@@ -751,6 +757,18 @@ class HIDHost(ClassicMixin, BLEMixin):
 
     def _create_uhid_device(self, session: DeviceSession):
         """Create UHID virtual device."""
+
+        if not session.report_map and session.protocol.value == "classic_audio":
+            # Dummy Consumer Control (Media Keys) Descriptor
+            session.report_map = bytes([
+                0x05, 0x0C, 0x09, 0x01, 0xA1, 0x01, 0x85, 0x01,
+                0x15, 0x00, 0x25, 0x01, 0x75, 0x01, 0x95, 0x05,
+                0x09, 0xB5, 0x09, 0xB6, 0x09, 0xCD, 0x09, 0xE9,
+                0x09, 0xEA, 0x81, 0x02, 0x95, 0x03, 0x81, 0x03,
+                0xC0
+            ])
+            log.info("Injected dummy Media Keys descriptor for audio device")
+
         if not session.report_map:
             log.warning("No report descriptor for UHID")
             return
