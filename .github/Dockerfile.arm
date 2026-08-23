@@ -140,7 +140,7 @@ RUN printf '%s\n' \
     '#include <string.h>' \
     '#include <unistd.h>' \
     '#include <libgen.h>' \
-    '#include <linux/limits.h>' \
+    '#include <limits.h>' \
     '' \
     'int main(int argc, char *argv[]) {' \
     '    char exe_path[PATH_MAX];' \
@@ -206,7 +206,7 @@ RUN printf '%s\n' \
     '#include <unistd.h>' \
     '#include <string.h>' \
     '#include <libgen.h>' \
-    '#include <linux/limits.h>' \
+    '#include <limits.h>' \
     '' \
     'int main(int argc, char *argv[]) {' \
     '    char exe_path[PATH_MAX];' \
