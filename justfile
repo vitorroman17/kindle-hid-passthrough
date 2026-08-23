@@ -33,6 +33,7 @@ deploy:
         --transform='s|^illusion/BTManager.sh|mnt/us/kindle_hid_passthrough/illusion/BTManager.sh|' \
         kindle_hid_passthrough/*.py \
         kindle_hid_passthrough/config.ini \
+        kindle_hid_passthrough/libsbc.so.1 \
         kindle_hid_passthrough/BUILD_SHA \
         kindle_hid_passthrough/hid-passthrough-dev.upstart \
         kindle_hid_passthrough/modules/*.ko \

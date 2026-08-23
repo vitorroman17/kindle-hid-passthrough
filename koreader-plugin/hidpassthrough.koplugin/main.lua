@@ -835,8 +835,8 @@ function HIDPassthrough:_spawnBinary()
     end
     -- setsid so it survives KOReader exiting; exit code is meaningless.
     local cmd = string.format(
-        "(setsid %s --daemon </dev/null >/dev/null 2>&1 &) 2>/dev/null || "
-        .. "(%s --daemon </dev/null >/dev/null 2>&1 &)",
+        "(setsid %s --daemon </dev/null >>/mnt/us/kindle_hid_passthrough/daemon.log 2>&1 &) 2>/dev/null || "
+        .. "(%s --daemon </dev/null >>/mnt/us/kindle_hid_passthrough/daemon.log 2>&1 &)",
         self.DAEMON_BINARY, self.DAEMON_BINARY
     )
     logger.info("HIDPassthrough: spawning daemon:", cmd)

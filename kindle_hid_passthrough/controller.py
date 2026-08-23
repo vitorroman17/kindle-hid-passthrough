@@ -212,7 +212,10 @@ class DaemonController:
             asyncio.run_coroutine_threadsafe(self._do_resume(), self.loop)
             return
 
-        protocol = Protocol.CLASSIC if protocol_str == 'classic' else Protocol.BLE
+        try:
+            protocol = Protocol(protocol_str or 'ble')
+        except ValueError:
+            protocol = Protocol.CLASSIC if protocol_str == 'classic' else Protocol.BLE
         asyncio.run_coroutine_threadsafe(
             self._do_connect(address, protocol), self.loop
         )

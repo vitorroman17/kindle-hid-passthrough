@@ -16,19 +16,20 @@ from bumble.sdp import Client as SDPClient
 
 from config import Protocol, clean_device_name, config, normalize_addr
 from logging_utils import errstr, log
+from bumble.hci import HCI_Error
+
+CLASSIC_COLLISION_ERRORS = (0x23, 0x2A)
 
 FALLBACK_HID_DESCRIPTOR = bytes([
-    0x05, 0x01, 0x09, 0x05, 0xa1, 0x01, 0x85, 0x01,
-    0x05, 0x01, 0x09, 0x30, 0x09, 0x31, 0x09, 0x32, 0x09, 0x35,
-    0x16, 0x00, 0x00, 0x26, 0xff, 0xff, 0x75, 0x10, 0x95, 0x04, 0x81, 0x02,
-    0x05, 0x02, 0x09, 0xc5, 0x09, 0xc4,
-    0x16, 0x00, 0x00, 0x26, 0xff, 0x03, 0x75, 0x10, 0x95, 0x02, 0x81, 0x02,
-    0x05, 0x01, 0x09, 0x39, 0x15, 0x01, 0x25, 0x08,
-    0x35, 0x00, 0x46, 0x3b, 0x01, 0x65, 0x14, 0x75, 0x08, 0x95, 0x01, 0x81, 0x42,
-    0x05, 0x09, 0x19, 0x01, 0x29, 0x10,
-    0x15, 0x00, 0x25, 0x01, 0x75, 0x01, 0x95, 0x10, 0x81, 0x02,
-    0xc0,
+    0x05, 0x01, 0x09, 0x06, 0xA1, 0x01, 0x85, 0x01, 0x05, 0x07, 0x19, 0xE0, 0x29, 0xE7, 0x15, 0x00,
+    0x25, 0x01, 0x75, 0x01, 0x95, 0x08, 0x81, 0x02, 0x95, 0x01, 0x75, 0x08, 0x81, 0x01, 0x95, 0x05,
+    0x75, 0x01, 0x05, 0x08, 0x19, 0x01, 0x29, 0x05, 0x91, 0x02, 0x95, 0x01, 0x75, 0x03, 0x91, 0x01,
+    0x95, 0x06, 0x75, 0x08, 0x15, 0x00, 0x25, 0x65, 0x05, 0x07, 0x19, 0x00, 0x29, 0x65, 0x81, 0x00,
+    0xC0
 ])
+
+
+CLASSIC_PEER_CHANNEL_WAIT = 5.0
 
 
 class ClassicHIDChannels:
@@ -164,11 +165,18 @@ class ClassicMixin:
 
             addr = normalize_addr(addr_str)
             old = self.sessions.get(addr)
-            session = self._new_session(addr, Protocol.CLASSIC, connection)
-            session.channels = ClassicHIDChannels(
-                connection,
-                lambda pdu: self._on_classic_interrupt_data(session, pdu),
-                lambda: self._on_virtual_cable_unplug(session))
+            proto = Protocol.CLASSIC
+            for dev in self.classic_devices:
+                if dev.address == addr or dev.address == '*':
+                    proto = dev.protocol
+                    break
+
+            session = self._new_session(addr, proto, connection)
+            if proto != Protocol.CLASSIC_AUDIO:
+                session.channels = ClassicHIDChannels(
+                    connection,
+                    lambda pdu: self._on_classic_interrupt_data(session, pdu),
+                    lambda: self._on_virtual_cable_unplug(session))
             self._register_session(session)
             session.setup_task = self._track_task(asyncio.create_task(
                 self._run_session_setup(
@@ -187,24 +195,54 @@ class ClassicMixin:
         if old is not None:
             await self._teardown_session(old)
 
-        if connection.role != Role.CENTRAL:
+        def is_collision(e):
+            return isinstance(e, HCI_Error) and e.error_code in CLASSIC_COLLISION_ERRORS
+
+        peer_driving = False
+        is_peripheral = connection.role != Role.CENTRAL
+
+        if is_peripheral:
             log.info("[Classic] Requesting role switch to central...")
             try:
                 await asyncio.wait_for(connection.switch_role(Role.CENTRAL), timeout=5.0)
                 log.success("[Classic] Role switch complete, now central")
+                is_peripheral = False
             except Exception as e:
-                log.warning(f"[Classic] Role switch failed: {errstr(e)}")
+                log.warning(f"[Classic] Role switch failed: {errstr(e) if 'errstr' in globals() else repr(e)}")
+                peer_driving = is_collision(e)
 
-        if not connection.is_encrypted:
+        if peer_driving or is_peripheral:
+            log.info("[Classic] Peer is driving security, staying out of its way")
+        elif not connection.is_encrypted:
             log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
             try:
-                await asyncio.wait_for(connection.authenticate(), timeout=5.0)
+                if not connection.authenticated:
+                    await asyncio.wait_for(connection.authenticate(), timeout=5.0)
                 await asyncio.wait_for(connection.encrypt(enable=True), timeout=5.0)
                 log.success("[Classic] Bonding restored")
             except Exception as e:
-                log.warning(f"[Classic] Bonding restore failed: {errstr(e)}")
+                log.warning(f"[Classic] Bonding restore failed: {errstr(e) if 'errstr' in globals() else repr(e)}")
+                peer_driving = is_collision(e)
 
         channels = session.channels
+
+
+        if session.protocol == Protocol.CLASSIC_AUDIO:
+            log.info("[Classic] Audio device connected. Letting AVDTP and AVRCP listeners take over.")
+            log.success(f"[Classic] {self._format_device(session.address)} connected (Audio)")
+            self._track_task(asyncio.create_task(self._continue_classic_audio_after_pairing(session)))
+            return
+
+        if (peer_driving or is_peripheral) and not channels.intr_channel:
+            log.info("[Classic] Waiting for the peer to open the HID channels...")
+            loop = asyncio.get_running_loop()
+            deadline = loop.time() + CLASSIC_PEER_CHANNEL_WAIT
+            while loop.time() < deadline and not channels.intr_channel:
+                await asyncio.sleep(0.05)
+            if channels.intr_channel:
+                log.success("[Classic] Peer opened the HID channels")
+            else:
+                log.info("[Classic] Peer did not open them, paging outward")
 
         if not channels.ctrl_channel:
             log.info("[Classic] Connecting to HID control channel...")
@@ -223,7 +261,10 @@ class ClassicMixin:
                 log.warning(f"[Classic] Interrupt channel: {errstr(e)}")
 
         if not channels.intr_channel:
-            raise InvalidStateError("[Classic] HID channels not opened by peer")
+            if session.protocol == Protocol.CLASSIC_AUDIO:
+                log.info("[Classic] Audio device did not open HID channels, keeping alive for AVDTP")
+            else:
+                raise InvalidStateError("[Classic] HID channels not opened by peer")
 
         self._classic_set_report_protocol(session)
 
@@ -322,6 +363,7 @@ class ClassicMixin:
     def _classic_set_report_protocol(self, session):
         """Send HIDP SET_PROTOCOL(Report) on the control channel."""
         channels = session.channels
+
         if not channels or not channels.ctrl_channel:
             return
         try:
@@ -385,10 +427,11 @@ class ClassicMixin:
         session.vc_unplug = True
         self._track_task(asyncio.create_task(self._teardown_session(session)))
 
-    async def _pair_classic(self, address: str) -> bool:
-        """Pair with a Classic Bluetooth device."""
-        log.info(f"[Classic] Pairing with {address}...")
+    async def _pair_classic(self, address: str, protocol: Protocol = Protocol.CLASSIC) -> bool:
+        """Execute pairing flow for a single Classic device."""
+        self._pairing_session = None
 
+        log.info(f"[Classic] Pairing with {address}/P...")
         try:
             target_address = Address(address, Address.PUBLIC_DEVICE_ADDRESS)
             connection = await self.device.connect(
@@ -404,7 +447,7 @@ class ClassicMixin:
             log.error(f"[Classic] Connection failed: {e}")
             return False
 
-        session = self._new_session(normalize_addr(address), Protocol.CLASSIC, connection)
+        session = self._new_session(normalize_addr(address), protocol, connection)
         self._pairing_session = session
 
         link_key_received = asyncio.Event()
@@ -503,12 +546,17 @@ class ClassicMixin:
 
     async def _continue_classic_after_pairing(self, session):
         """Continue Classic connection after pairing."""
+        if session.protocol == Protocol.CLASSIC_AUDIO:
+            log.info("[Classic] Audio device connected. Letting AVDTP listener take over.")
+            return
+
         self._ensure_classic_psm_servers()
         session.channels = ClassicHIDChannels(
             session.connection,
             lambda pdu: self._on_classic_interrupt_data(session, pdu),
             lambda: self._on_virtual_cable_unplug(session))
         channels = session.channels
+
         log.info("[Classic] HID Host created")
 
         log.info("[Classic] Connecting to HID control channel...")

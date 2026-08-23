@@ -2,6 +2,12 @@
 """HID Host — runs BLE + Classic handlers on a single Bumble device."""
 
 import asyncio
+from bumble.core import ProtocolError
+from bumble import avrcp, avc
+
+from bumble.core import ProtocolError
+from bumble import avrcp, avc
+
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -114,7 +120,49 @@ class DeviceSession:
             self.teardown_done.set()
 
 
+
+class KindleAvrcpDelegate(avrcp.Delegate):
+    def __init__(self, host):
+        super().__init__()
+        self.host = host
+
+    async def on_key_event(
+        self,
+        operation_id: avc.PassThroughFrame.OperationId,
+        pressed: bool,
+        operation_data: bytes
+    ) -> None:
+        import logging
+        log = logging.getLogger(__name__)
+        log.info(f"[AVRCP] Key {operation_id.name} {'pressed' if pressed else 'released'}")
+        
+        target_session = None
+        for session in self.host.sessions.values():
+            if session.protocol.value == "classic_audio" and session.uhid_device:
+                target_session = session
+                break
+                
+        if not target_session:
+            return
+
+        keycode = 0x00
+        if operation_id in (avc.PassThroughFrame.OperationId.PLAY, avc.PassThroughFrame.OperationId.PAUSE):
+            keycode = 0x4E # PageDown
+        elif operation_id in (avc.PassThroughFrame.OperationId.FORWARD, avc.PassThroughFrame.OperationId.VOLUME_UP, avc.PassThroughFrame.OperationId.UP, avc.PassThroughFrame.OperationId.RIGHT):
+            keycode = 0x4E # PageDown
+        elif operation_id in (avc.PassThroughFrame.OperationId.BACKWARD, avc.PassThroughFrame.OperationId.VOLUME_DOWN, avc.PassThroughFrame.OperationId.DOWN, avc.PassThroughFrame.OperationId.LEFT):
+            keycode = 0x4B # PageUp
+        else:
+            keycode = 0x4E
+
+        report = bytes([0x01, 0x00, 0x00, keycode if pressed else 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])
+        try:
+            target_session.uhid_device.send_input(report)
+        except Exception as e:
+            log.error(f"Failed to send AVRCP input: {e}")
+
 class HIDHost(ClassicMixin, BLEMixin):
+
     """HID Host supporting both BLE and Classic Bluetooth.
 
     Protocol-specific handlers live in ClassicMixin and BLEMixin.
@@ -176,7 +224,7 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         for addr, protocol, name in devices:
             dev = DeviceConfig(address=addr, protocol=protocol, name=name)
-            if protocol == Protocol.CLASSIC:
+            if protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO):
                 self.classic_devices.append(dev)
             else:
                 self.ble_devices.append(dev)
@@ -211,12 +259,34 @@ class HIDHost(ClassicMixin, BLEMixin):
         # Classic-specific setup
         if self.classic_devices or self.media_remote:
             class_of_device = (MEDIA_REMOTE_COD if self.media_remote
-                               else 0x000104)
+                               else 0x200104)
             await self.device.host.send_command(
                 HCI_Write_Class_Of_Device_Command(class_of_device=class_of_device),
                 check_result=True
             )
             log.info(f"Classic enabled: CoD 0x{class_of_device:06X}")
+
+            from bumble.a2dp import (
+                A2DP_SBC_CODEC_TYPE,
+                SbcMediaCodecInformation,
+                make_audio_source_service_sdp_records,
+            )
+            from bumble.avdtp import (
+                AVDTP_AUDIO_MEDIA_TYPE,
+                Listener,
+                MediaCodecCapabilities,
+            )
+
+            # A2DP Source setup
+            self.a2dp_listener = Listener.for_device(device=self.device)
+            self.avrcp_protocol = avrcp.Protocol(KindleAvrcpDelegate(self))
+            self.avrcp_protocol.listen(self.device)
+            
+            handle = 0x00010002
+            self.device.sdp_service_records.update({
+                handle: make_audio_source_service_sdp_records(service_record_handle=handle)
+            })
+            log.info("A2DP Source SDP records configured. AVDTP Listener active.")
 
             local_name_bytes = config.device_name.encode('utf-8') + b'\x00'
             await self.device.host.send_command(
@@ -365,6 +435,16 @@ class HIDHost(ClassicMixin, BLEMixin):
                 raise InvalidStateError("No device connected within timeout")
 
     def _notify_sessions_changed(self):
+        import os
+        try:
+            if self.sessions:
+                os.system("lipc-set-prop com.lab126.audiomgrd audioOutput A2DP")
+                os.system("lipc-set-prop com.lab126.audiomgrd audioState PLAYING")
+            else:
+                os.system("lipc-set-prop com.lab126.audiomgrd audioOutput NONE")
+                os.system("lipc-set-prop com.lab126.audiomgrd audioState STOPPED")
+        except Exception:
+            pass
         if self._sessions_changed:
             self._sessions_changed.set()
 
@@ -508,15 +588,15 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         self._parse_devices()
 
-        bucket = self.classic_devices if protocol == Protocol.CLASSIC else self.ble_devices
+        bucket = self.classic_devices if protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO) else self.ble_devices
         norm = normalize_addr(address)
         if not any(d.address != '*' and normalize_addr(d.address) == norm for d in bucket):
             bucket.append(DeviceConfig(address=address, protocol=protocol, name=name))
 
         await self.start(pairing=True)
 
-        if protocol == Protocol.CLASSIC:
-            return await self._pair_classic(address)
+        if protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO):
+            return await self._pair_classic(address, protocol)
         else:
             return await self._pair_ble(address)
 
@@ -532,11 +612,18 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         if session.is_alive():
             self._register_session(session)
-            if session.protocol == Protocol.CLASSIC:
-                await self._continue_classic_after_pairing(session)
+            if session.protocol in (Protocol.CLASSIC, Protocol.CLASSIC_AUDIO):
+                if session.protocol == Protocol.CLASSIC:
+                    await self._continue_classic_after_pairing(session)
+                else:
+                    await self._continue_classic_audio_after_pairing(session)
             else:
                 await self._continue_ble_after_pairing(session)
             proto_name = session.protocol.value.upper()
+            from kindle_hid_passthrough.uhid_handler import create_uhid_device
+            if not session.uhid_device:
+                desc = await self._query_classic_sdp(session)
+                session.uhid_device = create_uhid_device(session, desc)
             log.success(f"\n[{proto_name}] Paired and receiving HID reports.")
         else:
             log.info("Paired device disconnected; the connect loops will pick it up")
@@ -544,6 +631,93 @@ class HIDHost(ClassicMixin, BLEMixin):
         self._parse_devices()
         await self._load_keystore_addresses()
         await self._serve()
+
+
+
+    async def _continue_classic_audio_after_pairing(self, session):
+        from bumble.avdtp import Protocol as AvdtpProtocol, StreamEndPointType, State, MediaPacketPump, RealtimeClock
+        from bumble.rtp import MediaPacket
+        from bumble.avdtp import MediaCodecCapabilities, AVDTP_AUDIO_MEDIA_TYPE
+        from bumble.a2dp import A2DP_SBC_CODEC_TYPE, SbcMediaCodecInformation
+
+        log.info("[Classic] Audio device connected. Initiating AVDTP...")
+        
+        codec_caps = MediaCodecCapabilities(
+            media_type=AVDTP_AUDIO_MEDIA_TYPE,
+            media_codec_type=A2DP_SBC_CODEC_TYPE,
+            media_codec_information=SbcMediaCodecInformation(
+                sampling_frequency=SbcMediaCodecInformation.SamplingFrequency.SF_44100,
+                channel_mode=SbcMediaCodecInformation.ChannelMode.JOINT_STEREO,
+                block_length=SbcMediaCodecInformation.BlockLength.BL_16,
+                subbands=SbcMediaCodecInformation.Subbands.S_8,
+                allocation_method=SbcMediaCodecInformation.AllocationMethod.LOUDNESS,
+                minimum_bitpool_value=2,
+                maximum_bitpool_value=53,
+            ),
+        )
+
+        avdtp_protocol = self.a2dp_listener.servers.get(session.connection.handle)
+        if avdtp_protocol and getattr(avdtp_protocol, 'l2cap_channel', None):
+            from bumble.l2cap import ClassicChannel
+            if avdtp_protocol.l2cap_channel.state != ClassicChannel.State.OPEN:
+                del self.a2dp_listener.servers[session.connection.handle]
+                avdtp_protocol = None
+        if avdtp_protocol:
+            log.info("AVDTP already connected by remote")
+        else:
+            try:
+                log.info("Connecting AVDTP to remote...")
+                avdtp_protocol = await AvdtpProtocol.connect(session.connection)
+                self.a2dp_listener.set_server(session.connection, avdtp_protocol)
+            except Exception as e:
+                log.error(f"Failed to connect AVDTP: {e}")
+                return
+
+        from audio_pipe import FifoAudioStreamer, SAMPLES_PER_FRAME, FRAMES_PER_PACKET
+        audio_streamer = FifoAudioStreamer(fifo_path="/tmp/kindle_audio.fifo")
+        samples_per_packet = SAMPLES_PER_FRAME * FRAMES_PER_PACKET
+
+        async def packet_generator():
+            seq = 0
+            ts = 0
+            try:
+                while True:
+                    payload = audio_streamer.get_next_payload()
+                    packet = MediaPacket(
+                        version=2, padding=0, extension=0, marker=0,
+                        sequence_number=seq, timestamp=ts, ssrc=0,
+                        csrc_list=[], payload_type=96, payload=payload
+                    )
+                    packet.timestamp_seconds = ts / 44100.0
+                    yield packet
+                    seq = (seq + 1) & 0xFFFF
+                    ts = (ts + samples_per_packet) & 0xFFFFFFFF
+            finally:
+                audio_streamer.close()
+
+        pump = MediaPacketPump(packet_generator(), RealtimeClock())
+        
+        # This creates the LocalSource, binds the pump, and registers it to the protocol
+        source = avdtp_protocol.add_source(codec_caps, pump)
+
+        endpoints = await avdtp_protocol.discover_remote_endpoints()
+        sink_endpoint = next((e for e in endpoints if e.tsep == StreamEndPointType.SNK), None)
+        if not sink_endpoint:
+            log.error("No AVDTP SINK endpoints found on remote")
+            return
+
+        log.info(f"Found remote SINK endpoint: {sink_endpoint.seid}")
+        
+        stream = await avdtp_protocol.create_stream(source, sink_endpoint)
+        log.info("Configured stream. Opening...")
+        
+        await stream.open()
+        log.info("Stream opened. Starting...")
+        
+        # When we start the stream, Bumble automatically calls source.start() which starts the pump
+        # inside an internal asyncio task tracking it automatically!
+        await stream.start()
+        log.success("[Classic Audio] AVDTP streaming started! Injecting silence...")
 
     # ==================== COMMON ====================
 

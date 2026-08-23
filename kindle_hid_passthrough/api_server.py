@@ -214,7 +214,10 @@ class RequestHandler(BaseHTTPRequestHandler):
             self._send_json({"ok": False, "error": "No address provided"})
             return
 
-        protocol = Protocol.CLASSIC if protocol_str == 'classic' else Protocol.BLE
+        try:
+            protocol = Protocol(protocol_str or 'ble')
+        except ValueError:
+            protocol = Protocol.CLASSIC if protocol_str == 'classic' else Protocol.BLE
 
         if controller.is_pairing:
             self._send_json({"ok": True, "message": "Pairing already in progress"})
