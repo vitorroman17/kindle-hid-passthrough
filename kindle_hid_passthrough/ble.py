@@ -31,6 +31,7 @@ from config import Protocol, config, normalize_addr, clean_device_name
 from logging_utils import log
 
 HID_REPORT_TYPE_INPUT = 1
+HID_REPORT_TYPE_OUTPUT = 2
 
 # Re-read the battery level this often, for devices that never notify.
 BATTERY_POLL_INTERVAL = 300
@@ -475,6 +476,9 @@ class BLEMixin:
         if report_type == HID_REPORT_TYPE_INPUT:
             session.hid_reports.append((report_id, char))
             log.info(f"[BLE] Found input report {report_id}")
+        elif report_type == HID_REPORT_TYPE_OUTPUT:
+            session.output_reports[report_id] = char
+            log.info(f"[BLE] Found output report {report_id}")
 
     async def _subscribe_to_ble_reports(self, session):
         """Subscribe to BLE HID input report notifications."""
