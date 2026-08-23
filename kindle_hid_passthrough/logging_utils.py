@@ -2,6 +2,7 @@
 """Logging with timestamps, delta tracking, and colored console output."""
 
 import logging
+import os
 import time
 from typing import Optional
 
@@ -129,7 +130,7 @@ def setup_daemon_logging(log_file: str):
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(name)s: %(message)s')
     file_handler.setFormatter(formatter)
     root_logger.addHandler(file_handler)
-    root_logger.setLevel(logging.INFO)
+    root_logger.setLevel(logging.DEBUG if os.environ.get('KINDLE_HID_DEBUG') else logging.INFO)
 
     # Silence verbose Bumble library logs
     logging.getLogger('bumble').setLevel(logging.WARNING)
