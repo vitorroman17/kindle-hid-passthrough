@@ -118,6 +118,15 @@ class BLEMixin:
     def _admit_ble_connection(self, connection, matched_dev=None, match_kind=None):
         """Create a session for a new BLE connection, dropping duplicates."""
         addr = normalize_addr(str(connection.peer_address))
+
+        # A connect started before /remove still lands here; without this the
+        # session comes back and re-pairs, so the app keeps showing the device.
+        allowed = {normalize_addr(d.address) for d in self.ble_devices} | self._keystore_addresses
+        if match_kind is None and '*' not in allowed and addr not in allowed:
+            log.warning(f"[BLE] Rejecting {addr} (not allowed)")
+            self._track_task(asyncio.create_task(self._reject_connection(connection)))
+            return
+
         old = self.sessions.get(addr)
         if old is not None and old.is_alive():
             log.info(f"[BLE] Duplicate connection from {addr}, dropping")
