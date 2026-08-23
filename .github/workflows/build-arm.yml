@@ -113,14 +113,17 @@ jobs:
           cp -r koreader-plugin/ output/
           cp kindle_hid_passthrough/config.ini output/
 
-      # Pinned rather than tracking latest, so a mapper release can't change
-      # what this tarball ships without a commit here.
+      # Tracks the latest mapper release, so a mapper fix reaches this tarball
+      # without a commit here.
       - name: Bundle kindle-button-mapper
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          KBM_VERSION: v1.5.0
         run: |
           mkdir -p output/button-mapper
+          KBM_VERSION=$(gh release view \
+            --repo zampierilucas/kindle-button-mapper-rs \
+            --json tagName --jq .tagName)
+          echo "Bundling kindle-button-mapper $KBM_VERSION"
           gh release download "$KBM_VERSION" \
             --repo zampierilucas/kindle-button-mapper-rs \
             --pattern 'kindle-button-mapper-armv7.tar.gz' \

@@ -182,6 +182,32 @@ html {
     padding-top: 2px;
 }
 
+.batt {
+    display: inline-block;
+    position: relative;
+    width: 44px;
+    height: 22px;
+    border: 3px solid #000;
+    vertical-align: -3px;
+    margin: 0 12px 0 10px;
+}
+
+.batt:after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    right: -7px;
+    width: 4px;
+    height: 8px;
+    background: #000;
+}
+
+.batt-fill {
+    display: block;
+    height: 100%;
+    background: #000;
+}
+
 .device-row-chevron {
     float: right;
     font-size: 56px;
@@ -678,6 +704,8 @@ html {
     .device-row-name { font-size: 22px; }
     .device-row-sub { font-size: 16px; }
     .device-row-chevron { font-size: 30px; line-height: 38px; }
+    .batt { width: 26px; height: 14px; border-width: 2px; margin: 0 8px 0 7px; vertical-align: -2px; }
+    .batt:after { top: 3px; right: -5px; width: 3px; height: 6px; }
     .available-name { font-size: 22px; }
     .available-sub { font-size: 16px; }
     .btn-pair { min-width: 78px; min-height: 40px; padding: 7px 13px; font-size: 19px; }

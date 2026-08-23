@@ -64,6 +64,9 @@ class DeviceSession:
         self.teardown_done = asyncio.Event()
         self.auth_failure = False
         self.vc_unplug = False
+        self.battery_level: Optional[int] = None
+        self.battery_updated: Optional[float] = None
+        self.battery_char = None
 
     def is_alive(self) -> bool:
         conn = self.connection
@@ -88,6 +91,9 @@ class DeviceSession:
                 entry["input_paths"] = self.uhid_device.input_paths
         if self.report_map:
             entry["descriptor_size"] = len(self.report_map)
+        if self.battery_level is not None:
+            entry["battery_level"] = self.battery_level
+            entry["battery_updated"] = self.battery_updated
         return entry
 
     async def cleanup(self):
@@ -383,6 +389,10 @@ class HIDHost(ClassicMixin, BLEMixin):
             tasks.append(asyncio.create_task(
                 self._run_ble_handler(),
                 name="ble_handler"
+            ))
+            tasks.append(asyncio.create_task(
+                self._run_ble_battery_poller(),
+                name="ble_battery_poller"
             ))
 
         if not tasks:
