@@ -268,11 +268,28 @@ installUpstart()
 installAudioWrapper()
 {
   echo " -> Installing GST audio wrapper"
-  /usr/sbin/mntroot rw
-  if [ ! -f /usr/bin/gst-launch-0.10.real ]; then
-    mv /usr/bin/gst-launch-0.10 /usr/bin/gst-launch-0.10.real
+  WRAPPER="$SRC_DIR/assets/audio-hack/gst-launch-wrapper.sh"
+  if [ ! -f "$WRAPPER" ]; then
+    echo " -> wrapper missing from the package, skipping" >&2
+    return 1
   fi
-  cp "$SRC_DIR/assets/audio-hack/gst-launch-wrapper.sh" /usr/bin/gst-launch-0.10
+  /usr/sbin/mntroot rw
+  # Only wrap a stock binary we could actually set aside. Installing the
+  # wrapper without a .real to delegate to makes every gst call exit 127,
+  # and overwriting the stock binary without saving it is unrecoverable.
+  if [ ! -f /usr/bin/gst-launch-0.10.real ]; then
+    if [ ! -f /usr/bin/gst-launch-0.10 ]; then
+      echo " -> no stock gst-launch-0.10 on this firmware, skipping" >&2
+      /usr/sbin/mntroot ro
+      return 1
+    fi
+    if ! mv /usr/bin/gst-launch-0.10 /usr/bin/gst-launch-0.10.real; then
+      echo " -> could not set the stock gst-launch-0.10 aside, skipping" >&2
+      /usr/sbin/mntroot ro
+      return 1
+    fi
+  fi
+  cp "$WRAPPER" /usr/bin/gst-launch-0.10
   chmod +x /usr/bin/gst-launch-0.10
   /usr/sbin/mntroot ro
   echo " -> Ready."

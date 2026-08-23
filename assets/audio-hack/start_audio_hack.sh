@@ -27,6 +27,16 @@ log_error() {
     echo "[start_audio_hack] ERROR: $1" >&2
 }
 
+# 0. The mock runs under KOReader's LuaJIT. Check the interpreter before
+#    touching anything: stopping the stock audiomgrd and then failing to
+#    start a replacement leaves the device with no audio at all.
+LUAJIT="/mnt/us/koreader/luajit"
+if [ ! -x "$LUAJIT" ]; then
+    log_error "LuaJIT not found at $LUAJIT (KOReader not installed?)."
+    log_error "Leaving the stock audio daemon running."
+    exit 1
+fi
+
 # 1. Ensure FIFO exists with mode 0666
 if [ ! -p "$FIFO" ]; then
     rm -f "$FIFO" 2>/dev/null || true
@@ -36,9 +46,9 @@ if [ ! -p "$FIFO" ]; then
 fi
 
 # 2. Ensure symlink to luajit exists with name 'audiomgrd'
-if [ ! -L "$SYMLINK_BIN" ] || [ "$(readlink "$SYMLINK_BIN" 2>/dev/null)" != "/mnt/us/koreader/luajit" ]; then
-    log_info "Creating audiomgrd symlink -> /mnt/us/koreader/luajit"
-    ln -sf /mnt/us/koreader/luajit "$SYMLINK_BIN"
+if [ ! -L "$SYMLINK_BIN" ] || [ "$(readlink "$SYMLINK_BIN" 2>/dev/null)" != "$LUAJIT" ]; then
+    log_info "Creating audiomgrd symlink -> $LUAJIT"
+    ln -sf "$LUAJIT" "$SYMLINK_BIN"
 fi
 
 # 3. Check if mock daemon is already running and responsive
@@ -105,5 +115,7 @@ if [ "$READY" -eq 1 ]; then
 else
     log_error "Mock daemon failed to register com.lab126.audiomgrd within timeout."
     cat "$LOG_FILE" >&2 2>/dev/null || true
+    log_warn "Restoring the stock audio daemon."
+    initctl start audiomgrd 2>/dev/null || true
     exit 1
 fi
