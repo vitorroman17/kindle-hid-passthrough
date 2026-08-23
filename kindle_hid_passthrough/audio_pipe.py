@@ -184,11 +184,13 @@ class SbcEncoder:
 
     def _init_libsbc(self):
         try:
-            lib_name = os.path.join(os.path.dirname(__file__), "libsbc.so.1")
-            if not os.path.exists(lib_name):
-                lib_name = "/mnt/us/kindle_hid_passthrough/libsbc.so.1"
-
-            self._sbc_lib = ctypes.CDLL(lib_name)
+            try:
+                self._sbc_lib = ctypes.CDLL("libsbc.so.1")
+            except OSError:
+                lib_name = os.path.join(os.path.dirname(__file__), "libsbc.so.1")
+                if not os.path.exists(lib_name):
+                    lib_name = "/mnt/us/kindle_hid_passthrough/libsbc.so.1"
+                self._sbc_lib = ctypes.CDLL(lib_name)
             self._sbc_struct = ctypes.create_string_buffer(1024)
             self._sbc_lib.sbc_init.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
             self._sbc_lib.sbc_init.restype = ctypes.c_int

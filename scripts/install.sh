@@ -168,6 +168,7 @@ installAll()
     return 1
   fi
   installUdevRules
+  installAudioWrapper
   # Auto-start is opt-in, only refresh a job the user already enabled.
   if [ -f /etc/upstart/hid-passthrough.conf ]; then
     installUpstart
@@ -261,6 +262,19 @@ installUpstart()
   # upstart only picks up a newly dropped .conf after a config reload, without
   # this the job stays unknown and the start below fails until a reboot.
   /sbin/initctl reload-configuration 2>/dev/null || true
+  echo " -> Ready."
+}
+
+installAudioWrapper()
+{
+  echo " -> Installing GST audio wrapper"
+  /usr/sbin/mntroot rw
+  if [ ! -f /usr/bin/gst-launch-0.10.real ]; then
+    mv /usr/bin/gst-launch-0.10 /usr/bin/gst-launch-0.10.real
+  fi
+  cp "$SRC_DIR/assets/audio-hack/gst-launch-wrapper.sh" /usr/bin/gst-launch-0.10
+  chmod +x /usr/bin/gst-launch-0.10
+  /usr/sbin/mntroot ro
   echo " -> Ready."
 }
 
@@ -369,6 +383,11 @@ uninstallAll()
 
   echo " -> Removing upstart config"
   rm -f /etc/upstart/hid-passthrough.conf
+
+  echo " -> Removing GST audio wrapper"
+  if [ -f /usr/bin/gst-launch-0.10.real ]; then
+    mv /usr/bin/gst-launch-0.10.real /usr/bin/gst-launch-0.10
+  fi
 
   echo " -> Removing udev rules"
   rm -f /etc/udev/rules.d/99-hid-keyboard.rules
