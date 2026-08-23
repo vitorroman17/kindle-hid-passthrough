@@ -99,16 +99,6 @@ RUN --mount=type=cache,target=/nuitka-cache \
     --nofollow-import-to=cryptography \
     --nofollow-import-to=ssl \
     --nofollow-import-to=_hashlib \
-    --nofollow-import-to=encodings.euc_* \
-    --nofollow-import-to=encodings.shift_jis* \
-    --nofollow-import-to=encodings.iso2022_* \
-    --nofollow-import-to=encodings.big5* \
-    --nofollow-import-to=encodings.gb* \
-    --nofollow-import-to=encodings.cp932 \
-    --nofollow-import-to=encodings.cp949 \
-    --nofollow-import-to=encodings.cp950 \
-    --nofollow-import-to=encodings.johab \
-    --nofollow-import-to=encodings.hz \
     kindle_hid_passthrough/main.py
 
 # Copy the build container's dynamic linker and core glibc libs into the dist.
@@ -134,6 +124,17 @@ RUN gcc -O2 /build/mousecursor.c -o /build/nuitka-out/main.dist/mousecursor.bin 
         while read -r lib; do cp -Ln "$lib" /build/nuitka-out/main.dist/ 2>/dev/null || true; done && \
     echo "Cursor deps:" && ls -la /build/nuitka-out/main.dist/mousecursor.bin \
         /build/nuitka-out/main.dist/libX11* /build/nuitka-out/main.dist/libxcb*
+
+# Nuitka force-includes the whole encodings package in standalone mode and
+# copies these with it, so --nofollow-import-to can't reach them. Nothing asks
+# for a CJK encoding, and the codec registry only loads them on lookup.
+RUN rm -f /build/nuitka-out/main.dist/_codecs_cn.so \
+          /build/nuitka-out/main.dist/_codecs_hk.so \
+          /build/nuitka-out/main.dist/_codecs_iso2022.so \
+          /build/nuitka-out/main.dist/_codecs_jp.so \
+          /build/nuitka-out/main.dist/_codecs_kr.so \
+          /build/nuitka-out/main.dist/_codecs_tw.so \
+          /build/nuitka-out/main.dist/_multibytecodec.so
 
 # Build C wrapper that invokes the bundled ld-linux directly
 # This bypasses the system dynamic linker entirely
