@@ -102,15 +102,3 @@ The `just deploy` command installs the dev version. Binary releases include the 
 ```bash
 just remove-autostart  # Disable autostart (removes upstart config)
 ```
-
-## A2DP Audio Passthrough (ALSA -> SBC)
-
-### O que foi feito
-Implementamos um hack agressivo no sistema de áudio nativo do Kindle para capturar qualquer som tocado no aparelho e redirecioná-lo para os fones de ouvido Bluetooth conectados pelo nosso daemon (já que tomamos controle exclusivo da interface `hci0`, cegando o sistema original da Amazon).
-
-### Como foi feito
-1. **ALSA Hijack (`/etc/asound.conf`)**: Sobrescrevemos os dispositivos `pcm.!default` e `pcm.dmix0` no Kindle usando os plugins `plug` e `file` do ALSA. Qualquer áudio tocado no sistema (ex: via `aplay`) é forçadamente reamostrado para **44100 Hz, Stereo, S16_LE** e despejado continuamente em um arquivo FIFO (pipe) em `/tmp/kindle_audio.fifo`.
-2. **Leitura Assíncrona (`audio_pipe.py`)**: O nosso daemon lê esse pipe continuamente (buffering instantâneo do tipo *bit-bucket* do ALSA nulo) sem bloquear o clock do sistema, armazenando o PCM bruto em memória.
-3. **Encoding SBC (`libsbc.so.1`)**: Usamos `ctypes` para invocar a biblioteca de compressão C nativa. Corrigimos um bug crítico de áudio metálico/sintetizador alterando diretamente a memória da `sbc_struct` no Python para forçar o modo **Joint Stereo (0x03)** e **44.1kHz (0x02)**, batendo perfeitamente com a negociação AVDTP que o Bumble faz com os fones de ouvido.
-4. **Streaming AVDTP (`host.py`)**: O PCM é fatiado (5 frames por pacote), comprimido para SBC, envelopado como payload RTP, e injetado na conexão A2DP de forma assíncrona. Se não houver áudio tocando, o daemon envia frames de silêncio sintéticos pré-calculados para manter os fones acordados.
-5. **KOReader Audiobook Plugin (Fork)**: Como o plugin original tentava usar a infraestrutura da Amazon (`gst-launch` -> `mixersink` -> `audiomgrd`), ele travava por timeout pois a antena BT nativa estava morta. Modificamos o plugin para simplesmente usar o `aplay` padrão do Linux, que cai perfeitamente no nosso cano do ALSA.
