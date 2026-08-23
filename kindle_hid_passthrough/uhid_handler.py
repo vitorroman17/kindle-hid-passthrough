@@ -125,9 +125,15 @@ def descriptor_is_pointer(descriptor: bytes) -> bool:
 UHID_CREATE2 = 11
 UHID_DESTROY = 1
 UHID_INPUT2 = 12
+UHID_OUTPUT = 6
 # Maximum sizes
 HID_MAX_DESCRIPTOR_SIZE = 4096
 UHID_DATA_MAX = 4096
+# sizeof(struct uhid_event), which is packed and sized by its largest arm,
+# uhid_create2_req (4372) plus the 4-byte type.
+UHID_EVENT_MAX = 4376
+# Offset of uhid_output_req.size, which follows its data[UHID_DATA_MAX].
+UHID_OUTPUT_SIZE_OFFSET = 4 + UHID_DATA_MAX
 
 
 class Bus:
@@ -319,6 +325,33 @@ class UHIDDevice:
             logger.debug(f"Sent input: {data.hex()}")
         except OSError as e:
             raise UHIDError(f"Failed to send input: {e}")
+
+    def read_output_report(self) -> Optional[bytes]:
+        """Return the payload of a queued UHID_OUTPUT event, if that is next.
+
+        The kernel queues one per hidraw write and drops it when nothing reads,
+        which is why writes to the hidraw node succeed and do nothing. Call
+        when the fd is readable; it is a blocking fd.
+        """
+        if self._fd is None:
+            return None
+
+        try:
+            event = os.read(self._fd, UHID_EVENT_MAX)
+        except (BlockingIOError, InterruptedError):
+            return None
+        except OSError as e:
+            logger.debug(f"UHID read failed: {e}")
+            return None
+
+        if len(event) < 4:
+            return None
+        event_type, = struct.unpack_from('< L', event, 0)
+        if event_type != UHID_OUTPUT or len(event) < UHID_OUTPUT_SIZE_OFFSET + 2:
+            return None
+
+        size, = struct.unpack_from('< H', event, UHID_OUTPUT_SIZE_OFFSET)
+        return event[4:4 + min(size, UHID_DATA_MAX)] or None
 
     def destroy(self):
         """Destroy the virtual device and close the file descriptor."""

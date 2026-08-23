@@ -17,6 +17,9 @@ from bumble.sdp import Client as SDPClient
 from config import Protocol, clean_device_name, config, normalize_addr
 from logging_utils import errstr, log
 
+# HIDP DATA header, OUTPUT report type.
+HIDP_DATA_OUTPUT = 0xA2
+
 FALLBACK_HID_DESCRIPTOR = bytes([
     0x05, 0x01, 0x09, 0x05, 0xa1, 0x01, 0x85, 0x01,
     0x05, 0x01, 0x09, 0x30, 0x09, 0x31, 0x09, 0x32, 0x09, 0x35,
@@ -75,6 +78,12 @@ class ClassicHIDChannels:
         """Send HIDP SET_PROTOCOL(Report) on the control channel."""
         self.ctrl_channel.write(
             bytes(SetProtocolMessage(protocol_mode=Message.ProtocolMode.REPORT_PROTOCOL)))
+
+    def send_output_report(self, payload: bytes):
+        """Send a HIDP DATA/OUTPUT report on the interrupt channel."""
+        if self.intr_channel is None:
+            raise RuntimeError("interrupt channel is not connected")
+        self.intr_channel.write(bytes([HIDP_DATA_OUTPUT]) + payload)
 
     async def disconnect(self):
         """Close both channels, interrupt first, 1s cap each."""
