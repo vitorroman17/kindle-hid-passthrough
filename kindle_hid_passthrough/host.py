@@ -631,6 +631,25 @@ class HIDHost(ClassicMixin, BLEMixin):
         from bumble.a2dp import A2DP_SBC_CODEC_TYPE, SbcMediaCodecInformation
 
         log.info("[Classic] Audio device connected. Initiating AVDTP...")
+
+        # Uma sessao de audio por vez. Sem isto cada reconexao deixa o pump
+        # anterior vivo empurrando RTP com sequencia propria no mesmo canal:
+        # o sink recebe dois fluxos embaralhados e decodifica ruido.
+        prev = getattr(self, "_audio_session", None)
+        if prev:
+            log.info("[Classic Audio] Closing previous audio session...")
+            prev_pump, prev_streamer = prev
+            self._audio_session = None
+            try:
+                if prev_pump is not None:
+                    await prev_pump.stop()
+            except Exception as e:
+                log.warning(f"[Classic Audio] previous pump did not stop: {e}")
+            try:
+                if prev_streamer is not None:
+                    prev_streamer.close()
+            except Exception as e:
+                log.warning(f"[Classic Audio] previous streamer did not close: {e}")
         
         codec_caps = MediaCodecCapabilities(
             media_type=AVDTP_AUDIO_MEDIA_TYPE,
@@ -686,6 +705,7 @@ class HIDHost(ClassicMixin, BLEMixin):
                 audio_streamer.close()
 
         pump = MediaPacketPump(packet_generator(), RealtimeClock())
+        self._audio_session = (pump, audio_streamer)
         
         # This creates the LocalSource, binds the pump, and registers it to the protocol
         source = avdtp_protocol.add_source(codec_caps, pump)
