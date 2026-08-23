@@ -187,6 +187,36 @@ class ClassicMixin:
 
         await self._classic_active_connect_loop()
 
+    async def _reset_classic_bond(self, session, connection):
+        """Drop the stale link key and pair again.
+
+        A stale key makes authenticate() fail with AUTHENTICATION_FAILURE.
+        Carrying on opens AVDTP over an unauthenticated link and the peer
+        tears the connection down at the 30 s LMP Response Timeout, forever.
+        The BLE path already did this; the Classic path did not.
+
+        Returns True when the link ends up authenticated and encrypted.
+        """
+        addr = str(connection.peer_address)
+        keystore = getattr(self.device, "keystore", None)
+        if keystore is not None:
+            try:
+                await keystore.delete(addr)
+                log.info(f"[Classic] Dropped stale link key: {addr}")
+            except Exception as e:
+                log.warning(f"[Classic] Could not drop the link key for {addr}: "
+                            f"{errstr(e) if 'errstr' in globals() else repr(e)}")
+        try:
+            log.info("[Classic] Pairing again...")
+            await asyncio.wait_for(connection.authenticate(), timeout=20.0)
+            await asyncio.wait_for(connection.encrypt(enable=True), timeout=10.0)
+            log.success("[Classic] Paired again")
+            return True
+        except Exception as e:
+            log.warning(f"[Classic] Re-pairing failed: "
+                        f"{errstr(e) if 'errstr' in globals() else repr(e)}")
+            return False
+
     async def _setup_classic_session(self, session, old=None):
         """Authenticate, open HID channels, and finalize one Classic session."""
         connection = session.connection
@@ -199,6 +229,7 @@ class ClassicMixin:
             return isinstance(e, HCI_Error) and e.error_code in CLASSIC_COLLISION_ERRORS
 
         peer_driving = False
+        bond_failed = False
         is_peripheral = connection.role != Role.CENTRAL
 
         if is_peripheral:
@@ -223,11 +254,22 @@ class ClassicMixin:
             except Exception as e:
                 log.warning(f"[Classic] Bonding restore failed: {errstr(e) if 'errstr' in globals() else repr(e)}")
                 peer_driving = is_collision(e)
+                if not peer_driving:
+                    bond_failed = not await self._reset_classic_bond(
+                        session, connection)
 
         channels = session.channels
 
 
         if session.protocol == Protocol.CLASSIC_AUDIO:
+            if bond_failed:
+                log.warning(
+                    "[Classic] No valid bonding: not opening AVDTP. "
+                    "An unauthenticated link is torn down by the peer at "
+                    "the 30 s LMP Response Timeout, in a loop. Put the "
+                    "headset in pairing mode to renew the key."
+                )
+                return
             log.info("[Classic] Audio device connected. Letting AVDTP and AVRCP listeners take over.")
             log.success(f"[Classic] {self._format_device(session.address)} connected (Audio)")
             self._track_task(asyncio.create_task(self._continue_classic_audio_after_pairing(session)))
