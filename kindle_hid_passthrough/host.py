@@ -632,24 +632,10 @@ class HIDHost(ClassicMixin, BLEMixin):
 
         log.info("[Classic] Audio device connected. Initiating AVDTP...")
 
-        # Uma sessao de audio por vez. Sem isto cada reconexao deixa o pump
-        # anterior vivo empurrando RTP com sequencia propria no mesmo canal:
-        # o sink recebe dois fluxos embaralhados e decodifica ruido.
-        prev = getattr(self, "_audio_session", None)
-        if prev:
-            log.info("[Classic Audio] Closing previous audio session...")
-            prev_pump, prev_streamer = prev
-            self._audio_session = None
-            try:
-                if prev_pump is not None:
-                    await prev_pump.stop()
-            except Exception as e:
-                log.warning(f"[Classic Audio] previous pump did not stop: {e}")
-            try:
-                if prev_streamer is not None:
-                    prev_streamer.close()
-            except Exception as e:
-                log.warning(f"[Classic Audio] previous streamer did not close: {e}")
+        # One audio session at a time: a stale pump keeps pushing RTP with its
+        # own sequence numbers into the same channel and the sink decodes the
+        # interleaved streams as noise.
+        await self._close_audio_session()
         
         codec_caps = MediaCodecCapabilities(
             media_type=AVDTP_AUDIO_MEDIA_TYPE,
@@ -798,8 +784,34 @@ class HIDHost(ClassicMixin, BLEMixin):
         except Exception as e:
             log.warning(f"cursor hook failed: {e}")
 
+    async def _close_audio_session(self):
+        """Stop the pump and close the FIFO of the current audio session.
+
+        Called both before opening a new session and from cleanup(). A
+        suspend/resume builds a fresh host, so keying the teardown only on the
+        next session start leaked one FIFO descriptor per on/off cycle:
+        measured 2 -> 3 -> 4 open descriptors over two /stop + /start cycles.
+        """
+        prev = getattr(self, "_audio_session", None)
+        if not prev:
+            return
+        log.info("[Classic Audio] Closing previous audio session...")
+        prev_pump, prev_streamer = prev
+        self._audio_session = None
+        try:
+            if prev_pump is not None:
+                await prev_pump.stop()
+        except Exception as e:
+            log.warning(f"[Classic Audio] previous pump did not stop: {e}")
+        try:
+            if prev_streamer is not None:
+                prev_streamer.close()
+        except Exception as e:
+            log.warning(f"[Classic Audio] previous streamer did not close: {e}")
+
     async def cleanup(self):
         """Clean up resources."""
+        await self._close_audio_session()
         if self._connection_tasks:
             pending = list(self._connection_tasks)
             for task in pending:
