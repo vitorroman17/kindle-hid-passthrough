@@ -2,7 +2,7 @@
 
 [![Build](https://img.shields.io/github/actions/workflow/status/zampierilucas/kindle-hid-passthrough/build-arm.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white)](https://github.com/zampierilucas/kindle-hid-passthrough/actions/workflows/build-arm.yml)
 [![Release](https://img.shields.io/github/v/release/zampierilucas/kindle-hid-passthrough?style=flat-square&logo=github)](https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/zampierilucas/kindle-hid-passthrough/total?style=flat-square&color=blue)](https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest)
+[![Downloads](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/zampierilucas/kindle-hid-passthrough/badges/downloads.json&style=flat-square)](https://github.com/zampierilucas/kindle-hid-passthrough/releases/latest)
 [![License](https://img.shields.io/github/license/zampierilucas/kindle-hid-passthrough?style=flat-square)](LICENSE)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-support%20me-FF5E5B?style=flat-square&logo=kofi&logoColor=white)](https://ko-fi.com/lzampier)
 
@@ -11,8 +11,6 @@ A userspace Bluetooth HID host for Amazon Kindle e-readers. Connects Bluetooth H
 > **Note:** On its own this project only connects a device. Something still has to decide what its buttons *do*, or gamepads and remotes pair fine and then sit there.
 >
 > **If you only care about KOReader**, use the bundled [KOReader plugin](koreader-plugin/README.md). Bind any button to any KOReader action from inside KOReader, nothing else to install. That covers most people.
->
-> Buttons, D-pad and triggers all map there. Analog sticks are the one thing it can't do yet, tracked in [kindle-button-mapper#40](https://github.com/zampierilucas/kindle-button-mapper-rs/issues/40).
 >
 > **If you want mappings that work system-wide**, outside KOReader as well as in it, pair this with [kindle-button-mapper-rs](https://github.com/zampierilucas/kindle-button-mapper-rs). More setup, more power, and it keeps working with KOReader closed.
 
@@ -46,6 +44,9 @@ As this project replaces the original Bluetooth stack, you can't use the default
 - Jailbroken Kindle
 - [Hotfix](https://github.com/KindleModding/Hotfix/releases/tag/v2.3.7) (only for BTManager) — it's what gives the Kindle scriptlet support, and without it the BTManager entry never shows up on the home screen. Kindles jailbroken with older methods don't have scriptlets at all.
 
+> [!IMPORTANT]
+> **Setting up [usbnetlite](https://github.com/notmarek/kindle-usbnetlite) first is highly encouraged.** This project touches Bluetooth, udev and upstart, all of which run early enough in boot that a bad state can leave a Kindle stuck on a white screen. Modern Kindles have no serial pads, so USB networking is the only way back in.
+
 Kernels without UHID support are handled automatically: the daemon loads a bundled `uhid.ko` at startup (see [Kernel Modules](#kernel-modules)).
 
 ## Installation
@@ -54,9 +55,20 @@ Kernels without UHID support are handled automatically: the daemon loads a bundl
 
 Community walkthrough by [@jencaps89](https://www.tiktok.com/@jencaps89) showing the whole setup as a Bluetooth page turner, [watch it on TikTok](https://www.tiktok.com/@jencaps89/video/7658167614736223496) or through the [embedded player](https://www.tiktok.com/player/v1/7658167614736223496) if you'd rather not log in.
 
-### KindleForge (recommended)
+### KPM (recommended)
 
-Install directly from [KindleForge](https://github.com/KindleTweaks/KindleForge) — search for "Kindle HID Passthrough" in the on-device app store.
+If you have [KPM](https://kindlemodding.org/kindle-dev/kpm/) installed, add this repository once and install:
+
+```bash
+kpm add-repo https://raw.githubusercontent.com/zampierilucas/kindle-hid-passthrough/main/kpm/repo.json
+kpm install kindle-hid-passthrough
+```
+
+`kpm upgrade` picks up later releases and keeps your `config.ini`, paired devices and pairing keys. `kpm uninstall kindle-hid-passthrough` removes everything, including the udev rules, the upstart job, BTManager and Button Mapper.
+
+### KindleForge (currently unavailable)
+
+[KindleForge](https://github.com/KindleTweaks/KindleForge) is being reworked, so installing from it is not an option right now. Use KPM or the manual install below.
 
 ### Manual install
 
@@ -99,7 +111,7 @@ A built-in Kindle app for managing Bluetooth HID devices from the touchscreen �
 
 Paired list, scanning for nearby BLE and Classic HID devices, and the per-device view with status, protocol, address, connect and remove.
 
-Installed automatically via KindleForge. For manual installs, use option 6 in `scripts/install.sh`.
+Installed automatically via KPM. For manual installs, use option 6 in `scripts/install.sh`.
 
 The **Start on boot** toggle at the bottom installs or removes the upstart job. It is off by default, so the daemon only runs while you use it, which leaves the Bluetooth radio free for audio. Turn it on if you want your keyboard connected right after a reboot.
 

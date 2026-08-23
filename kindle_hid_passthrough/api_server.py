@@ -108,6 +108,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self._handle_connect(param('addr'), param('protocol'))
             case '/disconnect':
                 self._handle_disconnect(param('addr'))
+            case '/discoverable':
+                self._handle_discoverable(param('duration'))
             case '/logs':
                 self._handle_logs(param('lines'))
             case _:
@@ -244,6 +246,19 @@ class RequestHandler(BaseHTTPRequestHandler):
         controller = self._controller
         controller.request_disconnect(address=address)
         self._send_json({"ok": True, "message": "Disconnecting"})
+
+    def _handle_discoverable(self, duration_str):
+        duration = 60
+        if duration_str:
+            try:
+                duration = max(10, min(int(duration_str), 300))
+            except ValueError:
+                pass
+        if self._controller.request_discoverable(duration):
+            self._send_json({"ok": True, "duration": duration})
+        else:
+            self._send_json({"ok": False,
+                             "error": "Media remote off or Bluetooth stopped"})
 
     def _handle_logs(self, lines_str):
         log_file = config.log_file

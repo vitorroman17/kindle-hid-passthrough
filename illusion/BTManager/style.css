@@ -325,6 +325,56 @@ html {
     padding: 0;
 }
 
+.pair-row {
+    overflow: hidden;
+}
+
+.btn-pair-main {
+    float: left;
+    width: 82%;
+}
+
+.btn-info {
+    float: right;
+    width: 15%;
+    font-family: Georgia, serif;
+    font-style: italic;
+}
+
+.toggle-row-secondary {
+    border-bottom: none;
+    padding: 10px 0;
+}
+
+.toggle-row-secondary .toggle-label {
+    font-size: 30px;
+    font-weight: normal;
+    line-height: 43px;
+}
+
+.toggle-secondary {
+    width: 86px;
+    height: 43px;
+    border-width: 3px;
+    padding: 3px;
+    -webkit-border-radius: 22px;
+    border-radius: 22px;
+}
+
+.toggle-secondary .toggle-knob {
+    width: 31px;
+    height: 31px;
+    -webkit-border-radius: 16px;
+    border-radius: 16px;
+    top: 3px;
+    left: 3px;
+}
+
+.toggle-secondary.on .toggle-knob {
+    left: auto;
+    right: 3px;
+}
+
 /* ---- Device Detail Overlay ---- */
 
 .device-overlay {

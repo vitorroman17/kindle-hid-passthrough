@@ -40,6 +40,11 @@
             <button id="btnScan" class="btn btn-scan">Scan for Devices</button>
         </div>
 
+        <div class="scan-btn-wrap pair-row">
+            <button id="btnDiscoverable" class="btn btn-scan btn-pair-main">Pair Phone</button>
+            <button id="btnPairInfo" class="btn btn-scan btn-info" aria-label="About phone pairing">i</button>
+        </div>
+
         <!-- Available devices section (hidden until scan) -->
         <div id="availableSection" style="display:none;">
             <div class="section-label-row">
@@ -57,9 +62,9 @@
     </div>
 
     <!-- Start on boot toggle -->
-    <div class="toggle-row">
+    <div class="toggle-row toggle-row-secondary">
         <span class="toggle-label">Start on boot</span>
-        <button id="btnAutostart" class="toggle" aria-label="Toggle start on boot">
+        <button id="btnAutostart" class="toggle toggle-secondary" aria-label="Toggle start on boot">
             <span class="toggle-knob"></span>
         </button>
     </div>

@@ -14,7 +14,7 @@ from kindle_detect import detect_kindle
 if TYPE_CHECKING:
     pass
 
-__version__ = "3.14.1"
+__version__ = "3.15.1"
 __build_sha__ = None  # stamped by build scripts
 
 
@@ -142,12 +142,17 @@ class Config:
         self.bt_settle_time = float(self._get('bluetooth', 'settle_time', '0.5'))
 
         # Device identity
-        self.device_name = self._get('device', 'name', 'Kindle-HID')
+        default_name = 'Kindle-HID'
+        if self._kindle_defaults:
+            default_name = self._kindle_defaults.model_name
+        self.device_name = self._get('device', 'name', default_name)
         self.device_address = self._get('device', 'address', 'F0:F0:F0:F0:F0:F0')
 
         # Protocol
         protocol_str = self._get('protocol', 'type', 'ble').lower()
         self.protocol = self._parse_protocol(protocol_str)
+
+        self.media_remote_enabled = self._getboolean('media_remote', 'enabled', True)
 
     def _detect_transport(self) -> str:
         """Auto-detect HCI transport from Kindle hardware.
@@ -215,6 +220,12 @@ class Config:
     def _getint(self, section: str, key: str, default: int) -> int:
         try:
             return self._parser.getint(section, key)
+        except (configparser.NoSectionError, configparser.NoOptionError, ValueError):
+            return default
+
+    def _getboolean(self, section: str, key: str, default: bool) -> bool:
+        try:
+            return self._parser.getboolean(section, key)
         except (configparser.NoSectionError, configparser.NoOptionError, ValueError):
             return default
 
