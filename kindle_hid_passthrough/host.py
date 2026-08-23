@@ -631,10 +631,7 @@ class HIDHost(ClassicMixin, BLEMixin):
             else:
                 await self._continue_ble_after_pairing(session)
             proto_name = session.protocol.value.upper()
-            from kindle_hid_passthrough.uhid_handler import create_uhid_device
-            if not session.uhid_device:
-                desc = await self._query_classic_sdp(session)
-                session.uhid_device = create_uhid_device(session, desc)
+
             log.success(f"\n[{proto_name}] Paired and receiving HID reports.")
         else:
             log.info("Paired device disconnected; the connect loops will pick it up")
