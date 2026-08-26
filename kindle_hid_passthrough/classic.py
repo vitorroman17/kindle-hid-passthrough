@@ -7,6 +7,7 @@ from bumble.core import BT_BR_EDR_TRANSPORT, BT_HUMAN_INTERFACE_DEVICE_SERVICE, 
 from bumble.core import TimeoutError as BumbleTimeoutError
 from bumble.hci import (
     Address,
+    HCI_Error,
     HCI_Write_Scan_Enable_Command,
     Role,
 )
@@ -16,19 +17,32 @@ from bumble.sdp import Client as SDPClient
 
 from config import Protocol, clean_device_name, config, normalize_addr
 from logging_utils import errstr, log
-from bumble.hci import HCI_Error
 
 CLASSIC_COLLISION_ERRORS = (0x23, 0x2A)
+# The only failures that mean the stored link key is the problem:
+# AUTHENTICATION_FAILURE and PIN_OR_KEY_MISSING. Anything else -- a timeout
+# above all -- says nothing about the key, and dropping it there costs the
+# user a re-pairing of a device that was working.
+CLASSIC_STALE_KEY_ERRORS = (0x05, 0x06)
+# A bonded device waking from deep sleep has to wake its own radio before it
+# can answer, and 5 s was not enough for that: the restore timed out on a
+# perfectly good key. Give it room before concluding anything.
+CLASSIC_AUTH_TIMEOUT = 15.0
 
 # HIDP DATA header, OUTPUT report type.
 HIDP_DATA_OUTPUT = 0xA2
 
 FALLBACK_HID_DESCRIPTOR = bytes([
-    0x05, 0x01, 0x09, 0x06, 0xA1, 0x01, 0x85, 0x01, 0x05, 0x07, 0x19, 0xE0, 0x29, 0xE7, 0x15, 0x00,
-    0x25, 0x01, 0x75, 0x01, 0x95, 0x08, 0x81, 0x02, 0x95, 0x01, 0x75, 0x08, 0x81, 0x01, 0x95, 0x05,
-    0x75, 0x01, 0x05, 0x08, 0x19, 0x01, 0x29, 0x05, 0x91, 0x02, 0x95, 0x01, 0x75, 0x03, 0x91, 0x01,
-    0x95, 0x06, 0x75, 0x08, 0x15, 0x00, 0x25, 0x65, 0x05, 0x07, 0x19, 0x00, 0x29, 0x65, 0x81, 0x00,
-    0xC0
+    0x05, 0x01, 0x09, 0x05, 0xa1, 0x01, 0x85, 0x01,
+    0x05, 0x01, 0x09, 0x30, 0x09, 0x31, 0x09, 0x32, 0x09, 0x35,
+    0x16, 0x00, 0x00, 0x26, 0xff, 0xff, 0x75, 0x10, 0x95, 0x04, 0x81, 0x02,
+    0x05, 0x02, 0x09, 0xc5, 0x09, 0xc4,
+    0x16, 0x00, 0x00, 0x26, 0xff, 0x03, 0x75, 0x10, 0x95, 0x02, 0x81, 0x02,
+    0x05, 0x01, 0x09, 0x39, 0x15, 0x01, 0x25, 0x08,
+    0x35, 0x00, 0x46, 0x3b, 0x01, 0x65, 0x14, 0x75, 0x08, 0x95, 0x01, 0x81, 0x42,
+    0x05, 0x09, 0x19, 0x01, 0x29, 0x10,
+    0x15, 0x00, 0x25, 0x01, 0x75, 0x01, 0x95, 0x10, 0x81, 0x02,
+    0xc0,
 ])
 
 
@@ -174,11 +188,20 @@ class ClassicMixin:
 
             addr = normalize_addr(addr_str)
             old = self.sessions.get(addr)
+            # Specific address first: a '*' entry earlier in devices.conf used
+            # to win over the exact match below it and hand every device the
+            # wildcard's protocol -- audio for keyboards, or the reverse.
             proto = Protocol.CLASSIC
+            wildcard = None
             for dev in self.classic_devices:
-                if dev.address == addr or dev.address == '*':
+                if dev.address == addr:
                     proto = dev.protocol
                     break
+                if dev.address == '*' and wildcard is None:
+                    wildcard = dev.protocol
+            else:
+                if wildcard is not None:
+                    proto = wildcard
 
             session = self._new_session(addr, proto, connection)
             if proto != Protocol.CLASSIC_AUDIO:
@@ -214,7 +237,7 @@ class ClassicMixin:
                 log.info(f"[Classic] Dropped stale link key: {addr}")
             except Exception as e:
                 log.warning(f"[Classic] Could not drop the link key for {addr}: "
-                            f"{errstr(e) if 'errstr' in globals() else repr(e)}")
+                            f"{errstr(e)}")
         try:
             log.info("[Classic] Pairing again...")
             await asyncio.wait_for(connection.authenticate(), timeout=20.0)
@@ -223,7 +246,7 @@ class ClassicMixin:
             return True
         except Exception as e:
             log.warning(f"[Classic] Re-pairing failed: "
-                        f"{errstr(e) if 'errstr' in globals() else repr(e)}")
+                        f"{errstr(e)}")
             return False
 
     async def _setup_classic_session(self, session, old=None):
@@ -237,6 +260,9 @@ class ClassicMixin:
         def is_collision(e):
             return isinstance(e, HCI_Error) and e.error_code in CLASSIC_COLLISION_ERRORS
 
+        def is_stale_key(e):
+            return isinstance(e, HCI_Error) and e.error_code in CLASSIC_STALE_KEY_ERRORS
+
         peer_driving = False
         bond_failed = False
         is_peripheral = connection.role != Role.CENTRAL
@@ -248,7 +274,7 @@ class ClassicMixin:
                 log.success("[Classic] Role switch complete, now central")
                 is_peripheral = False
             except Exception as e:
-                log.warning(f"[Classic] Role switch failed: {errstr(e) if 'errstr' in globals() else repr(e)}")
+                log.warning(f"[Classic] Role switch failed: {errstr(e)}")
                 peer_driving = is_collision(e)
 
         if peer_driving or is_peripheral:
@@ -257,13 +283,20 @@ class ClassicMixin:
             log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
             try:
                 if not connection.authenticated:
-                    await asyncio.wait_for(connection.authenticate(), timeout=5.0)
-                await asyncio.wait_for(connection.encrypt(enable=True), timeout=5.0)
+                    await asyncio.wait_for(connection.authenticate(),
+                                           timeout=CLASSIC_AUTH_TIMEOUT)
+                await asyncio.wait_for(connection.encrypt(enable=True),
+                                       timeout=CLASSIC_AUTH_TIMEOUT)
                 log.success("[Classic] Bonding restored")
             except Exception as e:
-                log.warning(f"[Classic] Bonding restore failed: {errstr(e) if 'errstr' in globals() else repr(e)}")
+                log.warning(f"[Classic] Bonding restore failed: {errstr(e)}")
                 peer_driving = is_collision(e)
-                if not peer_driving:
+                # Drop the key when the controller says it is the problem, or
+                # when the peer stayed silent for the whole window above --
+                # both are states a fresh pairing recovers and nothing else
+                # does. A collision is neither: the peer is driving.
+                if not peer_driving and (is_stale_key(e)
+                                         or isinstance(e, asyncio.TimeoutError)):
                     bond_failed = not await self._reset_classic_bond(
                         session, connection)
 
@@ -277,6 +310,12 @@ class ClassicMixin:
                     "An unauthenticated link is torn down by the peer at "
                     "the 30 s LMP Response Timeout, in a loop. Put the "
                     "headset in pairing mode to renew the key."
+                )
+                return
+            if not config.audio_enabled():
+                log.info(
+                    "[Classic] Audio device connected, bypass is off: not "
+                    "opening AVDTP. Turn Bluetooth audio on to stream to it."
                 )
                 return
             log.info("[Classic] Audio device connected. Letting AVDTP and AVRCP listeners take over.")
@@ -482,7 +521,7 @@ class ClassicMixin:
         """Execute pairing flow for a single Classic device."""
         self._pairing_session = None
 
-        log.info(f"[Classic] Pairing with {address}/P...")
+        log.info(f"[Classic] Pairing with {address}...")
         try:
             target_address = Address(address, Address.PUBLIC_DEVICE_ADDRESS)
             connection = await self.device.connect(
