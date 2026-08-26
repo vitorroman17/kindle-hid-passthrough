@@ -38,10 +38,14 @@ class DaemonController:
         # HID on/off survives a reboot: /start and /stop write it to disk
         # and boot honours what the user left. It used to always come up on.
         self._bt_enabled = self._load_bt_state()
+        # The bypass stops the stock audiomgrd and puts a mock in its place, so
+        # it is opt-in and off until asked for: a device where it does not work
+        # has to be able to keep its own audio daemon.
+        self._audio_enabled = self._load_audio_state()
         if not self._bt_enabled:
             logger.info("HID was left off; daemon starts suspended")
             daemon._suspended = True
-        else:
+        elif self._audio_enabled:
             self._spawn_audio_hack(True)
 
         # Scan state
@@ -69,6 +73,29 @@ class DaemonController:
 
     def _bt_state_path(self):
         return os.path.join(config.cache_dir, "bt_enabled")
+
+    def _audio_state_path(self):
+        return os.path.join(config.cache_dir, "audio_enabled")
+
+    def _load_audio_state(self) -> bool:
+        """Off unless the user turned it on. Unlike HID, which the daemon
+        exists for, the bypass replaces a system daemon and cannot be the
+        default on hardware nobody has tested it on."""
+        try:
+            with open(self._audio_state_path()) as f:
+                return f.read().strip() == "1"
+        except OSError:
+            return False
+
+    def _persist_audio_state(self, value: bool):
+        try:
+            os.makedirs(config.cache_dir, exist_ok=True)
+            tmp = self._audio_state_path() + ".tmp"
+            with open(tmp, "w") as f:
+                f.write("1" if value else "0")
+            os.replace(tmp, self._audio_state_path())
+        except OSError as e:
+            logger.warning(f"Could not persist audio_enabled: {errstr(e)}")
 
     def _load_bt_state(self) -> bool:
         try:
@@ -137,6 +164,25 @@ class DaemonController:
         self._bt_enabled = value
         if changed:
             self._persist_bt_state(value)
+            if self._audio_enabled:
+                self._spawn_audio_hack(value)
+
+    @property
+    def audio_enabled(self) -> bool:
+        return self._audio_enabled
+
+    @audio_enabled.setter
+    def audio_enabled(self, value):
+        value = bool(value)
+        changed = value != getattr(self, "_audio_enabled", None)
+        self._audio_enabled = value
+        if not changed:
+            return
+        self._persist_audio_state(value)
+        # Only touch the stock daemon while HID is on. With HID off there is no
+        # Bluetooth sink to route to, and stopping audiomgrd then would leave
+        # the device with no audio at all instead of with its own.
+        if self._bt_enabled:
             self._spawn_audio_hack(value)
 
     def get_status(self) -> dict:
@@ -150,6 +196,7 @@ class DaemonController:
             "scanning": self.is_scanning,
             "pairing": self.is_pairing,
             "cursor_running": self.cursor_running(),
+            "audio_enabled": self.audio_enabled,
         }
 
         conn = self.daemon.connection_state

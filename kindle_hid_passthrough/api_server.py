@@ -96,6 +96,8 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self._handle_clear_cache()
             case '/autostart':
                 self._handle_autostart(param('enable'))
+            case '/audio':
+                self._handle_audio(param('enable'))
             case '/scan':
                 self._handle_scan()
             case '/scan-status':
@@ -154,6 +156,17 @@ class RequestHandler(BaseHTTPRequestHandler):
         else:
             err = (result.stderr or result.stdout or 'failed').strip()
             self._send_json({"ok": False, "enabled": enabled, "error": err[-200:]})
+
+    def _handle_audio(self, enable):
+        """Read or set the audio bypass. Separate from HID on purpose: it
+        replaces the stock audio daemon, so a device it does not work on can
+        run the HID host with its own audio left alone."""
+        controller = self._controller
+        if enable is None:
+            self._send_json({"ok": True, "enabled": controller.audio_enabled})
+            return
+        controller.audio_enabled = enable not in ('0', 'false', 'off')
+        self._send_json({"ok": True, "enabled": controller.audio_enabled})
 
     def _handle_start(self):
         controller = self._controller
