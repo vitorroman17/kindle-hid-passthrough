@@ -620,8 +620,30 @@ function HIDPassthrough:mapperCapture(dev, touchmenu_instance, device_depth)
     -- the picker has to be pushed onto, so remember it and check on the way
     -- back rather than pushing onto whatever the user browsed to meanwhile.
     local menu_at_start = touchmenu_instance and touchmenu_instance.item_table
+    -- The mapper does the capture, not us, and only one process can hold an
+    -- evdev grab. While KOReader holds this node the mapper's reader gets
+    -- nothing and every capture ends in a timeout, so hand the node over for
+    -- the length of the call. Nothing to do when the mode already gave it away.
+    local held = input_fds[node] ~= nil
+    if held then releaseNode(node) end
     UIManager:scheduleIn(0.1, function()
         local cap, err = mapper.capture(node, 8000)
+        if held then
+            -- The capture reader lets go when the call returns; give it the
+            -- same moment _applyMapperMode does before grabbing again, and
+            -- drop our stale entry first or the reopen is a no-op.
+            UIManager:scheduleIn(1.5, function()
+                releaseNode(node)
+                if not self:_reclaimInput(node) then
+                    logger.warn("HIDPassthrough: could not take", node,
+                        "back after capture")
+                    UIManager:show(InfoMessage:new{
+                        text = _("Reconnect the device for KOReader to pick it up again."),
+                        timeout = 4,
+                    })
+                end
+            end)
+        end
         UIManager:close(msg)
         if not cap then
             UIManager:show(InfoMessage:new{
