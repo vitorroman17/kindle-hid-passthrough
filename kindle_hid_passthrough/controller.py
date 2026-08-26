@@ -110,6 +110,29 @@ class DaemonController:
         except OSError as e:
             logger.warning(f"Could not persist bt_enabled: {errstr(e)}")
 
+    def _audio_mock_running(self) -> bool:
+        """Whether our LIPC mock is the audiomgrd that is actually up.
+
+        The switch records what the user asked for; this reports what is
+        happening. They drifted apart in practice -- the stock daemon came
+        back while /status still said the bypass was on -- and an application
+        asking audiomgrd for an output then correctly got "none".
+        """
+        try:
+            pids = os.listdir("/proc")
+        except OSError:
+            return False
+        for pid in pids:
+            if not pid.isdigit():
+                continue
+            try:
+                with open(f"/proc/{pid}/cmdline", "rb") as f:
+                    if b"lipc_audio_mock.lua" in f.read():
+                        return True
+            except OSError:
+                continue
+        return False
+
     def _audio_hack_script(self, enable: bool):
         name = "start_audio_hack.sh" if enable else "stop_audio_hack.sh"
         for d in self._AUDIO_HACK_DIRS:
@@ -193,6 +216,7 @@ class DaemonController:
             "pairing": self.is_pairing,
             "cursor_running": self.cursor_running(),
             "audio_enabled": self.audio_enabled,
+            "audio_running": self._audio_mock_running(),
         }
 
         conn = self.daemon.connection_state
@@ -218,8 +242,22 @@ class DaemonController:
 
     async def _resume_if_enabled(self):
         """Resume unless BT was toggled off while the op ran."""
-        if self.bt_enabled:
-            await self.daemon.resume()
+        if not self.bt_enabled:
+            return
+        self._restore_audio_hack_if_needed()
+        await self.daemon.resume()
+
+    def _restore_audio_hack_if_needed(self):
+        """Put the bypass back if it went away while we were not looking.
+
+        audiomgrd is an upstart job with respawn, so anything that starts it
+        keeps it alive and takes the LIPC name with it. The start script is
+        idempotent and checks the property itself, so this costs nothing when
+        the bypass is healthy.
+        """
+        if self._audio_enabled and not self._audio_mock_running():
+            logger.info("Audio bypass was down, restoring it")
+            self._spawn_audio_hack(True)
 
     def _get_devices_cached(self) -> list:
         """Device list from devices.conf, cached by file mtime."""

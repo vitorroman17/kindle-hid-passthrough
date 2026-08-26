@@ -163,7 +163,10 @@ class RequestHandler(BaseHTTPRequestHandler):
         run the HID host with its own audio left alone."""
         controller = self._controller
         if enable is None:
-            self._send_json({"ok": True, "enabled": controller.audio_enabled})
+            # running is what is actually up, enabled is what was asked for.
+            self._send_json({"ok": True,
+                             "enabled": controller.audio_enabled,
+                             "running": controller._audio_mock_running()})
             return
         controller.audio_enabled = enable not in ('0', 'false', 'off')
         self._send_json({"ok": True, "enabled": controller.audio_enabled})
