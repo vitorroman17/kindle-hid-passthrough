@@ -374,7 +374,8 @@ class Config:
                     f.write(f"{addr_norm} {protocol.value}\n")
             logger.info(f"Added: {addr_norm} {protocol.value} ({name or 'unnamed'})")
             import button_mapper
-            button_mapper.register_device(addr_norm, name)
+            button_mapper.register_device(
+                addr_norm, name, audio=button_mapper._is_audio(protocol))
         except Exception as e:
             logger.error(f"Failed to save device: {e}")
 
