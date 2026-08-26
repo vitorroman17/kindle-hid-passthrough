@@ -47,6 +47,10 @@ FALLBACK_HID_DESCRIPTOR = bytes([
 
 
 CLASSIC_PEER_CHANNEL_WAIT = 5.0
+# How long to let a peer that took the central role encrypt the link before
+# driving it ourselves. Opening AVDTP first gets refused with a security block
+# and the peer then drops the ACL, costing a whole reconnect cycle.
+CLASSIC_PEER_SECURITY_WAIT = 4.0
 
 
 class ClassicHIDChannels:
@@ -277,8 +281,26 @@ class ClassicMixin:
                 log.warning(f"[Classic] Role switch failed: {errstr(e)}")
                 peer_driving = is_collision(e)
 
+        if (peer_driving or is_peripheral) and not connection.is_encrypted:
+            # Staying out of the way is right, but not walking on ahead: with
+            # the link still unencrypted, opening AVDTP is refused with
+            # CONNECTION_REFUSED_SECURITY_BLOCK and the peer then drops the
+            # ACL with AUTHENTICATION_FAILURE. Give it a moment to do its
+            # part, and drive it ourselves if it never does.
+            log.info("[Classic] Peer is driving security, waiting for the link")
+            loop = asyncio.get_running_loop()
+            deadline = loop.time() + CLASSIC_PEER_SECURITY_WAIT
+            while loop.time() < deadline and not connection.is_encrypted:
+                await asyncio.sleep(0.05)
+            if connection.is_encrypted:
+                log.success("[Classic] Peer encrypted the link")
+            else:
+                log.info("[Classic] Peer did not encrypt; driving it ourselves")
+                peer_driving = False
+                is_peripheral = False
+
         if peer_driving or is_peripheral:
-            log.info("[Classic] Peer is driving security, staying out of its way")
+            log.info("[Classic] Link already encrypted by the peer")
         elif not connection.is_encrypted:
             log.info("[Classic] Restoring bonding (authenticate + encrypt)...")
             try:
