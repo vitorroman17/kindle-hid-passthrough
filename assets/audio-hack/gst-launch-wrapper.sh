@@ -58,7 +58,7 @@ fmt_channels=""
 
 for a in "$@"; do
     case "$a" in
-        *rate=*)
+        rate=*|*,rate=*)
             r="${a#*rate=}"
             case "$r" in
                 \(int\)*) r="${r#\(int\)}" ;;
@@ -75,7 +75,7 @@ for a in "$@"; do
             ;;
     esac
     case "$a" in
-        *channels=*)
+        channels=*|*,channels=*)
             c="${a#*channels=}"
             case "$c" in
                 \(int\)*) c="${c#\(int\)}" ;;
@@ -93,10 +93,13 @@ for a in "$@"; do
     esac
 done
 
-if [ -n "$fmt_rate" ] || [ -n "$fmt_channels" ]; then
-    r="${fmt_rate:-44100}"
-    c="${fmt_channels:-2}"
-    echo "rate=$r channels=$c" > "${FMT_FILE}.tmp" 2>/dev/null && mv -f "${FMT_FILE}.tmp" "$FMT_FILE" 2>/dev/null || true
+# Both or neither: publishing a guessed rate next to a real channel count made
+# the daemon resample against a rate the pipeline never had. With nothing
+# written the daemon keeps the format it is already using, which is no worse
+# than the guess and is at least honest about not knowing.
+if [ -n "$fmt_rate" ] && [ -n "$fmt_channels" ]; then
+    echo "rate=$fmt_rate channels=$fmt_channels" > "${FMT_FILE}.tmp" 2>/dev/null &&
+        mv -f "${FMT_FILE}.tmp" "$FMT_FILE" 2>/dev/null || true
 fi
 
 # Transform argument vector: replace mixersink with filesink and drop incompatible sink properties

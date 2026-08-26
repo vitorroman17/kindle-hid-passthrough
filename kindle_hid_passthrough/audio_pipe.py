@@ -11,9 +11,10 @@ import ctypes
 import fcntl
 import logging
 import os
+import threading
 from collections import deque
 
-log = logging.getLogger("kindle-hid-passthrough")
+log = logging.getLogger(__name__)
 
 SBC_BITPOOL_DEFAULT = 35
 PCM_BYTES_PER_SAMPLE = 4
@@ -31,6 +32,14 @@ READ_CHUNK_MAX = 8192
 F_SETPIPE_SZ = 1031
 FIFO_PIPE_SIZE = 16384
 
+# Shared with assets/audio-hack/gst-launch-wrapper.sh, which writes to the FIFO
+# and publishes the caps it saw to the sidecar. Keep the two in step.
+MIN_INPUT_RATE = 4000
+MAX_INPUT_RATE = 192000
+
+FIFO_PATH = "/tmp/kindle_audio.fifo"
+FMT_PATH = "/tmp/kindle_audio.fmt"
+
 
 class AudioResampler:
     """Dynamic PCM Resampler supporting 16kHz, 22.05kHz, 44.1kHz, 48kHz mono/stereo
@@ -43,7 +52,7 @@ class AudioResampler:
         in_channels: int = 1,
         out_rate: int = 44100,
         out_channels: int = 2,
-        fmt_path: str = "/tmp/kindle_audio.fmt",
+        fmt_path: str = FMT_PATH,
     ):
         self.in_rate = in_rate
         self.in_channels = in_channels
@@ -55,36 +64,60 @@ class AudioResampler:
         self._fmt_mtime = 0
 
     def check_format_update(self):
-        """Check if format specification file was updated and apply new parameters."""
+        """Adopt the format the wrapper published, if it published a new one.
+
+        A rewritten sidecar means a new pipeline, which is the only stream
+        boundary visible from here: the FIFO is held open read-write, so a
+        writer going away never surfaces as end-of-file. Treat it as one and
+        drop the carried state, or a partial sample left by a pipeline that
+        was killed mid-write shifts every following sample by a byte.
+        """
         try:
             st = os.stat(self.fmt_path)
-            if st.st_mtime != self._fmt_mtime:
-                self._fmt_mtime = st.st_mtime
-                with open(self.fmt_path, "r") as f:
-                    content = f.read()
-                new_rate = None
-                new_channels = None
-                for token in content.split():
-                    if token.startswith("rate="):
-                        new_rate = int(token.split("=")[1])
-                    elif token.startswith("channels="):
-                        new_channels = int(token.split("=")[1])
-                self.set_format(new_rate, new_channels)
-        except Exception:
-            pass
+        except OSError:
+            return  # No sidecar yet; keep the format we are already using.
+        if st.st_mtime == self._fmt_mtime:
+            return
+
+        try:
+            with open(self.fmt_path, "r") as f:
+                content = f.read()
+            new_rate = None
+            new_channels = None
+            for token in content.split():
+                if token.startswith("rate="):
+                    new_rate = int(token.split("=")[1])
+                elif token.startswith("channels="):
+                    new_channels = int(token.split("=")[1])
+        except (OSError, ValueError) as e:
+            # Leave _fmt_mtime alone so a readable rewrite is picked up later.
+            log.warning(f"[AudioResampler] Ignoring unreadable {self.fmt_path}: {e}")
+            return
+
+        self._fmt_mtime = st.st_mtime
+        self.new_stream()
+        self.set_format(new_rate, new_channels)
+
+    def new_stream(self):
+        """Forget state carried from the previous writer."""
+        self._rate_state = None
+        self._odd_byte = b""
 
     def set_format(self, in_rate: int = None, in_channels: int = None):
         """Update input audio sample rate and channel configuration."""
         changed = False
-        if in_rate and in_rate > 0 and in_rate != self.in_rate:
+        if in_rate and MIN_INPUT_RATE <= in_rate <= MAX_INPUT_RATE and in_rate != self.in_rate:
             self.in_rate = in_rate
             changed = True
+        elif in_rate and not (MIN_INPUT_RATE <= in_rate <= MAX_INPUT_RATE):
+            # A rate outside audio range is a parse artefact, not a stream.
+            # Resampling from it allocates in proportion to in_rate/out_rate.
+            log.warning(f"[AudioResampler] Ignoring out-of-range rate {in_rate}Hz")
         if in_channels and in_channels in (1, 2) and in_channels != self.in_channels:
             self.in_channels = in_channels
             changed = True
         if changed:
-            self._rate_state = None
-            self._odd_byte = b""
+            self.new_stream()
             log.info(
                 f"[AudioResampler] Format set: {self.in_rate}Hz {self.in_channels}ch -> "
                 f"{self.out_rate}Hz {self.out_channels}ch"
@@ -237,10 +270,17 @@ class SbcEncoder:
         return None
 
     def close(self):
+        # sbc_finish frees the private state, so the encoder must be marked
+        # unusable in the same breath: a later encode_frame would dereference
+        # a freed pointer inside libsbc and take the process with it. close()
+        # is reached twice on teardown (explicitly, then from the generator's
+        # finally at GC), so it has to be idempotent.
         if self._available and self._sbc_lib:
+            self._available = False
             try:
                 self._sbc_lib.sbc_finish(self._sbc_struct)
             except Exception:
+                # Teardown only; a failure here has nothing left to affect.
                 pass
 
 
@@ -253,7 +293,7 @@ class FifoAudioStreamer:
     to the FIFO writer when full.
     """
 
-    def __init__(self, fifo_path: str = "/tmp/kindle_audio.fifo"):
+    def __init__(self, fifo_path: str = FIFO_PATH):
         self.fifo_path = fifo_path
         self.fifo_fd = None
         self._chunks = deque()
@@ -261,18 +301,27 @@ class FifoAudioStreamer:
         self.resampler = AudioResampler()
         self.encoder = SbcEncoder()
 
+        # An encoder that initialised but cannot produce a frame is unusable:
+        # without a silence frame there is nothing to substitute when a later
+        # encode fails, and joining None into the payload would kill the pump.
         self.silence_sbc_frame = self.encoder.encode_frame(b"\x00" * PCM_FRAME_SIZE)
         if self.silence_sbc_frame:
             self.silence_rtp_payload = (
                 bytes([FRAMES_PER_PACKET]) + self.silence_sbc_frame * FRAMES_PER_PACKET
             )
         else:
+            log.warning("[Audio] encoder produced no silence frame; streaming silence only")
+            self.encoder.close()
             self.silence_rtp_payload = bytes([0])
         self._ensure_fifo()
         self.paused = False
+        # toggle_pause is called from the API server's thread while the pump
+        # reads self.paused on the event loop; the read-modify-write needs it.
+        self._pause_lock = threading.Lock()
 
     def toggle_pause(self):
-        self.paused = not self.paused
+        with self._pause_lock:
+            self.paused = not self.paused
 
     def play(self):
         self.paused = False
@@ -286,18 +335,23 @@ class FifoAudioStreamer:
         try:
             if not os.path.exists(self.fifo_path):
                 os.mkfifo(self.fifo_path, 0o666)
-        except Exception:
+        except OSError:
+            # Someone else may have created it between the check and the call.
+            # If it is really unusable the open below reports it.
             pass
 
         try:
             self.fifo_fd = os.open(self.fifo_path, os.O_RDWR | os.O_NONBLOCK)
-        except Exception:
+        except OSError as e:
+            log.warning(f"[Audio] cannot open {self.fifo_path}: {e}")
             self.fifo_fd = None
             return
 
         try:
             fcntl.fcntl(self.fifo_fd, F_SETPIPE_SZ, FIFO_PIPE_SIZE)
-        except Exception:
+        except OSError:
+            # Tuning, not a requirement: the default pipe size still works,
+            # it just holds less before the writer blocks.
             pass
 
     # ---------- buffer O(1) ----------
@@ -357,6 +411,11 @@ class FifoAudioStreamer:
             resampled = self.resampler.resample_chunk(chunk)
             if resampled:
                 self._push(resampled)
+            elif chunk:
+                # Nothing came back from a non-empty read: the format is wrong
+                # or the resampler is failing. Looping would drain the whole
+                # FIFO into the void, one warning per iteration.
+                break
             if len(chunk) < want:
                 break
 
@@ -366,7 +425,8 @@ class FifoAudioStreamer:
 
         self.read_pcm_available()
 
-        if self._avail >= PCM_PACKET_SIZE and self.encoder.is_available:
+        if (self._avail >= PCM_PACKET_SIZE and self.encoder.is_available
+                and self.silence_sbc_frame):
             raw_packet_pcm = self._pull(PCM_PACKET_SIZE)
             sbc_frames = []
             for i in range(FRAMES_PER_PACKET):
@@ -381,7 +441,8 @@ class FifoAudioStreamer:
         if self.fifo_fd is not None:
             try:
                 os.close(self.fifo_fd)
-            except Exception:
+            except OSError:
+                # Closing an already-dead fd is not worth reporting.
                 pass
             self.fifo_fd = None
         self._chunks.clear()
