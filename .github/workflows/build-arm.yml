@@ -168,6 +168,7 @@ jobs:
             koreader-plugin/hidpassthrough.koplugin/event_map_extra.lua \
             config.ini \
             dist/main.bin \
+            dist/libsbc.so.1 \
             button-mapper/kindle-button-mapper \
             button-mapper/install.sh \
             button-mapper/config.ini; do
