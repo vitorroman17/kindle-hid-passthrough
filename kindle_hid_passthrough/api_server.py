@@ -325,33 +325,30 @@ class RequestHandler(BaseHTTPRequestHandler):
         except OSError as e:
             self._send_json({"ok": False, "error": str(e)})
 
+    def _audio_streamer(self):
+        """The live session's audio streamer, None when nothing is playing.
+
+        host is None while the daemon is suspended, and _audio_session only
+        exists once AVDTP is streaming.
+        """
+        host = self._controller.daemon.host
+        session = getattr(host, '_audio_session', None) if host else None
+        return session[1] if session else None
+
+    def _handle_media(self, action):
+        streamer = self._audio_streamer()
+        if streamer is None:
+            self._send_json({"ok": False, "error": "No active audio session"})
+            return
+        getattr(streamer, action)()
+        self._send_json({"ok": True, "paused": streamer.paused})
+
     def _handle_media_toggle(self):
-        controller = self._controller
-        if hasattr(controller, 'daemon') and hasattr(controller.daemon, 'host') and hasattr(controller.daemon.host, '_audio_session') and controller.daemon.host._audio_session:
-            audio_streamer = controller.daemon.host._audio_session[1]
-            if audio_streamer:
-                audio_streamer.toggle_pause()
-                self._send_json({"ok": True, "paused": audio_streamer.paused})
-                return
-        self._send_json({"ok": False, "error": "No active audio session"})
+        self._handle_media('toggle_pause')
 
     def _handle_media_play(self):
-        controller = self._controller
-        if hasattr(controller, 'daemon') and hasattr(controller.daemon, 'host') and hasattr(controller.daemon.host, '_audio_session') and controller.daemon.host._audio_session:
-            audio_streamer = controller.daemon.host._audio_session[1]
-            if audio_streamer:
-                audio_streamer.play()
-                self._send_json({"ok": True, "paused": False})
-                return
-        self._send_json({"ok": False, "error": "No active audio session"})
+        self._handle_media('play')
 
     def _handle_media_pause(self):
-        controller = self._controller
-        if hasattr(controller, 'daemon') and hasattr(controller.daemon, 'host') and hasattr(controller.daemon.host, '_audio_session') and controller.daemon.host._audio_session:
-            audio_streamer = controller.daemon.host._audio_session[1]
-            if audio_streamer:
-                audio_streamer.pause()
-                self._send_json({"ok": True, "paused": True})
-                return
-        self._send_json({"ok": False, "error": "No active audio session"})
+        self._handle_media('pause')
 

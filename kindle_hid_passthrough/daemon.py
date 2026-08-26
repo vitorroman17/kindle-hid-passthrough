@@ -291,9 +291,11 @@ async def main():
     def handle_exception(loop, context):
         msg = context.get("exception", context["message"])
         logger.error(f"Unhandled exception in asyncio loop: {msg}")
-        if "channel not open" in str(msg) or "InvalidStateError" in str(msg):
-            logger.error("Bumble L2CAP/AVDTP channel dropped. Reconnecting...")
-            shutdown.set()
+        # An L2CAP write racing an ACL teardown surfaces here whenever a peer
+        # goes out of range. It is not fatal: the reconnect loop handles it,
+        # and shutdown.set() only exits the process -- which upstart respawns,
+        # counting towards the boot_attempts limit that permanently disables
+        # autostart after three tries.
 
     loop.set_exception_handler(handle_exception)
 

@@ -188,7 +188,8 @@ def main():
                         help='Run as daemon with auto-reconnect + API server')
     parser.add_argument('--address', type=str,
                         help='Device address (overrides devices.conf)')
-    parser.add_argument('--protocol', type=str, choices=['ble', 'classic'],
+    parser.add_argument('--protocol', type=str,
+                        choices=['ble', 'classic', 'classic_audio'],
                         help='Filter by protocol (pairing) or override (run)')
     parser.add_argument('--sequential', action='store_true',
                         help='Scan BLE and Classic sequentially')

@@ -75,17 +75,13 @@ class DaemonController:
         return os.path.join(config.cache_dir, "bt_enabled")
 
     def _audio_state_path(self):
-        return os.path.join(config.cache_dir, "audio_enabled")
+        return config.audio_state_file
 
     def _load_audio_state(self) -> bool:
         """Off unless the user turned it on. Unlike HID, which the daemon
         exists for, the bypass replaces a system daemon and cannot be the
         default on hardware nobody has tested it on."""
-        try:
-            with open(self._audio_state_path()) as f:
-                return f.read().strip() == "1"
-        except OSError:
-            return False
+        return config.audio_enabled()
 
     def _persist_audio_state(self, value: bool):
         try:

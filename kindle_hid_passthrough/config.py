@@ -125,6 +125,7 @@ class Config:
         # Paths
         self.cache_dir = self._get('paths', 'cache_dir', f'{self.base_path}/cache')
         self.pairing_keys_file = os.path.join(self.cache_dir, 'pairing_keys.json')
+        self.audio_state_file = os.path.join(self.cache_dir, 'audio_enabled')
         self.devices_config_file = self._get('paths', 'devices_config',
                                              f'{self.base_path}/devices.conf')
         self.log_file = self._get('logging', 'log_file', '/var/log/hid_passthrough.log')
@@ -154,6 +155,19 @@ class Config:
         self.protocol = self._parse_protocol(protocol_str)
 
         self.media_remote_enabled = self._getboolean('media_remote', 'enabled', True)
+
+    def audio_enabled(self) -> bool:
+        """Whether the user asked for the Bluetooth audio bypass.
+
+        Written by the controller and read here so the connect path and the
+        switch cannot disagree: with the bypass off, an audio device must not
+        get an AVDTP stream it would only feed silence into.
+        """
+        try:
+            with open(self.audio_state_file) as f:
+                return f.read().strip() == "1"
+        except OSError:
+            return False
 
     def _detect_transport(self) -> str:
         """Auto-detect HCI transport from Kindle hardware.
