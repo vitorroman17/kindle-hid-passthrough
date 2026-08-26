@@ -383,6 +383,13 @@ local MAPPER_KINDS = {
     { section = "triggers", label = _("Trigger") },
 }
 
+-- Daemon-side media control, mapped to assets/audio-hack/media.sh.
+local MEDIA_ACTIONS = {
+    { command = "toggle", title = _("Play/Pause any audio") },
+    { command = "pause",  title = _("Pause any audio") },
+    { command = "play",   title = _("Resume any audio") },
+}
+
 -- Who owns the device node. Only one process can hold an evdev grab, so this
 -- is the difference between KOReader seeing the keys and the mapper seeing
 -- them. `grab` absent means the daemon decides from the node itself.
@@ -734,6 +741,21 @@ function HIDPassthrough:_actionSections()
             if #items > 0 then
                 table.insert(sections, { title = _("Favorites"), items = items })
             end
+        end
+
+        -- The daemon pauses by holding its own audio FIFO, so this stops
+        -- whatever is playing without the application cooperating. Kept apart
+        -- from KOReader's audio events below, which only reach the plugin that
+        -- owns the playback and do nothing when another one is playing.
+        if util.pathExists(self:_mapper().MEDIA) then
+            local items = {}
+            for dummy, a in ipairs(MEDIA_ACTIONS) do -- luacheck: ignore dummy
+                table.insert(items, {
+                    title = a.title,
+                    script = self:_mapper().mediaScript(a.command),
+                })
+            end
+            table.insert(sections, { title = _("Any audio"), items = items })
         end
 
         local ok, koactions = pcall(dofile,
