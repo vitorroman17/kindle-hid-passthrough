@@ -114,6 +114,21 @@ function HIDPassthrough:isRunning()
     return self:getState() == "on"
 end
 
+-- The audio bypass is its own switch, not part of HID. It stops the stock
+-- audio daemon and puts a mock in its place, which is worth doing only if it
+-- works here: on a device where it does not, the reader still needs its own
+-- audio, so this has to be something the user can leave off.
+function HIDPassthrough:audioEnabled()
+    local data = self:_httpGetJson("/audio")
+    return data ~= nil and data.enabled == true
+end
+
+function HIDPassthrough:setAudioEnabled(want)
+    local data, err = self:_httpGetJson("/audio?enable=" .. (want and "1" or "0"))
+    if not data then return false, err end
+    return data.enabled == want, nil
+end
+
 ------------------------------------------------------------------------------
 -- Key mappings
 ------------------------------------------------------------------------------
@@ -744,9 +759,9 @@ function HIDPassthrough:_actionSections()
         end
 
         -- The daemon pauses by holding its own audio FIFO, so this stops
-        -- whatever is playing without the application cooperating. Kept apart
-        -- from KOReader's audio events below, which only reach the plugin that
-        -- owns the playback and do nothing when another one is playing.
+        -- whatever is playing without the application cooperating. It replaced
+        -- the per-plugin audiobook events this branch used to list: those only
+        -- reach the plugin that owns the playback and do nothing otherwise.
         if util.pathExists(self:_mapper().MEDIA) then
             local items = {}
             for dummy, a in ipairs(MEDIA_ACTIONS) do -- luacheck: ignore dummy
@@ -755,7 +770,7 @@ function HIDPassthrough:_actionSections()
                     script = self:_mapper().mediaScript(a.command),
                 })
             end
-            table.insert(sections, { title = _("Any audio"), items = items })
+            table.insert(sections, { title = _("Audio"), items = items })
         end
 
         local ok, koactions = pcall(dofile,
@@ -1829,6 +1844,21 @@ function HIDPassthrough:_doToggle(touchmenu_instance)
     end
 end
 
+function HIDPassthrough:_doToggleAudio(touchmenu_instance)
+    local want = not self:audioEnabled()
+    local ok, err = self:setAudioEnabled(want)
+    local msg
+    if ok then
+        msg = want and _("Bluetooth audio on.") or _("Bluetooth audio off.")
+    else
+        msg = T(_("Could not change it: %1"), tostring(err or "failed"))
+    end
+    UIManager:show(InfoMessage:new{ text = msg, timeout = ok and 2 or 4 })
+    if touchmenu_instance then
+        touchmenu_instance:updateItems()
+    end
+end
+
 function HIDPassthrough:addToMainMenu(menu_items)
     menu_items.hid_passthrough = {
         text = _("BT Manager - HID Passthrough"),
@@ -1849,6 +1879,17 @@ function HIDPassthrough:addToMainMenu(menu_items)
                 callback = function(touchmenu_instance)
                     self:_doToggle(touchmenu_instance)
                 end,
+            },
+            {
+                text = _("Bluetooth audio"),
+                help_text = _("Sends what the Kindle plays to the paired headphones. While on, the stock audio daemon is replaced; leave it off if audio misbehaves on this device."),
+                enabled_func = function() return self:isRunning() end,
+                checked_func = function() return self:audioEnabled() end,
+                check_callback_updates_menu = true,
+                callback = function(touchmenu_instance)
+                    self:_doToggleAudio(touchmenu_instance)
+                end,
+                separator = true,
             },
             {
                 text = _("Scan for devices"),
