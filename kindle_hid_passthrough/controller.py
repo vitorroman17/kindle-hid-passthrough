@@ -171,7 +171,7 @@ class DaemonController:
         script = self._audio_hack_script(enable)
         if script is None:
             return
-        action = "start" if enable else "stop"
+        action, done = ("start", "started") if enable else ("stop", "stopped")
         try:
             proc = subprocess.run(["/bin/sh", script], timeout=30,
                                   stdout=subprocess.PIPE,
@@ -185,7 +185,7 @@ class DaemonController:
         # whose /mnt/us is FUSE the script aborted creating a symlink while
         # the log still said the hack had started.
         if proc.returncode == 0:
-            logger.info(f"Audio hack {action}ed")
+            logger.info(f"Audio hack {done}")
             return
         logger.warning(f"Audio hack {action} failed (exit {proc.returncode})")
         output = (proc.stdout or b"").decode("utf-8", "replace")
