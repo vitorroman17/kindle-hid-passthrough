@@ -3,7 +3,8 @@
 # Amazon Kindle Audio Bypass - Service Teardown Script
 # Part of the kindle-hid-passthrough audio bypass
 #
-# Terminates the mock LIPC daemon and restores the stock audiomgrd service.
+# Terminates the mock LIPC daemon and restores the stock gst-launch binary
+# and audiomgrd service.
 # ==============================================================================
 
 set -e
@@ -46,12 +47,25 @@ main() {
         done
     fi
 
-    # Step 2: Restart stock audiomgrd
+    # Step 2: Restore the stock gst-launch. The wrapper rewrites any
+    # mixersink pipeline into the FIFO whether or not anything is draining
+    # it, so leaving it behind once the reader is gone makes the next
+    # playback block on the FIFO instead of playing.
+    GST="/usr/bin/gst-launch-0.10"
+    GST_REAL="$GST.real"
+    if [ -f "$GST_REAL" ]; then
+        log_info "Restoring the stock gst-launch-0.10..."
+        /usr/sbin/mntroot rw >/dev/null 2>&1 || true
+        mv -f "$GST_REAL" "$GST" || log_warn "Could not restore $GST."
+        /usr/sbin/mntroot ro >/dev/null 2>&1 || true
+    fi
+
+    # Step 3: Restart stock audiomgrd
     log_info "Starting stock audiomgrd via Upstart..."
     initctl start audiomgrd 2>/dev/null || true
     sleep 1
 
-    # Step 3: Verify stock audiomgrd status
+    # Step 4: Verify stock audiomgrd status
     RUNNING=0
     for i in 1 2 3 4 5; do
         if initctl status audiomgrd 2>/dev/null | grep -q "start/running"; then

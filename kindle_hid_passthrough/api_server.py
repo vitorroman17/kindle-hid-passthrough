@@ -166,7 +166,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             # running is what is actually up, enabled is what was asked for.
             self._send_json({"ok": True,
                              "enabled": controller.audio_enabled,
-                             "running": controller._audio_mock_running()})
+                             "running": controller.audio_running})
             return
         controller.audio_enabled = enable not in ('0', 'false', 'off')
         self._send_json({"ok": True, "enabled": controller.audio_enabled})

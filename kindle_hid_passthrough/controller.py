@@ -19,6 +19,11 @@ from logging_utils import errstr
 
 logger = logging.getLogger(__name__)
 
+# The stock binary the audio bypass swaps out, and where it keeps it. The
+# wrapper delegates to .real, so the pair is what "installed" means.
+GST_BIN = "/usr/bin/gst-launch-0.10"
+GST_REAL_BIN = GST_BIN + ".real"
+
 __all__ = ['DaemonController']
 
 
@@ -133,6 +138,22 @@ class DaemonController:
                 continue
         return False
 
+    def _gst_wrapper_installed(self) -> bool:
+        """Whether our gst-launch wrapper is the binary the system will run.
+
+        The mock alone is not the bypass. It answers audioOutputConnected,
+        but nothing writes into the FIFO until the wrapper rewrites the
+        pipeline's sink, so the reader drains an empty pipe and the sink
+        receives silence while every switch still reads as on.
+        """
+        if not os.path.isfile(GST_REAL_BIN):
+            return False
+        try:
+            with open(GST_BIN, "rb") as f:
+                return f.read(2) == b"#!"
+        except OSError:
+            return False
+
     def _audio_hack_script(self, enable: bool):
         name = "start_audio_hack.sh" if enable else "stop_audio_hack.sh"
         for d in self._AUDIO_HACK_DIRS:
@@ -190,6 +211,11 @@ class DaemonController:
     def audio_enabled(self) -> bool:
         return self._audio_enabled
 
+    @property
+    def audio_running(self) -> bool:
+        """Whether the bypass is actually up, both halves of it."""
+        return self._audio_mock_running() and self._gst_wrapper_installed()
+
     @audio_enabled.setter
     def audio_enabled(self, value):
         value = bool(value)
@@ -216,7 +242,7 @@ class DaemonController:
             "pairing": self.is_pairing,
             "cursor_running": self.cursor_running(),
             "audio_enabled": self.audio_enabled,
-            "audio_running": self._audio_mock_running(),
+            "audio_running": self.audio_running,
         }
 
         conn = self.daemon.connection_state
@@ -251,11 +277,12 @@ class DaemonController:
         """Put the bypass back if it went away while we were not looking.
 
         audiomgrd is an upstart job with respawn, so anything that starts it
-        keeps it alive and takes the LIPC name with it. The start script is
-        idempotent and checks the property itself, so this costs nothing when
-        the bypass is healthy.
+        keeps it alive and takes the LIPC name with it. An update restores
+        the stock gst-launch the same way. The start script is idempotent and
+        checks both halves itself, so this costs nothing when the bypass is
+        healthy.
         """
-        if self._audio_enabled and not self._audio_mock_running():
+        if self._audio_enabled and not self.audio_running:
             logger.info("Audio bypass was down, restoring it")
             self._spawn_audio_hack(True)
 

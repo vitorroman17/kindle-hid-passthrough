@@ -168,7 +168,6 @@ installAll()
     return 1
   fi
   installUdevRules
-  installAudioWrapper
   # Auto-start is opt-in, only refresh a job the user already enabled.
   if [ -f /etc/upstart/hid-passthrough.conf ]; then
     installUpstart
@@ -262,36 +261,6 @@ installUpstart()
   # upstart only picks up a newly dropped .conf after a config reload, without
   # this the job stays unknown and the start below fails until a reboot.
   /sbin/initctl reload-configuration 2>/dev/null || true
-  echo " -> Ready."
-}
-
-installAudioWrapper()
-{
-  echo " -> Installing GST audio wrapper"
-  WRAPPER="$SRC_DIR/assets/audio-hack/gst-launch-wrapper.sh"
-  if [ ! -f "$WRAPPER" ]; then
-    echo " -> wrapper missing from the package, skipping" >&2
-    return 1
-  fi
-  /usr/sbin/mntroot rw
-  # Only wrap a stock binary we could actually set aside. Installing the
-  # wrapper without a .real to delegate to makes every gst call exit 127,
-  # and overwriting the stock binary without saving it is unrecoverable.
-  if [ ! -f /usr/bin/gst-launch-0.10.real ]; then
-    if [ ! -f /usr/bin/gst-launch-0.10 ]; then
-      echo " -> no stock gst-launch-0.10 on this firmware, skipping" >&2
-      /usr/sbin/mntroot ro
-      return 1
-    fi
-    if ! mv /usr/bin/gst-launch-0.10 /usr/bin/gst-launch-0.10.real; then
-      echo " -> could not set the stock gst-launch-0.10 aside, skipping" >&2
-      /usr/sbin/mntroot ro
-      return 1
-    fi
-  fi
-  cp "$WRAPPER" /usr/bin/gst-launch-0.10
-  chmod +x /usr/bin/gst-launch-0.10
-  /usr/sbin/mntroot ro
   echo " -> Ready."
 }
 
@@ -401,6 +370,9 @@ uninstallAll()
   echo " -> Removing upstart config"
   rm -f /etc/upstart/hid-passthrough.conf
 
+  # The audio switch installs and removes the wrapper itself. This is the
+  # net for uninstalling with the switch still on, which never runs the
+  # teardown script.
   echo " -> Removing GST audio wrapper"
   if [ -f /usr/bin/gst-launch-0.10.real ]; then
     mv /usr/bin/gst-launch-0.10.real /usr/bin/gst-launch-0.10
