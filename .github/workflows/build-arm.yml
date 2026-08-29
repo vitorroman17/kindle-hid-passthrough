@@ -2,7 +2,7 @@ name: Build ARM Binary
 
 on:
   push:
-    branches: [main, 'feat/*']
+    branches: [main]
     tags: ['v*']
   pull_request:
     branches: [main]
@@ -214,7 +214,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create dev prerelease
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feat/'))
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v3
         with:
           tag_name: dev-${{ steps.stamp.outputs.sha }}
